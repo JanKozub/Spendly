@@ -21,8 +21,11 @@ struct ContentView: View {
             }
             .listStyle(.sidebar)
             .navigationDestination(for: Position.self) { item in
-                SpendingsView()
-                    .navigationTitle(item.name)
+                if(item.name == "Spendings") {
+                    SpendingsView().navigationTitle(item.name);
+                } else if(item.name == "Meals") {
+                    MealsView().navigationTitle(item.name);
+                }
             }
         }
     }
