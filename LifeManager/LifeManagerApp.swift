@@ -12,7 +12,7 @@ struct LifeManagerApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .frame(minWidth: 1300, minHeight: 600)
+                .frame(minWidth: 1250, minHeight: 600)
         }
     }
 }
