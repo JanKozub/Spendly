@@ -24,25 +24,29 @@ struct SpendingsView: View {
                     }
                 }.controlSize(.extraLarge)
             } else {
-                List {
-                    Section {
-                        HStack {
-                            Text("Issued Date:").frame(maxWidth: 100, alignment: .center)
-                            Text("Transaction Date:").frame(maxWidth: 150, alignment: .center)
-                            Text("Title:").frame(maxWidth: .infinity, alignment: .center)
-                            Text("Message:").frame(maxWidth: .infinity, alignment: .center)
-                            Text("Amount:").frame(maxWidth: 100, alignment: .center)
-                            Text("Balance:").frame(maxWidth: 100, alignment: .center)
+                GeometryReader { reader in
+                    List {
+                        Section {
+                            HStack {
+                                Text("Issued(D)").frame(maxWidth: reader.size.width * 0.08, alignment: .center)
+                                Text("Transaction(D)").frame(maxWidth: reader.size.width * 0.08, alignment: .center)
+                                Text("Title").frame(maxWidth: reader.size.width * 0.36, alignment: .center)
+                                Text("Message").frame(maxWidth: reader.size.width * 0.18, alignment: .center)
+                                Text("Amount").frame(maxWidth: reader.size.width * 0.07, alignment: .center)
+                                Text("Balance").frame(maxWidth: reader.size.width * 0.07, alignment: .center)
+                                Text("Category").frame(maxWidth: reader.size.width * 0.08, alignment: .center)
+                                Text("Type").frame(maxWidth: reader.size.width * 0.08, alignment: .center)
+                            }
+                        }.padding(.top).padding(.top).padding(.top).padding(.top)
+                        
+                        Section {
+                            ForEach($payments, id: \.self) {$payment in PaymentView(payment: $payment, width: .constant(reader.size.width))}
                         }
-                    }.padding(.top).padding(.top).padding(.top).padding(.top)
-                    
-                    Section {
-                        ForEach($payments, id: \.self) {$payment in PaymentView(payment: $payment)}
                     }
+                    .frame( maxWidth: .infinity)
+                    .edgesIgnoringSafeArea(.all)
+                    .listStyle(PlainListStyle())
                 }
-                .frame( maxWidth: .infinity)
-                .edgesIgnoringSafeArea(.all)
-                .listStyle(PlainListStyle())
             }
         }.toolbar {}
     }
