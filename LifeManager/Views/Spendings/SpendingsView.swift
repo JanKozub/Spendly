@@ -72,12 +72,12 @@ struct SpendingsView: View {
             }
             .toolbar {
                 ToolbarItemGroup {
-                    CategoryMenu(elements: .constant(["Other", "test2"])).frame(width: 150)
+                    DropdownMenu(selectedCategory: "Other", elements: ["Other", "test2"]).frame(width: 150)
                 }
             }
             .padding(.all)
         } else {
-            TableView(payments: .constant(payments))
+            TableView(payments: $payments)
         }
     }
 }

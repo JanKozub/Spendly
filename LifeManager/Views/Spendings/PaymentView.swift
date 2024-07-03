@@ -10,9 +10,10 @@ import SwiftUI
 struct PaymentView: View {
     @Binding var payment: Payment;
     @Binding var width: CGFloat;
+    var onPaymentChanged: (Payment) -> Void
     
-    @State private var categories = ["Other", "Food", "Entertainment"];
-    @State private var type = ["Other", "Personal", "Refund"]
+    let categories = ["Other", "Food", "Entertainment"]
+    let types = ["Other", "Personal", "Refund"]
     
     var myRed = Color(red: 238/255, green: 36/255, blue: 0/255).opacity(0.1)
     var myGreen = Color(red: 36/255, green: 238/255, blue: 0/255).opacity(0.1)
@@ -29,12 +30,23 @@ struct PaymentView: View {
             
             Text(String(format: "%.2f", abs(payment.amount))).frame(maxWidth: width * 0.07, alignment: .center)
             Text(String(format: "%.2f", payment.balance)).frame(maxWidth: width * 0.07, alignment: .center)
-            CategoryMenu(elements: .constant(categories)).frame(maxWidth: width * 0.08, alignment: .center)
-            CategoryMenu(elements: .constant(type)).frame(maxWidth: width * 0.08, alignment: .center)
+            
+            DropdownMenu(selectedCategory: "Other", elements: categories, onChange: { newValue in
+                payment.category = newValue
+                onPaymentChanged(payment)
+            })
+            .frame(maxWidth: width * 0.07, alignment: .center)
+            
+            DropdownMenu(selectedCategory: "Other", elements: types, onChange: { newValue in
+                payment.type = newValue
+                onPaymentChanged(payment)
+            })
+            .frame(maxWidth: width * 0.07, alignment: .center)
+            
         }.background(rowColor)
     }
 }
 
 #Preview {
-    PaymentView(payment: .constant(Payment.example()), width: .constant(CGFloat.infinity))
+    PaymentView(payment: .constant(Payment.example()), width: .constant(CGFloat.infinity), onPaymentChanged: {_ in})
 }

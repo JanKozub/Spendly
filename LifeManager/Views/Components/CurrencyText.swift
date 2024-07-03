@@ -9,14 +9,14 @@ import SwiftUI
 
 struct CurrencyText: View {
     @State var title: String;
-    @State var value: Double;
+    @Binding var value: Double;
     @State var currency: String;
     
     var body: some View {
-        Text(title + ": " + String(format: "%.2f", 123.222) + " " + currency).frame(maxWidth: .infinity, alignment: .center)
+        Text(title + ": " + String(format: "%.2f", value) + " " + currency).frame(maxWidth: .infinity, alignment: .center)
     }
 }
 
 #Preview {
-    CurrencyText(title: "", value: 0.0, currency: "")
+    CurrencyText(title: "", value: .constant(0.0), currency: "")
 }

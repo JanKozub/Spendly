@@ -9,9 +9,12 @@ import SwiftUI
 
 struct TableView: View {
     @Binding var payments: [Payment];
+    @State private var personalSum: Double = 0;
+    @State private var refundSum: Double = 0;
+    @State private var otherSum: Double = 0;
     
     var body: some View {
-        let currency = payments[0].currency;
+        let currency = payments.count > 0 ? payments[0].currency : ""
         GeometryReader { reader in
             VStack {
                 HStack {
@@ -27,8 +30,10 @@ struct TableView: View {
                 .frame(maxWidth: .infinity, maxHeight: 30)
                 
                 List {
-                    ForEach($payments, id: \.self) {
-                        $payment in PaymentView(payment: $payment, width: .constant(reader.size.width))
+                    ForEach($payments, id: \.self) {$payment in
+                        PaymentView(payment: $payment, width: .constant(reader.size.width), onPaymentChanged: { newPayment in
+                            calculateSums()
+                        })
                     }
                 }
                 .edgesIgnoringSafeArea(.all)
@@ -36,9 +41,9 @@ struct TableView: View {
                 .frame(maxWidth: .infinity, maxHeight: abs(reader.size.height - 60))
                 
                 HStack {
-                    CurrencyText(title: "Personal", value: 123.222, currency: currency)
-                    CurrencyText(title: "Refund", value: 123.222, currency: currency)
-                    CurrencyText(title: "Other", value: 123.222, currency: currency)
+                    CurrencyText(title: "Personal", value: $personalSum, currency: currency)
+                    CurrencyText(title: "Refund", value: $refundSum, currency: currency)
+                    CurrencyText(title: "Other", value: $otherSum, currency: currency)
                 }
                 .frame(maxWidth: .infinity, maxHeight: 30)
             }
@@ -49,7 +54,31 @@ struct TableView: View {
                 Text("Currency: " + currency)
             }
         }
+        .onAppear(perform: {
+            calculateSums()
+        })
         .padding(.top, 1)
+    }
+    
+    private func calculateSums() {
+        personalSum = 0
+        refundSum = 0
+        otherSum = 0
+        
+        for(_, payment) in payments.enumerated() {
+            if payment.amount < 0 {
+                switch payment.type {
+                case "Personal":
+                    personalSum += abs(payment.amount)
+                case "Refund":
+                    refundSum += abs(payment.amount)
+                case "Other":
+                    otherSum += abs(payment.amount)
+                default:
+                    print("Wrong dropdown value")
+                }
+            }
+        }
     }
 }
 
