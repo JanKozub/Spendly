@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E744BB362C36B933000FF33B /* Month.swift in Sources */ = {isa = PBXBuildFile; fileRef = E744BB352C36B933000FF33B /* Month.swift */; };
+		E744BB382C36BB33000FF33B /* MonthType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E744BB372C36BB33000FF33B /* MonthType.swift */; };
 		E753F15A2C2702CE0092F9A4 /* MealsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E753F1592C2702CE0092F9A4 /* MealsView.swift */; };
 		E7BF90342C1E1BF3002A61CC /* LifeManagerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7BF90332C1E1BF3002A61CC /* LifeManagerApp.swift */; };
 		E7BF90362C1E1BF3002A61CC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7BF90352C1E1BF3002A61CC /* ContentView.swift */; };
@@ -26,6 +28,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E744BB352C36B933000FF33B /* Month.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Month.swift; sourceTree = "<group>"; };
+		E744BB372C36BB33000FF33B /* MonthType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthType.swift; sourceTree = "<group>"; };
 		E753F1592C2702CE0092F9A4 /* MealsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealsView.swift; sourceTree = "<group>"; };
 		E7BF90302C1E1BF3002A61CC /* LifeManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LifeManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7BF90332C1E1BF3002A61CC /* LifeManagerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifeManagerApp.swift; sourceTree = "<group>"; };
@@ -137,6 +141,8 @@
 			children = (
 				E7DE76CE2C32E7BB002DE392 /* TabSection.swift */,
 				E7DE76D22C33141D002DE392 /* Payment.swift */,
+				E744BB352C36B933000FF33B /* Month.swift */,
+				E744BB372C36BB33000FF33B /* MonthType.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -237,6 +243,8 @@
 				E7DE76D52C337489002DE392 /* PaymentView.swift in Sources */,
 				E7BF90342C1E1BF3002A61CC /* LifeManagerApp.swift in Sources */,
 				E7DE76CD2C32E42C002DE392 /* SidebarView.swift in Sources */,
+				E744BB382C36BB33000FF33B /* MonthType.swift in Sources */,
+				E744BB362C36B933000FF33B /* Month.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

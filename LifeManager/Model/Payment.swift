@@ -34,10 +34,6 @@ class Payment: Identifiable, Hashable, ObservableObject {
         self.type = type
     }
     
-    func setType(_ value: String) {
-        self.type = value
-    }
-    
     static func example() -> Payment {
         Payment(issuedDate: "", transactionDate: "", title: "",
                 message: "", accountNumber: 0, amount: 0, balance: 0,
@@ -80,7 +76,7 @@ class Payment: Identifiable, Hashable, ObservableObject {
     }
     
     public func hash(into hasher: inout Hasher) {
-        return hasher.combine(id)
+        hasher.combine(id)
     }
     
     static func == (lhs: Payment, rhs: Payment) -> Bool {

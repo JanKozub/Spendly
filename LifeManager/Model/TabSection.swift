@@ -11,30 +11,24 @@ enum TabSection: Identifiable, CaseIterable, Hashable {
     case spendings
     case meals
     
-    var id: String {
+    var id: Int {
         switch self {
-        case .spendings:
-            "spendings"
-        case .meals:
-            "meals"
+        case .spendings: 1
+        case .meals: 2
         }
     }
     
     var displayName: String {
         switch self {
-        case .spendings:
-            "Spendings"
-        case .meals:
-            "Meals"
+        case .spendings: "Spendings"
+        case .meals: "Meals"
         }
     }
     
     var iconName: String {
         switch self {
-        case .spendings:
-            "folder"
-        case .meals:
-            "folder"
+        case .spendings: "folder"
+        case .meals: "folder"
         }
     }
     
