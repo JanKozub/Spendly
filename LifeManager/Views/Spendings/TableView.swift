@@ -9,9 +9,10 @@ import SwiftUI
 
 struct TableView: View {
     @Binding var payments: [Payment];
-    @State private var personalSum: Double = 0;
-    @State private var refundSum: Double = 0;
-    @State private var otherSum: Double = 0;
+    @State private var personalSum: Double = 0
+    @State private var refundSum: Double = 0
+    @State private var otherSum: Double = 0
+    @State private var incomeSum: Double = 0
     
     var body: some View {
         let currency = payments.count > 0 ? payments[0].currency : ""
@@ -64,19 +65,17 @@ struct TableView: View {
         personalSum = 0
         refundSum = 0
         otherSum = 0
+        incomeSum = 0
         
         for(_, payment) in payments.enumerated() {
             if payment.amount < 0 {
                 switch payment.type {
-                case "Personal":
-                    personalSum += abs(payment.amount)
-                case "Refund":
-                    refundSum += abs(payment.amount)
-                case "Other":
-                    otherSum += abs(payment.amount)
-                default:
-                    print("Wrong dropdown value")
+                case .personal: personalSum += abs(payment.amount)
+                case .refunded: refundSum += abs(payment.amount)
+                case .other: otherSum += abs(payment.amount)
                 }
+            } else if payment.amount > 0 {
+                incomeSum += abs(payment.amount)
             }
         }
     }

@@ -12,9 +12,6 @@ struct PaymentView: View {
     @Binding var width: CGFloat;
     var onPaymentChanged: (Payment) -> Void
     
-    let categories = ["Other", "Food", "Entertainment"]
-    let types = ["Other", "Personal", "Refund"]
-    
     var myRed = Color(red: 238/255, green: 36/255, blue: 0/255).opacity(0.1)
     var myGreen = Color(red: 36/255, green: 238/255, blue: 0/255).opacity(0.1)
     
@@ -31,14 +28,14 @@ struct PaymentView: View {
             Text(String(format: "%.2f", abs(payment.amount))).frame(maxWidth: width * 0.07, alignment: .center)
             Text(String(format: "%.2f", payment.balance)).frame(maxWidth: width * 0.07, alignment: .center)
             
-            DropdownMenu(selectedCategory: "Other", elements: categories, onChange: { newValue in
-                payment.category = newValue
+            DropdownMenu(selectedCategory: "Other", elements: PaymentCategory.allCasesNames, onChange: { newValue in
+                payment.category = PaymentCategory.nameToType(name: newValue)
                 onPaymentChanged(payment)
             })
             .frame(maxWidth: width * 0.07, alignment: .center)
             
-            DropdownMenu(selectedCategory: "Other", elements: types, onChange: { newValue in
-                payment.type = newValue
+            DropdownMenu(selectedCategory: "Other", elements: PaymentType.allCasesNames, onChange: { newValue in
+                payment.type = PaymentType.nameToType(name: newValue)
                 onPaymentChanged(payment)
             })
             .frame(maxWidth: width * 0.07, alignment: .center)

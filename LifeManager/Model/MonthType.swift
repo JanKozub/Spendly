@@ -55,7 +55,7 @@ enum MonthType: Identifiable, CaseIterable, Hashable {
         }
     }
     
-    static var allMonths: [MonthType] {
+    static var allCases: [MonthType] {
         [.january, .februray, .march, .april, .may, .june, .july, .august, .september, .october, .november, .december]
     }
     

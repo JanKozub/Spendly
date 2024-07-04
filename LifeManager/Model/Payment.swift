@@ -17,10 +17,10 @@ class Payment: Identifiable, Hashable, ObservableObject {
     var amount: Double = 0;
     var balance: Double = 0;
     var currency: String = "";
-    @Published var category: String = "";
-    @Published var type: String = "";
+    @Published var category: PaymentCategory = .other;
+    @Published var type: PaymentType = .other;
     
-    init(id: UUID = UUID(), issuedDate: String, transactionDate: String, title: String, message: String, accountNumber: Int, amount: Double, balance: Double, currency: String, category: String, type: String) {
+    init(id: UUID = UUID(), issuedDate: String, transactionDate: String, title: String, message: String, accountNumber: Int, amount: Double, balance: Double, currency: String, category: PaymentCategory, type: PaymentType) {
         self.id = id
         self.issuedDate = issuedDate
         self.transactionDate = transactionDate
@@ -37,7 +37,7 @@ class Payment: Identifiable, Hashable, ObservableObject {
     static func example() -> Payment {
         Payment(issuedDate: "", transactionDate: "", title: "",
                 message: "", accountNumber: 0, amount: 0, balance: 0,
-                currency: "",category: "Other", type: "Other")
+                currency: "",category: .other, type: .other)
     }
     
     static func loadSantanderPaymentsFromCSV(file: URL) -> [Payment] {
@@ -61,8 +61,8 @@ class Payment: Identifiable, Hashable, ObservableObject {
                             amount: Double(columns[5]) ?? -1,
                             balance: Double(columns[6]) ?? -1,
                             currency: cur,
-                            category: "Other",
-                            type: "Other"
+                            category: .other,
+                            type: .other
                         )
                         newPayments.append(payment);
                     }
