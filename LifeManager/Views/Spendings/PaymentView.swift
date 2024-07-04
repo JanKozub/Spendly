@@ -28,13 +28,13 @@ struct PaymentView: View {
             Text(String(format: "%.2f", abs(payment.amount))).frame(maxWidth: width * 0.07, alignment: .center)
             Text(String(format: "%.2f", payment.balance)).frame(maxWidth: width * 0.07, alignment: .center)
             
-            DropdownMenu(selectedCategory: "Other", elements: PaymentCategory.allCasesNames, onChange: { newValue in
+            DropdownMenu(selectedCategory: PaymentCategory.other.name, elements: PaymentCategory.allCasesNames, onChange: { newValue in
                 payment.category = PaymentCategory.nameToType(name: newValue)
                 onPaymentChanged(payment)
             })
             .frame(maxWidth: width * 0.07, alignment: .center)
             
-            DropdownMenu(selectedCategory: "Other", elements: PaymentType.allCasesNames, onChange: { newValue in
+            DropdownMenu(selectedCategory: PaymentType.other.name, elements: PaymentType.allCasesNames, onChange: { newValue in
                 payment.type = PaymentType.nameToType(name: newValue)
                 onPaymentChanged(payment)
             })

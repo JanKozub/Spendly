@@ -55,8 +55,30 @@ enum MonthType: Identifiable, CaseIterable, Hashable {
         }
     }
     
+    static func nameToType(name: String) -> MonthType {
+        switch name {
+        case "January": .january
+        case "February": .februray
+        case "March": .march
+        case "April": .april
+        case "May": .may
+        case "June": .june
+        case "July": .july
+        case "August": .august
+        case "September": .september
+        case "October": .october
+        case "November": .november
+        case "December": .december
+        default: .january
+        }
+    }
+    
     static var allCases: [MonthType] {
         [.january, .februray, .march, .april, .may, .june, .july, .august, .september, .october, .november, .december]
+    }
+    
+    static var allCasesNames: [String] {
+        ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     }
     
     static func == (lhs: MonthType, rhs: MonthType) -> Bool {

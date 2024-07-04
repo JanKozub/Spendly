@@ -13,6 +13,7 @@ struct TableView: View {
     @State private var refundSum: Double = 0
     @State private var otherSum: Double = 0
     @State private var incomeSum: Double = 0
+    @State private var monthType: MonthType = MonthType.january;
     
     var body: some View {
         let currency = payments.count > 0 ? payments[0].currency : ""
@@ -28,7 +29,7 @@ struct TableView: View {
                     HeaderText(text: "Category", percentage: 0.08, size: reader.size)
                     HeaderText(text: "Type", percentage: 0.08, size: reader.size)
                 }
-                .frame(maxWidth: .infinity, maxHeight: 30)
+                .frame(maxWidth: .infinity, maxHeight: 30, alignment: .center).padding(3)
                 
                 List {
                     ForEach($payments, id: \.self) {$payment in
@@ -42,11 +43,27 @@ struct TableView: View {
                 .frame(maxWidth: .infinity, maxHeight: abs(reader.size.height - 60))
                 
                 HStack {
+                    CurrencyText(title: "Income", value: $incomeSum, currency: currency)
+                    Divider()
                     CurrencyText(title: "Personal", value: $personalSum, currency: currency)
                     CurrencyText(title: "Refund", value: $refundSum, currency: currency)
                     CurrencyText(title: "Other", value: $otherSum, currency: currency)
+                    Divider()
+                    DropdownMenu(selectedCategory: MonthType.january.name, elements: MonthType.allCasesNames, onChange: { newValue in
+                        monthType = MonthType.nameToType(name: newValue)
+                    })
+                    Button("Submit month", action: {
+                        Month(monthType: monthType,
+                              payments: payments,
+                              personalSpendings: personalSum,
+                              refundedSpendings: refundSum,
+                              otherSpendings: otherSum,
+                              income: incomeSum
+                        )
+                        payments = []
+                    })
                 }
-                .frame(maxWidth: .infinity, maxHeight: 30)
+                .frame(maxWidth: .infinity, maxHeight: 30, alignment: .center).padding(3)
             }
             .frame(maxWidth: .infinity, maxHeight: reader.size.height)
         }
