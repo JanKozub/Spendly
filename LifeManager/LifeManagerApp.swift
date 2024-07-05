@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct LifeManagerApp: App {
@@ -14,5 +15,6 @@ struct LifeManagerApp: App {
             ContentView()
                 .frame(minWidth: 1300, minHeight: 600)
         }
+        .modelContainer(for: Year.self)
     }
 }

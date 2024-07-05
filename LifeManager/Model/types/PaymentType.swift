@@ -6,12 +6,10 @@
 //
 
 import Foundation
+import SwiftData
 
-
-enum PaymentType: Identifiable, CaseIterable, Hashable {
-    case personal
-    case refunded
-    case other
+enum PaymentType: String, Identifiable, CaseIterable, Hashable, Codable {
+    case personal, refunded, other
     
     var id: Int {
         switch self {

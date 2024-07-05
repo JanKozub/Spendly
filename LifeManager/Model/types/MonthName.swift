@@ -6,20 +6,10 @@
 //
 
 import Foundation
+import SwiftData
 
-enum MonthType: Identifiable, CaseIterable, Hashable {
-    case january
-    case februray
-    case march
-    case april
-    case may
-    case june
-    case july
-    case august
-    case september
-    case october
-    case november
-    case december
+enum MonthName: String, Identifiable, CaseIterable, Hashable, Codable {
+    case january, februray, march, april, may, june, july, august, september, october, november, december
     
     var id: Int {
         switch self {
@@ -55,7 +45,7 @@ enum MonthType: Identifiable, CaseIterable, Hashable {
         }
     }
     
-    static func nameToType(name: String) -> MonthType {
+    static func nameToType(name: String) -> MonthName {
         switch name {
         case "January": .january
         case "February": .februray
@@ -73,7 +63,7 @@ enum MonthType: Identifiable, CaseIterable, Hashable {
         }
     }
     
-    static var allCases: [MonthType] {
+    static var allCases: [MonthName] {
         [.january, .februray, .march, .april, .may, .june, .july, .august, .september, .october, .november, .december]
     }
     
@@ -81,7 +71,7 @@ enum MonthType: Identifiable, CaseIterable, Hashable {
         ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     }
     
-    static func == (lhs: MonthType, rhs: MonthType) -> Bool {
+    static func == (lhs: MonthName, rhs: MonthName) -> Bool {
         lhs.id == rhs.id;
     }
 }

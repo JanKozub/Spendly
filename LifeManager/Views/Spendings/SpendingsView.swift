@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Foundation
+import SwiftData
 
 struct SpendingsView: View {
     @State private var payments = [Payment]()
@@ -14,14 +15,19 @@ struct SpendingsView: View {
     
     @State private var top10Payments = ["1.test","2.test","3.test","4.test","5.test","6.test","7.test","8.test"]
     
+    @Query private var years: [Year]
+    
     var body: some View {
         if (payments.isEmpty) {
-            
             GeometryReader { reader in
                 HStack {
                     VStack {
                         VStack {
-                            
+                            List {
+                                ForEach (years) { year in
+                                    Text(String(year.number))
+                                }
+                            }
                         }
                         .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
                         .border(.red)

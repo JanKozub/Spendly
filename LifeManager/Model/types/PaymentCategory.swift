@@ -6,12 +6,10 @@
 //
 
 import Foundation
+import SwiftData
 
-
-enum PaymentCategory: Identifiable, CaseIterable, Hashable {
-    case food
-    case entertainmanet
-    case other
+enum PaymentCategory: String, Identifiable, CaseIterable, Hashable, Codable {
+    case food, entertainmanet, other
     
     var id: Int {
         switch self {

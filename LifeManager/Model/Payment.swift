@@ -6,22 +6,24 @@
 //
 
 import Foundation
+import SwiftData
 
+@Model
 class Payment: Identifiable, Hashable, ObservableObject {
-    var id = UUID();
-    var issuedDate: String = "";
-    var transactionDate: String = "";
-    var title: String = "";
-    var message: String = "";
-    var accountNumber: Int = 0;
-    var amount: Double = 0;
-    var balance: Double = 0;
-    var currency: String = "";
-    @Published var category: PaymentCategory = .other;
-    @Published var type: PaymentType = .other;
+    @Attribute(.unique) let id: UUID
+    @Attribute var issuedDate: String
+    @Attribute var transactionDate: String
+    @Attribute var title: String
+    @Attribute var message: String
+    @Attribute var accountNumber: Int
+    @Attribute var amount: Double
+    @Attribute var balance: Double
+    @Attribute var currency: String
+    @Attribute var category: PaymentCategory
+    @Attribute var type: PaymentType
     
-    init(id: UUID = UUID(), issuedDate: String, transactionDate: String, title: String, message: String, accountNumber: Int, amount: Double, balance: Double, currency: String, category: PaymentCategory, type: PaymentType) {
-        self.id = id
+    init(issuedDate: String, transactionDate: String, title: String, message: String, accountNumber: Int, amount: Double, balance: Double, currency: String, category: PaymentCategory, type: PaymentType) {
+        self.id = UUID()
         self.issuedDate = issuedDate
         self.transactionDate = transactionDate
         self.title = title

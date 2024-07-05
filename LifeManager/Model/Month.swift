@@ -6,19 +6,23 @@
 //
 
 import Foundation
+import SwiftData
 
+@Model
 class Month: Identifiable ,Hashable {
-    var id = UUID()
-    var monthType: MonthType
-    var payments: [Payment]
-    var personalSpendings: Double
-    var refundedSpendings: Double
-    var otherSpendings: Double
-    var income: Double
+    @Attribute(.unique) let id: UUID
+    @Attribute var monthName: MonthName
+    @Attribute var currency: String
+    @Relationship var payments: [Payment]
+    @Attribute var personalSpendings: Double
+    @Attribute var refundedSpendings: Double
+    @Attribute var otherSpendings: Double
+    @Attribute var income: Double
     
-    init(id: UUID = UUID(), monthType: MonthType, payments: [Payment], personalSpendings: Double, refundedSpendings: Double, otherSpendings: Double, income: Double) {
-        self.id = id
-        self.monthType = monthType
+    init(monthName: MonthName, currency: String, payments: [Payment], personalSpendings: Double, refundedSpendings: Double, otherSpendings: Double, income: Double) {
+        self.id = UUID()
+        self.monthName = monthName
+        self.currency = currency
         self.payments = payments
         self.personalSpendings = personalSpendings
         self.refundedSpendings = refundedSpendings

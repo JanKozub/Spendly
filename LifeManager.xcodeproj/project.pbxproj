@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E744BB362C36B933000FF33B /* Month.swift in Sources */ = {isa = PBXBuildFile; fileRef = E744BB352C36B933000FF33B /* Month.swift */; };
-		E744BB382C36BB33000FF33B /* MonthType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E744BB372C36BB33000FF33B /* MonthType.swift */; };
+		E744BB382C36BB33000FF33B /* MonthName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E744BB372C36BB33000FF33B /* MonthName.swift */; };
 		E744BB3A2C36BEEF000FF33B /* PaymentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E744BB392C36BEEF000FF33B /* PaymentType.swift */; };
 		E744BB3C2C36C013000FF33B /* PaymentCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E744BB3B2C36C013000FF33B /* PaymentCategory.swift */; };
 		E753F15A2C2702CE0092F9A4 /* MealsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E753F1592C2702CE0092F9A4 /* MealsView.swift */; };
@@ -27,11 +27,12 @@
 		E7DE76CF2C32E7BB002DE392 /* TabSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DE76CE2C32E7BB002DE392 /* TabSection.swift */; };
 		E7DE76D32C33141D002DE392 /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DE76D22C33141D002DE392 /* Payment.swift */; };
 		E7DE76D52C337489002DE392 /* PaymentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DE76D42C337489002DE392 /* PaymentView.swift */; };
+		E7EA4A7C2C3889CF00F66E03 /* Year.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EA4A7B2C3889CF00F66E03 /* Year.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		E744BB352C36B933000FF33B /* Month.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Month.swift; sourceTree = "<group>"; };
-		E744BB372C36BB33000FF33B /* MonthType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthType.swift; sourceTree = "<group>"; };
+		E744BB372C36BB33000FF33B /* MonthName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthName.swift; sourceTree = "<group>"; };
 		E744BB392C36BEEF000FF33B /* PaymentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentType.swift; sourceTree = "<group>"; };
 		E744BB3B2C36C013000FF33B /* PaymentCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentCategory.swift; sourceTree = "<group>"; };
 		E753F1592C2702CE0092F9A4 /* MealsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealsView.swift; sourceTree = "<group>"; };
@@ -52,6 +53,7 @@
 		E7DE76CE2C32E7BB002DE392 /* TabSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabSection.swift; sourceTree = "<group>"; };
 		E7DE76D22C33141D002DE392 /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
 		E7DE76D42C337489002DE392 /* PaymentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentView.swift; sourceTree = "<group>"; };
+		E7EA4A7B2C3889CF00F66E03 /* Year.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Year.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,12 +145,10 @@
 		E7DE76D02C3313A6002DE392 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				E7DE76CE2C32E7BB002DE392 /* TabSection.swift */,
+				E7EA4A7D2C38ABB000F66E03 /* types */,
 				E7DE76D22C33141D002DE392 /* Payment.swift */,
 				E744BB352C36B933000FF33B /* Month.swift */,
-				E744BB372C36BB33000FF33B /* MonthType.swift */,
-				E744BB392C36BEEF000FF33B /* PaymentType.swift */,
-				E744BB3B2C36C013000FF33B /* PaymentCategory.swift */,
+				E7EA4A7B2C3889CF00F66E03 /* Year.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -163,6 +163,17 @@
 				E7DE76CC2C32E42C002DE392 /* SidebarView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		E7EA4A7D2C38ABB000F66E03 /* types */ = {
+			isa = PBXGroup;
+			children = (
+				E7DE76CE2C32E7BB002DE392 /* TabSection.swift */,
+				E744BB372C36BB33000FF33B /* MonthName.swift */,
+				E744BB392C36BEEF000FF33B /* PaymentType.swift */,
+				E744BB3B2C36C013000FF33B /* PaymentCategory.swift */,
+			);
+			path = types;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -250,8 +261,9 @@
 				E7DE76D52C337489002DE392 /* PaymentView.swift in Sources */,
 				E7BF90342C1E1BF3002A61CC /* LifeManagerApp.swift in Sources */,
 				E7DE76CD2C32E42C002DE392 /* SidebarView.swift in Sources */,
+				E7EA4A7C2C3889CF00F66E03 /* Year.swift in Sources */,
 				E744BB3C2C36C013000FF33B /* PaymentCategory.swift in Sources */,
-				E744BB382C36BB33000FF33B /* MonthType.swift in Sources */,
+				E744BB382C36BB33000FF33B /* MonthName.swift in Sources */,
 				E744BB362C36B933000FF33B /* Month.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
