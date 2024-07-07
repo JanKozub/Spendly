@@ -25,7 +25,10 @@ struct SpendingsView: View {
                         VStack {
                             List {
                                 ForEach (years) { year in
-                                    Text(String(year.number))
+                                    VStack {
+                                        Text(String(year.number))
+                                        Text(String(year.months.count))
+                                    }
                                 }
                             }
                         }
@@ -83,7 +86,7 @@ struct SpendingsView: View {
             }
             .padding(.all)
         } else {
-            TableView(payments: $payments)
+            TableView(payments: $payments, years: .constant(years))
         }
     }
 }
