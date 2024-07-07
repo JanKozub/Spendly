@@ -13,38 +13,32 @@ struct SpendingsView: View {
     @State private var payments = [Payment]()
     @State private var importing = false
     
-    @State private var top10Payments = ["1.test","2.test","3.test","4.test","5.test","6.test","7.test","8.test"]
+    @State private var top10Payments = ["1.test", "2.test", "3.test", "4.test", "5.test", "6.test", "7.test", "8.test", "9.test", "10.test"]
     
     @Query private var years: [Year]
     
     var body: some View {
         if (payments.isEmpty) {
             GeometryReader { reader in
-                HStack {
-                    VStack {
+                VStack {
+                    HStack {
+                        
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
+                    .border(.red)
+                    
+                    Divider()
+                    
+                    HStack {
                         VStack {
                             List {
-                                ForEach (years) { year in
-                                    VStack {
-                                        Text(String(year.number))
-                                        Text(String(year.months.count))
-                                    }
+                                ForEach(top10Payments, id: \.self) { el in
+                                    Text(el)
                                 }
                             }
                         }
                         .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
-                        .border(.red)
                         Divider()
-                        VStack {
-                            
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
-                        .border(.blue)
-                    }
-                    
-                    Divider()
-                    
-                    VStack {
                         VStack {
                             Button(action: {
                                 let panel = NSOpenPanel()
@@ -53,29 +47,19 @@ struct SpendingsView: View {
                                         payments = Payment.loadSantanderPaymentsFromCSV(file: fileURL)
                                     }
                                 }
-                            }) {
-                                Text("Import new month")
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity, minHeight: reader.size.height * 0.1)
-                            }
+                            }) {Text("Import new month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
+                            
                             Button(action: {
                                 print("Button tapped!")
-                            }) {
-                                Text("Edit this month")
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity, minHeight: reader.size.height * 0.1)
-                            }
+                                
+                            }) {Text("Edit this month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
+                            
+                            Button(action: {
+                                print("Button tapped!")
+                                
+                            }) {Text("Settings").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
                         }
-                        .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.25, alignment: .top)
-                        Divider()
-                        VStack {
-                            List {
-                                ForEach(top10Payments, id: \.self) { el in
-                                    Text(el)
-                                }
-                            }
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.75, alignment: .top)
+                        .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
                     }
                 }
             }
