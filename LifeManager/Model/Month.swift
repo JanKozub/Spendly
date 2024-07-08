@@ -14,19 +14,15 @@ class Month: Identifiable ,Hashable {
     @Attribute var monthName: MonthName
     @Attribute var currency: String
     @Relationship var payments: [Payment]
-    @Attribute var personalSpendings: Double
-    @Attribute var refundedSpendings: Double
-    @Attribute var otherSpendings: Double
+    @Relationship(deleteRule: .cascade) var spendings: [PaymentType: Spending]
     @Attribute var income: Double
     
-    init(monthName: MonthName, currency: String, payments: [Payment], personalSpendings: Double, refundedSpendings: Double, otherSpendings: Double, income: Double) {
+    init(monthName: MonthName, currency: String, payments: [Payment], spendings: Dictionary<PaymentType, Spending>, income: Double) {
         self.id = UUID()
         self.monthName = monthName
         self.currency = currency
         self.payments = payments
-        self.personalSpendings = personalSpendings
-        self.refundedSpendings = refundedSpendings
-        self.otherSpendings = otherSpendings
+        self.spendings = spendings
         self.income = income
     }
     

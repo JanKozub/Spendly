@@ -11,11 +11,9 @@ import SwiftData
 struct TableView: View {
     @Binding var payments: [Payment];
     @Binding var years: [Year]
-    @State private var personalSum: Double = 0
-    @State private var refundedSum: Double = 0
-    @State private var otherSum: Double = 0
     @State private var incomeSum: Double = 0
-    @State private var yearName: String = Year.currentYear()
+    @State private var spendings: Dictionary<PaymentType, Spending> = [:]
+    @State private var yearName: String = String(Year.currentYear())
     @State private var monthName: MonthName = MonthName.january;
     
     @Environment(\.modelContext) private var context
@@ -40,9 +38,7 @@ struct TableView: View {
                 
                 List {
                     ForEach($payments, id: \.self) {$payment in
-                        PaymentView(payment: $payment, width: .constant(reader.size.width), onPaymentChanged: { newPayment in
-                            calculateSums()
-                        })
+                        PaymentView(payment: $payment, width: .constant(reader.size.width), onPaymentChanged: { newPayment in calculateSums() })
                     }
                 }
                 .edgesIgnoringSafeArea(.all)
@@ -52,25 +48,25 @@ struct TableView: View {
                 HStack {
                     CurrencyText(title: "Income", value: $incomeSum, currency: currency)
                     Divider()
-                    CurrencyText(title: "Personal", value: $personalSum, currency: currency)
-                    CurrencyText(title: "Refund", value: $refundedSum, currency: currency)
-                    CurrencyText(title: "Other", value: $otherSum, currency: currency)
+                    
+                    CurrencyText(title: "Personal", value: .constant(spendings[.personal]?.overallSum() ?? 0.0), currency: currency)
+                    CurrencyText(title: "Refunded", value: .constant(spendings[.refunded]?.overallSum() ?? 0.0), currency: currency)
+                    CurrencyText(title: "Other", value: .constant(spendings[.other]?.overallSum() ?? 0.0), currency: currency)
+                    
                     Divider()
                     
-                    DropdownMenu(selectedCategory: Year.currentYear(), elements: Year.allYears(), onChange: { newValue in
+                    DropdownMenu(selectedCategory: String(Year.currentYear()), elements: Year.allYears(), onChange: { newValue in
                         yearName = newValue
-                    })
-                    .frame(maxWidth: 100)
+                    }).frame(maxWidth: 100)
                     
                     DropdownMenu(selectedCategory: MonthName.january.name, elements: MonthName.allCasesNames, onChange: { newValue in
                         monthName = MonthName.nameToType(name: newValue)
-                    })
-                    .frame(maxWidth: 100)
+                    }).frame(maxWidth: 100)
                     
                     Button("Add month", role: .destructive) {
                         isPresentingConfirm = true
                     }.confirmationDialog("Are you sure?", isPresented: $isPresentingConfirm) {
-                        let month = Month(monthName: monthName, currency: currency, payments: payments, personalSpendings: personalSum, refundedSpendings: refundedSum, otherSpendings: otherSum, income: incomeSum)
+                        let month = Month(monthName: monthName, currency: currency, payments: payments, spendings: spendings, income: incomeSum)
                         
                         if let yearIdx = years.firstIndex(where: {$0.number == Int(yearName) ?? 0}) {
                             if let monthIdx = years[yearIdx].months.firstIndex(where: {$0.monthName == monthName && $0.currency == currency}) {
@@ -112,22 +108,31 @@ struct TableView: View {
     }
     
     private func calculateSums() {
-        personalSum = 0
-        refundedSum = 0
-        otherSum = 0
         incomeSum = 0
+        spendings = initSpendings()
         
         for(_, payment) in payments.enumerated() {
             if payment.amount < 0 {
-                switch payment.type {
-                case .personal: personalSum += abs(payment.amount)
-                case .refunded: refundedSum += abs(payment.amount)
-                case .other: otherSum += abs(payment.amount)
-                }
+                spendings[payment.type]?.sums[payment.category]? += abs(payment.amount)
             } else if payment.amount > 0 {
                 incomeSum += abs(payment.amount)
             }
         }
+    }
+    
+    private func initSpendings() -> Dictionary<PaymentType, Spending>{ //TODO optimize
+        var output: Dictionary<PaymentType, Spending> = [:]
+        
+        for paymentType in PaymentType.allCases {
+            var temp: Dictionary<PaymentCategory, Double> = [:]
+            for paymentCategory in PaymentCategory.allCases {
+                temp[paymentCategory] = 0.0
+            }
+            
+            output[paymentType] = Spending(sums: temp)
+        }
+        
+        return output
     }
 }
 
