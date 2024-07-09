@@ -11,8 +11,10 @@ import SwiftData
 import Charts
 
 struct SpendingsView: View {
-    @State private var payments = [Payment]()
-    @State private var importing = false
+    @State private var payments: [Payment] = [Payment]()
+    @State private var importing: Bool = false
+    @State private var displayType: String = "Year"
+    @State private var currency: Currency = .pln
     
     @State private var top10Payments = ["1.test", "2.test", "3.test", "4.test", "5.test", "6.test", "7.test", "8.test", "9.test", "10.test"]
     @State private var chartEntries: [ChartEntry] = []
@@ -75,6 +77,7 @@ struct SpendingsView: View {
                             
                             Button(action: {
                                 try? context.delete(model: Year.self)
+                                prepareChartEntries()
                             }) {Text("Settings").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
                         }
                         .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
@@ -83,7 +86,12 @@ struct SpendingsView: View {
             }
             .toolbar {
                 ToolbarItemGroup {
-                    DropdownMenu(selectedCategory: "Other", elements: ["Other", "test2"]).frame(width: 150)
+                    DropdownMenu(selectedCategory: "Year", elements: ["Year", "Month"], onChange: { newValue in
+                        displayType = newValue
+                    }).frame(width: 150)
+                    DropdownMenu(selectedCategory: "PLN", elements: ["EUR", "PLN"], onChange: { newValue in
+                        currency = Currency.nameToType(name: newValue)
+                    }).frame(width: 150)
                 }
             }.onAppear(perform: {
                 prepareChartEntries()
@@ -94,7 +102,7 @@ struct SpendingsView: View {
         }
     }
     
-    func prepareChartEntries() {
+    private func prepareChartEntries() {
         if let year = years.first(where: {$0.number == Year.currentYear()}) {
             for monthName in MonthName.allCases {
                 var chartEntry = ChartEntry(monthName: monthName, foodSum: 0, entertainmentSum: 0, otherSum: 0)
@@ -102,15 +110,19 @@ struct SpendingsView: View {
                 for month in year.months {
                     if month.monthName == monthName {
                         for type in PaymentType.allCases {
-                            chartEntry.foodSum += month.spendings[type]?.sums[.food] ?? 0.0
-                            chartEntry.entertainmentSum += month.spendings[type]?.sums[.entertainmanet] ?? 0.0
-                            chartEntry.otherSum += month.spendings[type]?.sums[.other] ?? 0.0
+                            chartEntry.foodSum += getValueInCurrency(value: month.spendings[type]?.sums[.food] ?? 0.0, fromCur: month.currency, toCur: currency)
+                            chartEntry.entertainmentSum += getValueInCurrency(value: month.spendings[type]?.sums[.entertainmanet] ?? 0.0, fromCur: month.currency, toCur: currency)
+                            chartEntry.otherSum += getValueInCurrency(value: month.spendings[type]?.sums[.other] ?? 0.0, fromCur: month.currency, toCur: currency)
                         }
                     }
                 }
                 chartEntries.append(chartEntry)
             }
         }
+    }
+    
+    private func getValueInCurrency(value: Double, fromCur: Currency, toCur: Currency) -> Double {
+        return value * Currency.exchangeRate(from: fromCur, to: toCur)
     }
 }
 

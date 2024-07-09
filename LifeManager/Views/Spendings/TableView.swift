@@ -9,19 +9,19 @@ import SwiftUI
 import SwiftData
 
 struct TableView: View {
-    @Binding var payments: [Payment];
+    @Binding var payments: [Payment]
     @Binding var years: [Year]
     @State private var incomeSum: Double = 0
     @State private var spendings: Dictionary<PaymentType, Spending> = [:]
     @State private var yearName: String = String(Year.currentYear())
-    @State private var monthName: MonthName = MonthName.january;
-    
-    @Environment(\.modelContext) private var context
+    @State private var monthName: MonthName = MonthName.january
     
     @State private var isPresentingConfirm: Bool = false
     
+    @Environment(\.modelContext) private var context
+    
     var body: some View {
-        let currency = payments.count > 0 ? payments[0].currency : ""
+        let currency: Currency = payments.count > 0 ? payments[0].currency : .pln
         GeometryReader { reader in
             VStack {
                 HStack {
@@ -37,7 +37,7 @@ struct TableView: View {
                 .frame(maxWidth: .infinity, maxHeight: 30, alignment: .center).padding(3)
                 
                 List {
-                    ForEach($payments, id: \.self) {$payment in
+                    ForEach($payments, id: \.self) { $payment in
                         PaymentView(payment: $payment, width: .constant(reader.size.width), onPaymentChanged: { newPayment in calculateSums() })
                     }
                 }
@@ -47,6 +47,7 @@ struct TableView: View {
                 
                 HStack {
                     CurrencyText(title: "Income", value: $incomeSum, currency: currency)
+                    
                     Divider()
                     
                     CurrencyText(title: "Personal", value: .constant(spendings[.personal]?.overallSum() ?? 0.0), currency: currency)
@@ -66,27 +67,8 @@ struct TableView: View {
                     Button("Add month", role: .destructive) {
                         isPresentingConfirm = true
                     }.confirmationDialog("Are you sure?", isPresented: $isPresentingConfirm) {
-                        let month = Month(monthName: monthName, currency: currency, payments: payments, spendings: spendings, income: incomeSum)
-                        
-                        if let yearIdx = years.firstIndex(where: {$0.number == Int(yearName) ?? 0}) {
-                            if let monthIdx = years[yearIdx].months.firstIndex(where: {$0.monthName == monthName && $0.currency == currency}) {
-                                Button("Edit existing month?") {
-                                    years[yearIdx].months[monthIdx] = month
-                                    try? context.save()
-                                    payments = []
-                                }
-                            } else {
-                                Button("Add new month?") {
-                                    years[yearIdx].months.append(month)
-                                    try? context.save()
-                                    payments = []
-                                }
-                            }
-                        } else {
-                            Button("Add new year with this month?") {
-                                context.insert(Year(number: Int(yearName) ?? 0, months: [month]))
-                                payments = []
-                            }
+                        Button("Add/Edit Month") {
+                            addMonth(currency: currency)
                         }
                     }.dialogIcon(Image(systemName: "pencil.circle.fill"))
                     
@@ -98,7 +80,7 @@ struct TableView: View {
         }
         .toolbar {
             ToolbarItemGroup {
-                Text("Currency: " + currency)
+                Text("Currency: " + currency.name)
             }
         }
         .onAppear(perform: {
@@ -120,7 +102,7 @@ struct TableView: View {
         }
     }
     
-    private func initSpendings() -> Dictionary<PaymentType, Spending>{ //TODO optimize
+    private func initSpendings() -> Dictionary<PaymentType, Spending> {
         var output: Dictionary<PaymentType, Spending> = [:]
         
         for paymentType in PaymentType.allCases {
@@ -133,6 +115,33 @@ struct TableView: View {
         }
         
         return output
+    }
+    
+    private func addMonth(currency: Currency) {
+        let month = Month(monthName: monthName, currency: currency, payments: [], spendings: spendings, income: incomeSum)
+        context.insert(month)
+        for payment in payments {
+            if payment.modelContext != context {
+                context.insert(payment)
+            }
+            month.payments.append(payment)
+        }
+        
+        if let yearIdx = years.firstIndex(where: {$0.number == Int(yearName) ?? 0}) {
+            if let monthIdx = years[yearIdx].months.firstIndex(where: {$0.monthName == monthName && $0.currency == currency}) {
+                years[yearIdx].months[monthIdx] = month
+            } else {
+                years[yearIdx].months.append(month)
+            }
+        } else {
+            let newYear = Year(number: Int(yearName) ?? 0, months: [])
+            context.insert(newYear)
+            newYear.months.append(month)
+            years.append(newYear)
+        }
+        
+        try? context.save()
+        payments = []
     }
 }
 

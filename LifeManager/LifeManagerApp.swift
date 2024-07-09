@@ -14,7 +14,7 @@ struct LifeManagerApp: App {
     
     init() {
         do {
-            container = try ModelContainer(for: Year.self, Spending.self)
+            container = try ModelContainer(for: Year.self, Month.self, Payment.self, Spending.self)
         } catch {
             fatalError("Failed to create ModelContainer: \(error.localizedDescription)")
         }

@@ -12,12 +12,12 @@ import SwiftData
 class Month: Identifiable ,Hashable {
     @Attribute(.unique) let id: UUID
     @Attribute var monthName: MonthName
-    @Attribute var currency: String
-    @Relationship var payments: [Payment]
+    @Attribute var currency: Currency
+    @Relationship(deleteRule: .cascade) var payments: [Payment]
     @Relationship(deleteRule: .cascade) var spendings: [PaymentType: Spending]
     @Attribute var income: Double
     
-    init(monthName: MonthName, currency: String, payments: [Payment], spendings: Dictionary<PaymentType, Spending>, income: Double) {
+    init(monthName: MonthName, currency: Currency, payments: [Payment], spendings: Dictionary<PaymentType, Spending>, income: Double) {
         self.id = UUID()
         self.monthName = monthName
         self.currency = currency
