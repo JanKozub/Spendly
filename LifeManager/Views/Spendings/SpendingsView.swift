@@ -29,23 +29,30 @@ struct SpendingsView: View {
             GeometryReader { reader in
                 VStack {
                     HStack {
-                        Chart {
-                            ForEach(chartEntries, id: \.self) { entry in
-                                BarMark(
-                                    x: .value("Shape Type", entry.monthName.name),
-                                    y: .value("Total Count", entry.foodSum)
-                                ).foregroundStyle(by: .value("Shape Color", "Food"))
-                                BarMark(
-                                    x: .value("Shape Type", entry.monthName.name),
-                                    y: .value("Total Count", entry.entertainmentSum)
-                                ).foregroundStyle(by: .value("Shape Color", "Entertainment"))
-                                BarMark(
-                                    x: .value("Shape Type", entry.monthName.name),
-                                    y: .value("Total Count", entry.otherSum)
-                                ).foregroundStyle(by: .value("Shape Color", "Other"))
+                        switch displayType {
+                        case "Year":
+                            Chart {
+                                ForEach(chartEntries, id: \.self) { entry in
+                                    BarMark(
+                                        x: .value("Shape Type", entry.monthName.name),
+                                        y: .value("Total Count", entry.foodSum)
+                                    ).foregroundStyle(by: .value("Shape Color", "Food"))
+                                    BarMark(
+                                        x: .value("Shape Type", entry.monthName.name),
+                                        y: .value("Total Count", entry.entertainmentSum)
+                                    ).foregroundStyle(by: .value("Shape Color", "Entertainment"))
+                                    BarMark(
+                                        x: .value("Shape Type", entry.monthName.name),
+                                        y: .value("Total Count", entry.otherSum)
+                                    ).foregroundStyle(by: .value("Shape Color", "Other"))
+                                }
                             }
+                            .chartForegroundStyleScale(["Food": .red, "Entertainment": .yellow, "Other": .blue])
+                        case "Month":
+                            HStack {}
+                        default:
+                            HStack {}
                         }
-                        .chartForegroundStyleScale(["Food": .red, "Entertainment": .yellow, "Other": .blue])
                     }
                     .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
                     
@@ -91,6 +98,8 @@ struct SpendingsView: View {
                     }).frame(width: 150)
                     DropdownMenu(selectedCategory: "PLN", elements: ["EUR", "PLN"], onChange: { newValue in
                         currency = Currency.nameToType(name: newValue)
+                        
+                        prepareChartEntries()
                     }).frame(width: 150)
                 }
             }.onAppear(perform: {
@@ -103,6 +112,8 @@ struct SpendingsView: View {
     }
     
     private func prepareChartEntries() {
+        chartEntries = []
+        
         if let year = years.first(where: {$0.number == Year.currentYear()}) {
             for monthName in MonthName.allCases {
                 var chartEntry = ChartEntry(monthName: monthName, foodSum: 0, entertainmentSum: 0, otherSum: 0)
@@ -110,9 +121,11 @@ struct SpendingsView: View {
                 for month in year.months {
                     if month.monthName == monthName {
                         for type in PaymentType.allCases {
-                            chartEntry.foodSum += getValueInCurrency(value: month.spendings[type]?.sums[.food] ?? 0.0, fromCur: month.currency, toCur: currency)
-                            chartEntry.entertainmentSum += getValueInCurrency(value: month.spendings[type]?.sums[.entertainmanet] ?? 0.0, fromCur: month.currency, toCur: currency)
-                            chartEntry.otherSum += getValueInCurrency(value: month.spendings[type]?.sums[.other] ?? 0.0, fromCur: month.currency, toCur: currency)
+                            let sums = month.spendings[type]?.sums
+                            
+                            chartEntry.foodSum += exchangeValue(value: sums?[.food] ?? 0.0, fromCur: month.currency)
+                            chartEntry.entertainmentSum += exchangeValue(value: sums?[.entertainmanet] ?? 0.0, fromCur: month.currency)
+                            chartEntry.otherSum += exchangeValue(value: sums?[.other] ?? 0.0, fromCur: month.currency)
                         }
                     }
                 }
@@ -121,8 +134,8 @@ struct SpendingsView: View {
         }
     }
     
-    private func getValueInCurrency(value: Double, fromCur: Currency, toCur: Currency) -> Double {
-        return value * Currency.exchangeRate(from: fromCur, to: toCur)
+    private func exchangeValue(value: Double, fromCur: Currency) -> Double {
+        return value * Currency.exchangeRate(from: fromCur, to: currency)
     }
 }
 
