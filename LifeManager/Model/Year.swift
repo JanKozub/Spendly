@@ -20,14 +20,6 @@ class Year: Identifiable, Equatable {
         self.months = months
     }
     
-    static func allYears() -> [String] {
-        ["2024", "2023", "2022", "2021", "2020", "2019", "2018"]
-    }
-    
-    static func currentYear() -> Int {
-        Int(allYears()[0]) ?? 0
-    }
-    
     static func == (lhs: Year, rhs: Year) -> Bool {
         lhs.number == rhs.number
     }

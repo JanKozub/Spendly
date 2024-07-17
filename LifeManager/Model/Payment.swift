@@ -39,7 +39,7 @@ class Payment: Identifiable, Hashable, ObservableObject {
     static func example() -> Payment {
         Payment(issuedDate: "", transactionDate: "", title: "",
                 message: "", accountNumber: 0, amount: 0, balance: 0,
-                currency: .pln, category: .other, type: .other)
+                currency: .pln, category: .other, type: .personal)
     }
     
     static func loadSantanderPaymentsFromCSV(file: URL) -> [Payment] {
@@ -64,7 +64,7 @@ class Payment: Identifiable, Hashable, ObservableObject {
                             balance: Double(columns[6]) ?? -1,
                             currency: Currency.nameToType(name: cur.uppercased(with: .autoupdatingCurrent)),
                             category: .other,
-                            type: .other
+                            type: .personal
                         )
                         newPayments.append(payment);
                     }

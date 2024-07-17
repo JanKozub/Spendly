@@ -9,13 +9,12 @@ import Foundation
 import SwiftData
 
 enum PaymentType: String, Identifiable, CaseIterable, Hashable, Codable {
-    case personal, refunded, other
+    case personal, refunded
     
     var id: Int {
         switch self {
         case .personal: 1
         case .refunded: 2
-        case .other: 3
         }
     }
     
@@ -23,7 +22,6 @@ enum PaymentType: String, Identifiable, CaseIterable, Hashable, Codable {
         switch self {
         case .personal: "Personal"
         case .refunded: "Refunded"
-        case .other: "Other"
         }
     }
     
@@ -31,17 +29,16 @@ enum PaymentType: String, Identifiable, CaseIterable, Hashable, Codable {
         switch name {
         case "Personal": .personal
         case "Refunded": .refunded
-        case "Other": .other
-        default: .other
+        default: .personal
         }
     }
     
     static var allCases: [PaymentType] {
-        [.personal, .refunded, .other]
+        [.personal, .refunded]
     }
     
     static var allCasesNames: [String] {
-        ["Personal", "Refunded", "Other"]
+        ["Personal", "Refunded"]
     }
     
     static func == (lhs: PaymentType, rhs: PaymentType) -> Bool {

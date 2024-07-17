@@ -34,7 +34,7 @@ struct PaymentView: View {
             })
             .frame(maxWidth: width * 0.07, alignment: .center)
             
-            DropdownMenu(selectedCategory: PaymentType.other.name, elements: PaymentType.allCasesNames, onChange: { newValue in
+            DropdownMenu(selectedCategory: PaymentType.personal.name, elements: PaymentType.allCasesNames, onChange: { newValue in
                 payment.type = PaymentType.nameToType(name: newValue)
                 onPaymentChanged(payment)
             })

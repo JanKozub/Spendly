@@ -13,7 +13,7 @@ struct TableView: View {
     @Binding var years: [Year]
     @State private var incomeSum: Double = 0
     @State private var spendings: Dictionary<PaymentType, Spending> = [:]
-    @State private var yearName: String = String(Year.currentYear())
+    @State private var yearName: String = String(YearName.currentYear)
     @State private var monthName: MonthName = MonthName.january
     
     @State private var isPresentingConfirm: Bool = false
@@ -52,11 +52,10 @@ struct TableView: View {
                     
                     CurrencyText(title: "Personal", value: .constant(spendings[.personal]?.overallSum() ?? 0.0), currency: currency)
                     CurrencyText(title: "Refunded", value: .constant(spendings[.refunded]?.overallSum() ?? 0.0), currency: currency)
-                    CurrencyText(title: "Other", value: .constant(spendings[.other]?.overallSum() ?? 0.0), currency: currency)
                     
                     Divider()
                     
-                    DropdownMenu(selectedCategory: String(Year.currentYear()), elements: Year.allYears(), onChange: { newValue in
+                    DropdownMenu(selectedCategory: String(YearName.currentYear), elements: YearName.allYearsNames, onChange: { newValue in
                         yearName = newValue
                     }).frame(maxWidth: 100)
                     

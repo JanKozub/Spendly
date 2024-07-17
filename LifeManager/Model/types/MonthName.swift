@@ -71,6 +71,10 @@ enum MonthName: String, Identifiable, CaseIterable, Hashable, Codable {
         ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     }
     
+    static var currentMonth: MonthName {
+        .january
+    }
+    
     static func == (lhs: MonthName, rhs: MonthName) -> Bool {
         lhs.id == rhs.id;
     }

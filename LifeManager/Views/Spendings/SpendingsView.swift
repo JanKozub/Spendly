@@ -13,7 +13,8 @@ import Charts
 struct SpendingsView: View {
     @State private var payments: [Payment] = [Payment]()
     @State private var importing: Bool = false
-    @State private var displayType: String = "Year"
+    @State private var displayMonth: String = MonthName.currentMonth.name
+    @State private var displayYear: String = "Month"
     @State private var currency: Currency = .pln
     
     @State private var top10Payments = ["1.test", "2.test", "3.test", "4.test", "5.test", "6.test", "7.test", "8.test", "9.test", "10.test"]
@@ -29,29 +30,34 @@ struct SpendingsView: View {
             GeometryReader { reader in
                 VStack {
                     HStack {
-                        switch displayType {
+                        switch displayYear {
                         case "Year":
-                            Chart {
-                                ForEach(chartEntries, id: \.self) { entry in
+                            Chart(chartEntries) { entry in
+                                ForEach(PaymentCategory.allCases) { category in
                                     BarMark(
                                         x: .value("Shape Type", entry.monthName.name),
-                                        y: .value("Total Count", entry.foodSum)
-                                    ).foregroundStyle(by: .value("Shape Color", "Food"))
-                                    BarMark(
-                                        x: .value("Shape Type", entry.monthName.name),
-                                        y: .value("Total Count", entry.entertainmentSum)
-                                    ).foregroundStyle(by: .value("Shape Color", "Entertainment"))
-                                    BarMark(
-                                        x: .value("Shape Type", entry.monthName.name),
-                                        y: .value("Total Count", entry.otherSum)
-                                    ).foregroundStyle(by: .value("Shape Color", "Other"))
+                                        y: .value("Total Count", entry.sums[category] ?? 0.0)
+                                    ).foregroundStyle(by: .value("Shape Color", category.name))
                                 }
                             }
                             .chartForegroundStyleScale(["Food": .red, "Entertainment": .yellow, "Other": .blue])
                         case "Month":
-                            HStack {}
-                        default:
-                            HStack {}
+                            HStack {
+                                ForEach(PaymentType.allCases) { type in
+                                    Chart(chartEntries) { entry in
+                                        if entry.paymentType == type {
+                                            ForEach(PaymentCategory.allCases) { category in
+                                                SectorMark(
+                                                    angle: .value(Text(verbatim: category.name), entry.sums[category] ?? 0),
+                                                    innerRadius: .ratio(0.6),
+                                                    angularInset: 8
+                                                ).foregroundStyle(by: .value(Text(verbatim: category.name), category.name))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        default: HStack {}
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
@@ -93,12 +99,18 @@ struct SpendingsView: View {
             }
             .toolbar {
                 ToolbarItemGroup {
-                    DropdownMenu(selectedCategory: "Year", elements: ["Year", "Month"], onChange: { newValue in
-                        displayType = newValue
+                    DropdownMenu(selectedCategory: displayMonth, elements: MonthName.allCasesNames, onChange: { newValue in
+                        displayMonth = newValue
+                        prepareChartEntries()
                     }).frame(width: 150)
-                    DropdownMenu(selectedCategory: "PLN", elements: ["EUR", "PLN"], onChange: { newValue in
+                    
+                    DropdownMenu(selectedCategory: displayYear, elements: ["Year", "Month"], onChange: { newValue in
+                        displayYear = newValue
+                        prepareChartEntries()
+                    }).frame(width: 150)
+                    
+                    DropdownMenu(selectedCategory: currency.name, elements: Currency.allCasesNames, onChange: { newValue in
                         currency = Currency.nameToType(name: newValue)
-                        
                         prepareChartEntries()
                     }).frame(width: 150)
                 }
@@ -113,29 +125,41 @@ struct SpendingsView: View {
     
     private func prepareChartEntries() {
         chartEntries = []
-        
-        if let year = years.first(where: {$0.number == Year.currentYear()}) {
-            for monthName in MonthName.allCases {
-                var chartEntry = ChartEntry(monthName: monthName, foodSum: 0, entertainmentSum: 0, otherSum: 0)
-                
-                for month in year.months {
-                    if month.monthName == monthName {
+        if let year = years.first(where: {$0.number == YearName.currentYear}) {
+            if displayYear == "Year" {
+                for monthName in MonthName.allCases {
+                    var chartEntry = ChartEntry(monthName: monthName)
+                    
+                    for month in year.months.filter({$0.monthName == monthName}) {
                         for type in PaymentType.allCases {
-                            let sums = month.spendings[type]?.sums
+                            chartEntry.paymentType = type
                             
-                            chartEntry.foodSum += exchangeValue(value: sums?[.food] ?? 0.0, fromCur: month.currency)
-                            chartEntry.entertainmentSum += exchangeValue(value: sums?[.entertainmanet] ?? 0.0, fromCur: month.currency)
-                            chartEntry.otherSum += exchangeValue(value: sums?[.other] ?? 0.0, fromCur: month.currency)
+                            addSumsToEntry(entry: &chartEntry, sums: month.spendings[type]!.sums, currency: month.currency)
                         }
                     }
+                    chartEntries.append(chartEntry)
                 }
-                chartEntries.append(chartEntry)
+            } else if displayYear == "Month" {
+                if let month = year.months.first(where: {$0.monthName.name == displayMonth}) {
+                    for type in PaymentType.allCases {
+                        var chartEntry = ChartEntry(monthName: MonthName.nameToType(name: displayMonth), paymentType: type)
+                        
+                        addSumsToEntry(entry: &chartEntry, sums: month.spendings[type]!.sums, currency: month.currency)
+                        chartEntries.append(chartEntry)
+                    }
+                }
             }
         }
     }
     
-    private func exchangeValue(value: Double, fromCur: Currency) -> Double {
-        return value * Currency.exchangeRate(from: fromCur, to: currency)
+    private func exchangeValue(value: Optional<Double>, fromCur: Currency) -> Double {
+        return (value ?? 0) * Currency.exchangeRate(from: fromCur, to: currency)
+    }
+    
+    private func addSumsToEntry(entry: inout ChartEntry, sums: Dictionary<PaymentCategory, Double>, currency: Currency) {
+        for category in PaymentCategory.allCases {
+            entry.sums[category]! += exchangeValue(value: sums[category], fromCur: currency)
+        }
     }
 }
 
