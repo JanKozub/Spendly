@@ -22,6 +22,7 @@ struct SpendingsView: View {
     
     @Query private var years: [Year]
     @State private var currentYear: Year?;
+    @State private var isShowingSettingsWindow = false
     
     @Environment(\.modelContext) private var context
     
@@ -49,8 +50,7 @@ struct SpendingsView: View {
                                             ForEach(PaymentCategory.allCases) { category in
                                                 SectorMark(
                                                     angle: .value(Text(verbatim: category.name), entry.sums[category] ?? 0),
-                                                    innerRadius: .ratio(0.6),
-                                                    angularInset: 8
+                                                    angularInset: 3
                                                 ).foregroundStyle(by: .value(Text(verbatim: category.name), category.name))
                                             }
                                         }
@@ -85,13 +85,15 @@ struct SpendingsView: View {
                             }) {Text("Import new month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
                             
                             Button(action: {
-                                print("Button tapped!")
+                                
                             }) {Text("Edit this month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
                             
                             Button(action: {
-                                try? context.delete(model: Year.self)
-                                prepareChartEntries()
+                                isShowingSettingsWindow = true
                             }) {Text("Settings").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
+                                .sheet(isPresented: $isShowingSettingsWindow) {
+                                    SettingsWindow(context: context, prepareChartEntries: prepareChartEntries)
+                                }
                         }
                         .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
                     }
@@ -159,6 +161,35 @@ struct SpendingsView: View {
     private func addSumsToEntry(entry: inout ChartEntry, sums: Dictionary<PaymentCategory, Double>, currency: Currency) {
         for category in PaymentCategory.allCases {
             entry.sums[category]! += exchangeValue(value: sums[category], fromCur: currency)
+        }
+    }
+    
+    struct SettingsWindow: View {
+        @Environment(\.presentationMode) var presentationMode
+        var context: ModelContext
+        var prepareChartEntries: () -> Void
+        
+        var body: some View {
+            VStack(spacing: 20) {
+                Button("Delete data") {
+                    try? context.delete(model: Year.self)
+                    prepareChartEntries()
+                    presentationMode.wrappedValue.dismiss()
+                }
+                
+                Button("Save data to json") {
+                    do {
+                        try DataExporter.exportToJSON(context: context)
+                    } catch {
+                        print("Failed to save data in file")
+                    }
+                }
+                
+                Button("Close") {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            }
+            .padding()
         }
     }
 }
