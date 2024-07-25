@@ -9,8 +9,8 @@ import SwiftUI
 
 struct DropdownMenu: View {
     @State var selectedCategory: String
-    let elements: [String]
-    var onChange: ((String) -> Void)?
+    @State var elements: [String]
+    @Binding var onChange: ((String) -> Void)?
     
     var body: some View {
         Menu {
@@ -38,5 +38,7 @@ struct DropdownMenu: View {
 }
 
 #Preview {
-    DropdownMenu(selectedCategory: "Other", elements: [])
+    @State var onChangeHandler: ((String) -> Void)? = nil
+    
+    return DropdownMenu(selectedCategory: "Other", elements: ["Category 1", "Category 2", "Other"], onChange: $onChangeHandler)
 }

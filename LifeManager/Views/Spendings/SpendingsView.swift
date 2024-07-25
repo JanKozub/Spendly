@@ -101,20 +101,29 @@ struct SpendingsView: View {
             }
             .toolbar {
                 ToolbarItemGroup {
-                    DropdownMenu(selectedCategory: displayMonth, elements: MonthName.allCasesNames, onChange: { newValue in
-                        displayMonth = newValue
-                        prepareChartEntries()
-                    }).frame(width: 150)
+                    DropdownMenu(selectedCategory: displayMonth, elements: MonthName.allCasesNames, onChange: Binding(
+                        get: {{ newValue in
+                            displayMonth = newValue
+                            prepareChartEntries()
+                        }},
+                        set: {_ in}
+                    )).frame(width: 150)
                     
-                    DropdownMenu(selectedCategory: displayYear, elements: ["Year", "Month"], onChange: { newValue in
-                        displayYear = newValue
-                        prepareChartEntries()
-                    }).frame(width: 150)
+                    DropdownMenu(selectedCategory: displayYear, elements: ["Year", "Month"], onChange: Binding(
+                        get: {{ newValue in
+                            displayYear = newValue
+                            prepareChartEntries()
+                        }},
+                        set: {_ in}
+                    )).frame(width: 150)
                     
-                    DropdownMenu(selectedCategory: currency.name, elements: Currency.allCasesNames, onChange: { newValue in
-                        currency = Currency.nameToType(name: newValue)
-                        prepareChartEntries()
-                    }).frame(width: 150)
+                    DropdownMenu(selectedCategory: currency.name, elements: Currency.allCasesNames, onChange: Binding(
+                        get: {{ newValue in
+                            currency = Currency.nameToType(name: newValue)
+                            prepareChartEntries()
+                        }},
+                        set: {_ in}
+                    )).frame(width: 150)
                 }
             }.onAppear(perform: {
                 prepareChartEntries()

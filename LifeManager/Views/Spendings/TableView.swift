@@ -55,13 +55,15 @@ struct TableView: View {
                     
                     Divider()
                     
-                    DropdownMenu(selectedCategory: String(YearName.currentYear), elements: YearName.allYearsNames, onChange: { newValue in
-                        yearName = newValue
-                    }).frame(maxWidth: 100)
+                    DropdownMenu(selectedCategory: String(YearName.currentYear), elements: YearName.allYearsNames, onChange: Binding(
+                        get: {{newValue in yearName = newValue}},
+                        set: {_ in}
+                    )).frame(maxWidth: 100)
                     
-                    DropdownMenu(selectedCategory: MonthName.january.name, elements: MonthName.allCasesNames, onChange: { newValue in
-                        monthName = MonthName.nameToType(name: newValue)
-                    }).frame(maxWidth: 100)
+                    DropdownMenu(selectedCategory: MonthName.january.name, elements: MonthName.allCasesNames, onChange: Binding(
+                        get: {{newValue in monthName = MonthName.nameToType(name: newValue)}},
+                        set: {_ in}
+                    )).frame(maxWidth: 100)
                     
                     Button("Add month", role: .destructive) {
                         isPresentingConfirm = true
