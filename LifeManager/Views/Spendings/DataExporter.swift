@@ -34,7 +34,7 @@ class DataExporter {
                                 amount: payment.amount,
                                 balance: payment.balance,
                                 currency: payment.currency.rawValue,
-                                category: payment.category.rawValue,
+                                category: payment.category,
                                 type: payment.type.rawValue
                             )
                         },
@@ -44,7 +44,7 @@ class DataExporter {
                                 spending: SpendingDetails(
                                     id: value.id,
                                     sums: Dictionary(uniqueKeysWithValues: value.sums.map { (key, value) in
-                                        (key.rawValue, value)
+                                        (key, value)
                                     })
                                 )
                             )
@@ -85,7 +85,7 @@ class DataExporter {
         let number: Int
         let months: [EncodableMonth]
     }
-
+    
     struct EncodableMonth: Encodable {
         let id: UUID
         let monthName: String
@@ -94,7 +94,7 @@ class DataExporter {
         let spendings: [EncodableSpending]
         let income: Double
     }
-
+    
     struct EncodablePayment: Encodable {
         let id: UUID
         let issuedDate: String
@@ -108,12 +108,12 @@ class DataExporter {
         let category: String
         let type: String
     }
-
+    
     struct EncodableSpending: Encodable {
         let type: String
         let spending: SpendingDetails
     }
-
+    
     struct SpendingDetails: Encodable {
         let id: UUID
         let sums: [String: Double]

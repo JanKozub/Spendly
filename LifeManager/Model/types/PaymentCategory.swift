@@ -8,43 +8,47 @@
 import Foundation
 import SwiftData
 
-enum PaymentCategory: String, Identifiable, CaseIterable, Hashable, Codable {
-    case food, entertainmanet, other
+@Model
+class PaymentCategory: Identifiable, Equatable, Encodable, Decodable {
+    @Attribute(.unique) let id: UUID
+    @Attribute(.unique) var name: String
     
-    var id: Int {
-        switch self {
-        case .food: 1
-        case .entertainmanet: 2
-        case .other: 3
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+    }
+    
+    init(name: String) {
+        self.id = UUID()
+        self.name = name
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+    }
+    
+    static func loadDefault() {
+        //Implement
+    }
+    
+    static func convertToStringArray(inputArray: [PaymentCategory]) -> [String] {
+        var temp: [String] = []
+        for el in inputArray {
+            temp.append(el.name)
         }
-    }
-    
-    var name: String {
-        switch self {
-        case .food: "Food"
-        case .entertainmanet: "Entertainment"
-        case .other: "Other"
-        }
-    }
-    
-    static func nameToType(name: String) -> PaymentCategory {
-        switch name {
-        case "Food": .food
-        case "Entertainment": .entertainmanet
-        case "Other": .other
-        default: .other
-        }
-    }
-    
-    static var allCases: [PaymentCategory] {
-        [.food, .entertainmanet, .other]
-    }
-    
-    static var allCasesNames: [String] {
-        ["Food", "Entertainment", "Other"]
+        
+        return temp
     }
     
     static func == (lhs: PaymentCategory, rhs: PaymentCategory) -> Bool {
-        lhs.id == rhs.id
+        lhs.name == rhs.name
     }
 }

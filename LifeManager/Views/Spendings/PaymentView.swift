@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct PaymentView: View {
-    @Binding var payment: Payment;
-    @Binding var width: CGFloat;
+    @Binding var payment: Payment
+    @Binding var width: CGFloat
+    @Binding var categories: [String]
     @State var onPaymentChanged: (Payment) -> Void
     
     private let myRed = Color(red: 238/255, green: 36/255, blue: 0/255).opacity(0.1)
@@ -28,9 +29,9 @@ struct PaymentView: View {
             Text(String(format: "%.2f", abs(payment.amount))).frame(maxWidth: width * 0.07, alignment: .center)
             Text(String(format: "%.2f", payment.balance)).frame(maxWidth: width * 0.07, alignment: .center)
             
-            DropdownMenu(selectedCategory: PaymentCategory.other.name, elements: PaymentCategory.allCasesNames, onChange: Binding(
+            DropdownMenu(selectedCategory: "", elements: categories, onChange: Binding(
                 get: {{ newValue in
-                    payment.category = PaymentCategory.nameToType(name: newValue)
+                    payment.category = newValue
                     onPaymentChanged(payment)
                 }},
                 set: {_ in}
@@ -49,5 +50,5 @@ struct PaymentView: View {
 }
 
 #Preview {
-    PaymentView(payment: .constant(Payment.example()), width: .constant(CGFloat.infinity), onPaymentChanged: {_ in})
+    PaymentView(payment: .constant(Payment.example()), width: .constant(CGFloat.infinity), categories: .constant([]), onPaymentChanged: {_ in})
 }

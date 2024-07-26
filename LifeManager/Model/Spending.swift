@@ -11,7 +11,7 @@ import SwiftData
 @Model
 class Spending: Identifiable, Hashable, Encodable, Decodable {
     @Attribute(.unique) let id: UUID
-    @Attribute var sums: [PaymentCategory: Double]
+    @Attribute var sums: [String: Double]
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -21,7 +21,7 @@ class Spending: Identifiable, Hashable, Encodable, Decodable {
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
-        sums = try container.decode([PaymentCategory: Double].self, forKey: .sums)
+        sums = try container.decode([String: Double].self, forKey: .sums)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -30,7 +30,7 @@ class Spending: Identifiable, Hashable, Encodable, Decodable {
         try container.encode(sums, forKey: .sums)
     }
     
-    init(sums: [PaymentCategory: Double]) {
+    init(sums: [String: Double]) {
         self.id = UUID()
         self.sums = sums
     }

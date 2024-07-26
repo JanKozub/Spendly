@@ -11,18 +11,21 @@ import SwiftData
 import Charts
 
 struct SpendingsView: View {
-    @State private var payments: [Payment] = [Payment]()
+    @State private var payments: [Payment] = []
     @State private var importing: Bool = false
     @State private var displayMonth: String = MonthName.currentMonth.name
-    @State private var displayYear: String = "Month"
+    @State private var displayYear: String = "Year"
     @State private var currency: Currency = .pln
     
     @State private var top10Payments = ["1.test", "2.test", "3.test", "4.test", "5.test", "6.test", "7.test", "8.test", "9.test", "10.test"]
     @State private var chartEntries: [ChartEntry] = []
     
     @Query private var years: [Year]
-    @State private var currentYear: Year?;
+    @Query private var categories: [PaymentCategory]
+    
+    @State private var currentYear: Year?
     @State private var isShowingSettingsWindow = false
+    @State var foregroundScale: KeyValuePairs<String, Color> = KeyValuePairs<String, Color>()
     
     @Environment(\.modelContext) private var context
     
@@ -34,20 +37,19 @@ struct SpendingsView: View {
                         switch displayYear {
                         case "Year":
                             Chart(chartEntries) { entry in
-                                ForEach(PaymentCategory.allCases) { category in
+                                ForEach(categories) { category in
                                     BarMark(
                                         x: .value("Shape Type", entry.monthName.name),
                                         y: .value("Total Count", entry.sums[category] ?? 0.0)
                                     ).foregroundStyle(by: .value("Shape Color", category.name))
                                 }
-                            }
-                            .chartForegroundStyleScale(["Food": .red, "Entertainment": .yellow, "Other": .blue])
+                            }.chartForegroundStyleScale(range: graphColors(for: categories))
                         case "Month":
                             HStack {
                                 ForEach(PaymentType.allCases) { type in
                                     Chart(chartEntries) { entry in
                                         if entry.paymentType == type {
-                                            ForEach(PaymentCategory.allCases) { category in
+                                            ForEach(categories) { category in
                                                 SectorMark(
                                                     angle: .value(Text(verbatim: category.name), entry.sums[category] ?? 0),
                                                     angularInset: 3
@@ -79,7 +81,7 @@ struct SpendingsView: View {
                                 let panel = NSOpenPanel()
                                 panel.begin { result in
                                     if result == .OK, let fileURL = panel.url {
-                                        payments = Payment.loadSantanderPaymentsFromCSV(file: fileURL)
+                                        payments = DataParser.loadSantanderPaymentsFromCSV(file: fileURL)
                                     }
                                 }
                             }) {Text("Import new month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
@@ -130,7 +132,10 @@ struct SpendingsView: View {
             })
             .padding(.all)
         } else {
-            TableView(payments: $payments, years: .constant(years))
+            TableView(payments: $payments,
+                      years: .constant(years),
+                      categories: .constant(PaymentCategory.convertToStringArray(inputArray: categories))
+            )
         }
     }
     
@@ -139,7 +144,7 @@ struct SpendingsView: View {
         if let year = years.first(where: {$0.number == YearName.currentYear}) {
             if displayYear == "Year" {
                 for monthName in MonthName.allCases {
-                    var chartEntry = ChartEntry(monthName: monthName)
+                    var chartEntry = ChartEntry(monthName: monthName, categories: categories)
                     
                     for month in year.months.filter({$0.monthName == monthName}) {
                         for type in PaymentType.allCases {
@@ -153,7 +158,7 @@ struct SpendingsView: View {
             } else if displayYear == "Month" {
                 if let month = year.months.first(where: {$0.monthName.name == displayMonth}) {
                     for type in PaymentType.allCases {
-                        var chartEntry = ChartEntry(monthName: MonthName.nameToType(name: displayMonth), paymentType: type)
+                        var chartEntry = ChartEntry(monthName: MonthName.nameToType(name: displayMonth), paymentType: type, categories: categories)
                         
                         addSumsToEntry(entry: &chartEntry, sums: month.spendings[type]!.sums, currency: month.currency)
                         chartEntries.append(chartEntry)
@@ -167,39 +172,18 @@ struct SpendingsView: View {
         return (value ?? 0) * Currency.exchangeRate(from: fromCur, to: currency)
     }
     
-    private func addSumsToEntry(entry: inout ChartEntry, sums: Dictionary<PaymentCategory, Double>, currency: Currency) {
-        for category in PaymentCategory.allCases {
-            entry.sums[category]! += exchangeValue(value: sums[category], fromCur: currency)
+    private func addSumsToEntry(entry: inout ChartEntry, sums: Dictionary<String, Double>, currency: Currency) {
+        for category in categories {
+            entry.sums[category]! += exchangeValue(value: sums[category.name], fromCur: currency)
         }
     }
     
-    struct SettingsWindow: View {
-        @Environment(\.presentationMode) var presentationMode
-        var context: ModelContext
-        var prepareChartEntries: () -> Void
-        
-        var body: some View {
-            VStack(spacing: 20) {
-                Button("Delete data") {
-                    try? context.delete(model: Year.self)
-                    prepareChartEntries()
-                    presentationMode.wrappedValue.dismiss()
-                }
-                
-                Button("Save data to json") {
-                    do {
-                        try DataExporter.exportToJSON(context: context)
-                    } catch {
-                        print("Failed to save data in file")
-                    }
-                }
-                
-                Button("Close") {
-                    presentationMode.wrappedValue.dismiss()
-                }
-            }
-            .padding()
+    func graphColors(for input: [PaymentCategory]) -> [Color] {
+        var returnColors = [Color]()
+        for _ in input {
+            returnColors.append(Color(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1)))
         }
+        return returnColors
     }
 }
 

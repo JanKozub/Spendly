@@ -11,12 +11,15 @@ import SwiftData
 struct TableView: View {
     @Binding var payments: [Payment]
     @Binding var years: [Year]
+    @Binding var categories: [String]
     @State private var incomeSum: Double = 0
     @State private var spendings: Dictionary<PaymentType, Spending> = [:]
     @State private var yearName: String = String(YearName.currentYear)
     @State private var monthName: MonthName = MonthName.january
     
-    @State private var isPresentingConfirm: Bool = false
+    @State private var isPresentingConfirmCancel: Bool = false
+    @State private var isPresentingConfirmSubmit: Bool = false
+    @State private var isPresentingAlert = false
     
     @Environment(\.modelContext) private var context
     
@@ -38,7 +41,7 @@ struct TableView: View {
                 
                 List {
                     ForEach($payments, id: \.self) { $payment in
-                        PaymentView(payment: $payment, width: .constant(reader.size.width), onPaymentChanged: { newPayment in calculateSums() })
+                        PaymentView(payment: $payment, width: .constant(reader.size.width), categories: $categories, onPaymentChanged: { newPayment in calculateSums() })
                     }
                 }
                 .edgesIgnoringSafeArea(.all)
@@ -47,13 +50,19 @@ struct TableView: View {
                 
                 HStack {
                     CurrencyText(title: "Income", value: $incomeSum, currency: currency)
-                    
                     Divider()
-                    
                     CurrencyText(title: "Personal", value: .constant(spendings[.personal]?.overallSum() ?? 0.0), currency: currency)
-                    CurrencyText(title: "Refunded", value: .constant(spendings[.refunded]?.overallSum() ?? 0.0), currency: currency)
-                    
                     Divider()
+                    CurrencyText(title: "Refunded", value: .constant(spendings[.refunded]?.overallSum() ?? 0.0), currency: currency)
+                    Divider()
+                    
+                    Button("Cancel", role: .destructive) {
+                        isPresentingConfirmCancel = true
+                    }.confirmationDialog("Are you sure?", isPresented: $isPresentingConfirmCancel) {
+                        Button("Discard month") {
+                            payments = []
+                        }
+                    }.dialogIcon(Image(systemName: "x.circle.fill"))
                     
                     DropdownMenu(selectedCategory: String(YearName.currentYear), elements: YearName.allYearsNames, onChange: Binding(
                         get: {{newValue in yearName = newValue}},
@@ -66,8 +75,8 @@ struct TableView: View {
                     )).frame(maxWidth: 100)
                     
                     Button("Add month", role: .destructive) {
-                        isPresentingConfirm = true
-                    }.confirmationDialog("Are you sure?", isPresented: $isPresentingConfirm) {
+                        isPresentingConfirmSubmit = true
+                    }.confirmationDialog("Are you sure?", isPresented: $isPresentingConfirmSubmit) {
                         Button("Add/Edit Month") {
                             addMonth(currency: currency)
                         }
@@ -88,6 +97,10 @@ struct TableView: View {
             calculateSums()
         })
         .padding(.top, 1)
+        .alert("Every category has to be filled", isPresented: $isPresentingAlert) {
+            Button("OK", role: .cancel) { }
+        }
+        .dialogIcon(Image(systemName: "x.circle.fill"))
     }
     
     private func calculateSums() {
@@ -107,8 +120,8 @@ struct TableView: View {
         var output: Dictionary<PaymentType, Spending> = [:]
         
         for paymentType in PaymentType.allCases {
-            var temp: Dictionary<PaymentCategory, Double> = [:]
-            for paymentCategory in PaymentCategory.allCases {
+            var temp: Dictionary<String, Double> = [:]
+            for paymentCategory in categories {
                 temp[paymentCategory] = 0.0
             }
             
@@ -119,6 +132,13 @@ struct TableView: View {
     }
     
     private func addMonth(currency: Currency) {
+        for payment in payments {
+            if payment.category == "" {
+                isPresentingAlert = true
+                return
+            }
+        }
+        
         let month = Month(monthName: monthName, currency: currency, payments: [], spendings: spendings, income: incomeSum)
         context.insert(month)
         for payment in payments {
@@ -147,5 +167,5 @@ struct TableView: View {
 }
 
 #Preview {
-    TableView(payments: .constant([]), years: .constant([]))
+    TableView(payments: .constant([]), years: .constant([]), categories: .constant([]))
 }
