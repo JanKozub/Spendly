@@ -10,8 +10,7 @@ import SwiftData
 
 struct TableView: View {
     @Binding var payments: [Payment]
-    @Binding var years: [Year]
-    @Binding var categories: [String]
+    
     @State private var incomeSum: Double = 0
     @State private var spendings: Dictionary<PaymentType, Spending> = [:]
     @State private var yearName: String = String(YearName.currentYear)
@@ -20,6 +19,9 @@ struct TableView: View {
     @State private var isPresentingConfirmCancel: Bool = false
     @State private var isPresentingConfirmSubmit: Bool = false
     @State private var isPresentingAlert = false
+    
+    @State var years: [Year]
+    @State var categories: [String]
     
     @Environment(\.modelContext) private var context
     
@@ -41,7 +43,7 @@ struct TableView: View {
                 
                 List {
                     ForEach($payments, id: \.self) { $payment in
-                        PaymentView(payment: $payment, width: .constant(reader.size.width), categories: $categories, onPaymentChanged: { newPayment in calculateSums() })
+                        PaymentRow(payment: $payment, width: .constant(reader.size.width), categories: $categories, onPaymentChanged: { newPayment in calculateSums() })
                     }
                 }
                 .edgesIgnoringSafeArea(.all)
@@ -167,5 +169,5 @@ struct TableView: View {
 }
 
 #Preview {
-    TableView(payments: .constant([]), years: .constant([]), categories: .constant([]))
+    TableView(payments: .constant([]), years: [], categories: [])
 }

@@ -9,10 +9,17 @@ import SwiftData
 import Foundation
 import AppKit
 
-class DataExporter {
+class DataExportService {
     @MainActor
-    static func exportToJSON(context: ModelContext) throws -> Void {
-        let years = try context.fetch(FetchDescriptor<Year>())
+    static func exportToJSON(context: ModelContext) -> Void {
+        var years: [Year] = []
+        
+        do {
+            years = try context.fetch(FetchDescriptor<Year>())
+        } catch {
+            print("Failed fetch context of years") //TODO error handling
+            return
+        }
         
         let encodableYears = years.map { year in
             EncodableYear(
@@ -57,7 +64,13 @@ class DataExporter {
         
         let jsonEncoder = JSONEncoder()
         jsonEncoder.outputFormatting = .prettyPrinted
-        let jsonString = String(data: try jsonEncoder.encode(encodableYears), encoding: .utf8) ?? ""
+        var jsonString: String = ""
+        do {
+            jsonString = String(data: try jsonEncoder.encode(encodableYears), encoding: .utf8) ?? ""
+        } catch {
+            print("Error while encoing string")
+            return
+        }
         
         let savePanel = NSSavePanel()
         savePanel.canCreateDirectories = true
@@ -75,6 +88,7 @@ class DataExporter {
                     try jsonString.write(to: url, atomically: true, encoding: .utf8)
                 } catch {
                     print("Error saving JSON to file: \(error)")
+                    return
                 }
             }
         }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DataParser {
+class DataParseService {
     static func loadSantanderPaymentsFromCSV(file: URL) -> [Payment] {
         do {
             let fileContent = try String(contentsOf: file, encoding: .utf8)

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PaymentView: View {
+struct PaymentRow: View {
     @Binding var payment: Payment
     @Binding var width: CGFloat
     @Binding var categories: [String]
@@ -50,5 +50,5 @@ struct PaymentView: View {
 }
 
 #Preview {
-    PaymentView(payment: .constant(Payment.example()), width: .constant(CGFloat.infinity), categories: .constant([]), onPaymentChanged: {_ in})
+    PaymentRow(payment: .constant(Payment.example()), width: .constant(CGFloat.infinity), categories: .constant([]), onPaymentChanged: {_ in})
 }

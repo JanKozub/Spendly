@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State  private var selection: TabSection? = TabSection.spendings;
+    @State private var selection: TabSection? = TabSection.spendings;
     
     var body: some View {
         NavigationSplitView {
-            SidebarView(selection: $selection)
+            SidebarComponent(selection: $selection)
         } detail: {
             switch selection {
             case .spendings:

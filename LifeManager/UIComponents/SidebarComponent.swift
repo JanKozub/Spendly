@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SidebarView: View {
+struct SidebarComponent: View {
     @Binding var selection: TabSection?
     
     var body: some View {
@@ -22,5 +22,5 @@ struct SidebarView: View {
 }
 
 #Preview {
-    SidebarView(selection: .constant(.spendings)).listStyle(.sidebar)
+    SidebarComponent(selection: .constant(.spendings)).listStyle(.sidebar)
 }
