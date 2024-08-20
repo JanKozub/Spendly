@@ -14,7 +14,8 @@ struct SpendingsSettingsView: View {
     @State private var userInput: String = ""
     @State var context: ModelContext
     
-    @State var categories: [PaymentCategory]
+    @Binding var categories: [PaymentCategory]
+    @State var categoriesNames: [String] = ["Food", "Hygiene", "Entertainment", "Gift", "Debt", "Cash withdraw ", "New things", "Exchange", "Transport", "Subscriptions"]
     
     var body: some View {
         HStack {
@@ -30,9 +31,18 @@ struct SpendingsSettingsView: View {
                 {Text("Delete Data").font(Font.system(size: 20)).frame(maxWidth: .infinity, minHeight: 100)}
                 
                 Button(action: {
+                    try? context.delete(model: PaymentCategory.self)
+                    for cat in categoriesNames {
+                        context.insert(PaymentCategory(name: cat))
+                    }
+                    try? context.save()
+                })
+                {Text("Clear And Load Default Categories").font(Font.system(size: 20)).frame(maxWidth: .infinity, minHeight: 100)}
+                
+                Button(action: {
                     DataExportService.exportToJSON(context: context)
-                }) 
-                {Text("Save data to json").font(Font.system(size: 20)).frame(maxWidth: .infinity, minHeight: 100)}
+                })
+                {Text("Save Data To Json").font(Font.system(size: 20)).frame(maxWidth: .infinity, minHeight: 100)}
                 
             }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading).padding()
             
@@ -52,16 +62,19 @@ struct SpendingsSettingsView: View {
                     }
                 }.frame(alignment: .top).padding()
                 List {
-                    ForEach(categories) { category in
-                        HStack {
-                            Text(category.name)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            
-                            Button("Delete") {
-                                context.delete(category)
+                    ForEach($categories, id: \.self) { $category in
+                            HStack {
+                                Text(category.name)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                
+                                Button("Delete") {
+                                    if let index = categories.firstIndex(where: { $0 == category }) {
+                                        context.delete(categories[index])
+                                        categories.remove(at: index)
+                                    }
+                                }
                             }
                         }
-                    }
                 }.frame(alignment: .top)
             }
         }

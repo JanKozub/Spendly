@@ -25,7 +25,7 @@ struct SpendingsView: View {
     
     var body: some View {
         if isShowingSettings {
-            SpendingsSettingsView(isShowing: $isShowingSettings, context: context, categories: categories)
+            SpendingsSettingsView(isShowing: $isShowingSettings, context: context, categories: .constant(categories))
         } else if (payments.isEmpty) {
             SpendingsMainView(payments: $payments, isShowingSettings: $isShowingSettings, years: years, categories: categories)
         } else {
