@@ -19,6 +19,7 @@ struct TableView: View {
     @State private var isPresentingConfirmCancel: Bool = false
     @State private var isPresentingConfirmSubmit: Bool = false
     @State private var isPresentingAlert = false
+    @State private var constantTextPart: String = ""
     
     @State var years: [Year]
     @State var categories: [String]
@@ -30,20 +31,19 @@ struct TableView: View {
         GeometryReader { reader in
             VStack {
                 HStack {
-                    HeaderText(text: "Issued(D)", percentage: 0.08, size: reader.size)
-                    HeaderText(text: "Transaction(D)", percentage: 0.08, size: reader.size)
-                    HeaderText(text: "Title", percentage: 0.36, size: reader.size)
-                    HeaderText(text: "Message", percentage: 0.18, size: reader.size)
+                    HeaderText(text: "Transaction Date", percentage: 0.1, size: reader.size)
+                    HeaderText(text: "Title", percentage: 0.51, size: reader.size)
+                    HeaderText(text: "Other", percentage: 0.05, size: reader.size)
                     HeaderText(text: "Amount", percentage: 0.07, size: reader.size)
                     HeaderText(text: "Balance", percentage: 0.07, size: reader.size)
-                    HeaderText(text: "Category", percentage: 0.08, size: reader.size)
-                    HeaderText(text: "Type", percentage: 0.08, size: reader.size)
+                    HeaderText(text: "Category", percentage: 0.1, size: reader.size)
+                    HeaderText(text: "Type", percentage: 0.1, size: reader.size)
                 }
                 .frame(maxWidth: .infinity, maxHeight: 30, alignment: .center).padding(3)
                 
                 List {
                     ForEach($payments, id: \.self) { $payment in
-                        PaymentRow(payment: $payment, width: .constant(reader.size.width), categories: $categories, onPaymentChanged: { newPayment in calculateSums() })
+                        PaymentRow(payment: $payment, width: .constant(reader.size.width), categories: $categories, constantTextPart: $constantTextPart, onPaymentChanged: { newPayment in calculateSums() })
                     }
                 }
                 .edgesIgnoringSafeArea(.all)
@@ -92,6 +92,8 @@ struct TableView: View {
         }
         .toolbar {
             ToolbarItemGroup {
+                TextField("Enter text here", text: $constantTextPart).textFieldStyle(RoundedBorderTextFieldStyle())
+                
                 Text("Currency: " + currency.name)
             }
         }

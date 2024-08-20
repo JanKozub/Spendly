@@ -50,8 +50,7 @@ struct SpendingsSettingsView: View {
             
             VStack {
                 HStack {
-                    TextField("Enter text here", text: $userInput)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                    TextField("Enter text here", text: $userInput).textFieldStyle(RoundedBorderTextFieldStyle())
                     
                     Button(action: {
                         context.insert(PaymentCategory(name: userInput))
