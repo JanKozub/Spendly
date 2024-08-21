@@ -20,24 +20,15 @@ struct PaymentRow: View {
     
     var body: some View {
         let rowColor = payment.amount < 0 ? myRed: myGreen
+        let otherMsg = "Issued Date: " + payment.issuedDate +
+                        "\nMessage: " + (payment.message == "" ? "None" : payment.message) +
+                        "\nBalance: " + String(format: "%.2f", payment.balance) + " zł"
         
         HStack {
-            Text(payment.transactionDate).frame(maxWidth: width * 0.08, alignment: .center)
-            Text(payment.title.replacingOccurrences(of: constantTextPart, with: "")).frame(maxWidth: width * 0.48, alignment: .center)
-            
-            Button(action: {
-                showDialog.toggle()
-            }) {
-                Image(systemName: "info.circle")
-            }.alert(
-                Text("Other Information"),
-                isPresented: $showDialog
-            ) {} message: {
-                Text("Issued Date: " + payment.issuedDate + "\nMessage: " + (payment.message == "" ? "None" : payment.message))
-            }.frame(maxWidth: width * 0.1, alignment: .center)
+            Text(payment.transactionDate).frame(maxWidth: width * 0.1, alignment: .center)
+            Text(payment.title.replacingOccurrences(of: constantTextPart, with: "")).frame(maxWidth: width * 0.6, alignment: .center)
             
             Text(String(format: "%.2f", abs(payment.amount))).frame(maxWidth: width * 0.07, alignment: .center)
-            Text(String(format: "%.2f", payment.balance)).frame(maxWidth: width * 0.07, alignment: .center)
             
             DropdownMenu(selectedCategory: "", elements: categories, onChange: Binding(
                 get: {{ newValue in
@@ -53,9 +44,20 @@ struct PaymentRow: View {
                     onPaymentChanged(payment)
                 }},
                 set: {_ in}
-            )).frame(maxWidth: width * 0.1, alignment: .center)
+            )).frame(maxWidth: width * 0.08, alignment: .center)
             
-        }.background(rowColor)
+            Button(action: {
+                showDialog.toggle()
+            }) {
+                Image(systemName: "info.circle")
+            }.alert(
+                Text("Other Information"),
+                isPresented: $showDialog
+            ) {} message: {
+                Text(otherMsg)
+            }.frame(maxWidth: width * 0.05, alignment: .center)
+        }
+        .background(rowColor)
     }
 }
 

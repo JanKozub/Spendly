@@ -32,14 +32,13 @@ struct TableView: View {
             VStack {
                 HStack {
                     HeaderText(text: "Transaction Date", percentage: 0.1, size: reader.size)
-                    HeaderText(text: "Title", percentage: 0.51, size: reader.size)
-                    HeaderText(text: "Other", percentage: 0.05, size: reader.size)
+                    HeaderText(text: "Title", percentage: 0.6, size: reader.size)
                     HeaderText(text: "Amount", percentage: 0.07, size: reader.size)
-                    HeaderText(text: "Balance", percentage: 0.07, size: reader.size)
                     HeaderText(text: "Category", percentage: 0.1, size: reader.size)
-                    HeaderText(text: "Type", percentage: 0.1, size: reader.size)
+                    HeaderText(text: "Type", percentage: 0.08, size: reader.size)
+                    HeaderText(text: "Other", percentage: 0.05, size: reader.size)
                 }
-                .frame(maxWidth: .infinity, maxHeight: 30, alignment: .center).padding(3)
+                .frame(maxWidth: .infinity, maxHeight: 30, alignment: .center).padding(.leading, 10).padding(.trailing, 25)
                 
                 List {
                     ForEach($payments, id: \.self) { $payment in
