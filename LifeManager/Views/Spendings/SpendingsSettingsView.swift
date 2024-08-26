@@ -15,7 +15,7 @@ struct SpendingsSettingsView: View {
     @State var context: ModelContext
     
     @Binding var categories: [PaymentCategory]
-    @State var categoriesNames: [String] = ["Food", "Hygiene", "Entertainment", "Gift", "Debt", "Cash Withdraw", "Cash Deposit", "New Things", "Exchange", "Transport", "Subscriptions", "Commission Fee", "Other", "Fuel", "For Parents"]
+    @State var categoriesNames: [String] = PaymentCategory.getDefault()
     
     var body: some View {
         HStack {

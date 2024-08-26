@@ -15,6 +15,7 @@ struct SpendingsView: View {
     
     @Query private var years: [Year]
     @Query private var categories: [PaymentCategory]
+    @Query private var allPayments: [Payment]
     
     @State private var currentYear: Year?
     @State var foregroundScale: KeyValuePairs<String, Color> = KeyValuePairs<String, Color>()
@@ -27,7 +28,7 @@ struct SpendingsView: View {
         if isShowingSettings {
             SpendingsSettingsView(isShowing: $isShowingSettings, context: context, categories: .constant(categories))
         } else if (payments.isEmpty) {
-            SpendingsMainView(payments: $payments, isShowingSettings: $isShowingSettings, years: years, categories: categories)
+            SpendingsMainView(payments: $payments, isShowingSettings: $isShowingSettings, years: years, categories: categories, allPayments: allPayments)
         } else {
             TableView(payments: $payments, years: years, categories: PaymentCategory.convertToStringArray(inputArray: categories))
         }

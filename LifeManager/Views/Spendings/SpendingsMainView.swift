@@ -16,10 +16,11 @@ struct SpendingsMainView: View {
     @State private var displayMonth: String = MonthName.currentMonth.name
     @State private var displayYear: String = "Year"
     @State private var currency: Currency = .pln
-    @State private var top10Payments = ["1.test", "2.test", "3.test", "4.test", "5.test", "6.test", "7.test", "8.test", "9.test", "10.test"]
+    @State private var top10Payments: [Payment] = []
     
     @State var years: [Year]
     @State var categories: [PaymentCategory]
+    @State var allPayments: [Payment]
     @State private var chartEntries: [ChartEntry] = []
     
     var body: some View {
@@ -61,8 +62,8 @@ struct SpendingsMainView: View {
                 HStack {
                     VStack {
                         List {
-                            ForEach(top10Payments, id: \.self) { el in
-                                Text(el)
+                            ForEach(top10Payments) { el in
+                                Text(el.title + "  " + String(format: "%.2f", abs(el.amount)))
                             }
                         }
                     }
@@ -122,6 +123,9 @@ struct SpendingsMainView: View {
     }
     
     private func refreshChart() {
+        allPayments.sort(by: { $0.amount < $1.amount} ) // Getting lowest value because expenses have minus sign
+        top10Payments = Array(allPayments.prefix(15))
+        
         chartEntries = []
         if let year = years.first(where: {$0.number == YearName.currentYear}) {
             if displayYear == "Year" {
@@ -170,5 +174,5 @@ struct SpendingsMainView: View {
 }
 
 #Preview {
-    SpendingsMainView(payments: .constant([]), isShowingSettings: .constant(false), years: [], categories: [])
+    SpendingsMainView(payments: .constant([]), isShowingSettings: .constant(false), years: [], categories: [], allPayments: [])
 }

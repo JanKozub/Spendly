@@ -35,8 +35,27 @@ class PaymentCategory: Identifiable, Equatable, Encodable, Decodable {
         try container.encode(name, forKey: .name)
     }
     
-    static func loadDefault() {
-        //Implement
+    static func getDefault() -> [String] {
+        return [
+            "Cash Deposit",
+            "Cash Withdraw",
+            "Clothes",
+            "Commission Fee",
+            "Debt",
+            "Entertainment",
+            "Exchange",
+            "Food",
+            "For Parents",
+            "Fuel",
+            "Gift",
+            "Hygiene",
+            "New Things",
+            "Other",
+            "Other",
+            "Return",
+            "Subscriptions",
+            "Transport"
+        ]
     }
     
     static func convertToStringArray(inputArray: [PaymentCategory]) -> [String] {
