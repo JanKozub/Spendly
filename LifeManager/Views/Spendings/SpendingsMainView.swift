@@ -21,26 +21,22 @@ struct SpendingsMainView: View {
             VStack {
                 HStack {
                     switch displayYear {
-                        case "Year":
-                            getYearChart()
-                        case "Month":
-                            getMonthChart()
-                        default: HStack {}
+                    case "Year":
+                        getYearChart()
+                    case "Month":
+                        getMonthChart()
+                    default: HStack {}
                     }
                 }.frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
                 
-                Divider()
-                
                 HStack {
-                    VStack {
-                        List {
-                            ForEach(top10Payments) { el in
-                                Text(el.title + "  " + String(format: "%.2f", abs(el.amount)))
-                            }
+                    List {
+                        ForEach(top10Payments) { el in
+                            Text(el.message + "  " + String(format: "%.2f", abs(el.amount)))
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
-                    Divider()
+
                     VStack {
                         Button(action: openFilesExplorer)
                         {Text("Import new month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
@@ -172,8 +168,8 @@ struct SpendingsMainView: View {
     
     func graphColors(for input: [PaymentCategory]) -> [Color] {
         var returnColors = [Color]()
-        for _ in input {
-            returnColors.append(Color(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1)))
+        for cat in input {
+            returnColors.append(cat.graphColor.color)
         }
         return returnColors
     }

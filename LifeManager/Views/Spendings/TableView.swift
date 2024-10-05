@@ -13,17 +13,14 @@ struct TableView: View {
     @State private var isPresentingConfirmSubmit: Bool = false
     @State private var isPresentingAlert = false
     @State private var isPresentingTextFieldPopup = false
-    @State private var isPresentingAddPaymentPopup = false // State for Add Payment popup
+    @State private var isPresentingAddPaymentPopup = false
     
     @State private var constantTextPart: String = ""
     @State private var newConstantTextPart: String = ""
     
-    // State variables for the "Add Payment" popup fields
-    @State private var newPaymentTransactionDate: String = ""
-    @State private var newPaymentTitle: String = ""
+    @State private var newPaymentDate: String = ""
     @State private var newPaymentMessage: String = ""
     @State private var newPaymentAmount: String = ""
-    @State private var newPaymentBalance: String = ""
     @State private var newPaymentCategory: String = ""
     @State private var newPaymentType: PaymentType = .personal
     @State private var newPaymentCurrency: Currency = .pln
@@ -107,29 +104,48 @@ struct TableView: View {
         }
         .toolbar {
             ToolbarItemGroup {
-                Button("Edit Titles") {
+                Button("Edit Messages") {
                     newConstantTextPart = constantTextPart
                     isPresentingTextFieldPopup = true
                 }
                 
-                Button("Add Payment") { // New button for adding payment
+                Button("Add Payment") {
                     isPresentingAddPaymentPopup = true
                 }
                 
                 Text("Currency: " + currency.name)
             }
         }
-        .sheet(isPresented: $isPresentingAddPaymentPopup) { // New sheet for adding a payment
+        .sheet(isPresented: $isPresentingTextFieldPopup) {
+                    VStack {
+                        Text("Edit Payment Titles")
+                            .font(.headline)
+                        TextField("Enter new text", text: $newConstantTextPart)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding()
+                        
+                        HStack {
+                            Button("Cancel") {
+                                isPresentingTextFieldPopup = false
+                            }
+                            Spacer()
+                            Button("Submit") {
+                                constantTextPart = newConstantTextPart
+                                updateMessages()
+                                isPresentingTextFieldPopup = false
+                            }
+                        }
+                        .padding()
+                    }
+                    .padding()
+                }
+        .sheet(isPresented: $isPresentingAddPaymentPopup) {
             VStack {
                 Text("Add New Payment")
                     .font(.headline)
                     .padding(.bottom, 20)
                 
-                TextField("Transaction Date (dd-MM-yyyy)", text: $newPaymentTransactionDate)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-                
-                TextField("Payment Title", text: $newPaymentTitle)
+                TextField("Transaction Date (dd-MM-yyyy)", text: $newPaymentDate)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
                 
@@ -138,10 +154,6 @@ struct TableView: View {
                     .padding()
                 
                 TextField("Amount", text: $newPaymentAmount)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-                
-                TextField("Balance", text: $newPaymentBalance)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
                 
@@ -191,15 +203,12 @@ struct TableView: View {
     }
     
     private func addNewPayment() {
-        guard let amount = Double(newPaymentAmount),
-              let balance = Double(newPaymentBalance) else { return }
+        guard let amount = Double(newPaymentAmount) else { return }
         
         let newPayment = Payment(
-            transactionDate: newPaymentTransactionDate,
-            title: newPaymentTitle,
+            date: Payment.dateFromString(newPaymentDate) ?? Date(),
             message: newPaymentMessage,
             amount: amount,
-            balance: balance,
             currency: newPaymentCurrency,
             category: newPaymentCategory,
             type: newPaymentType
@@ -275,9 +284,9 @@ struct TableView: View {
         payments = []
     }
     
-    private func updatePaymentTitles() {
+    private func updateMessages() {
         for index in payments.indices {
-            payments[index].title = payments[index].title.replacingOccurrences(of: constantTextPart, with: "")
+            payments[index].message = payments[index].message.replacingOccurrences(of: constantTextPart, with: "")
         }
     }
 }

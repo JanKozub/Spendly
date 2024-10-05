@@ -26,11 +26,9 @@ class DataExportService {
                         payments: month.payments.map { payment in
                             EncodablePayment(
                                 id: payment.id,
-                                transactionDate: payment.transactionDate,
-                                title: payment.title,
+                                date: payment.date,
                                 message: payment.message,
                                 amount: payment.amount,
-                                balance: payment.balance,
                                 currency: payment.currency.rawValue,
                                 category: payment.category,
                                 type: payment.type.rawValue
@@ -102,11 +100,9 @@ class DataExportService {
     
     struct EncodablePayment: Encodable {
         let id: UUID
-        let transactionDate: String
-        let title: String
+        let date: Date
         let message: String
         let amount: Double
-        let balance: Double
         let currency: String
         let category: String
         let type: String

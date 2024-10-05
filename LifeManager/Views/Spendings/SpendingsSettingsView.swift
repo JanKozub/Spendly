@@ -8,7 +8,6 @@ struct SpendingsSettingsView: View {
     @State var context: ModelContext
     
     @Binding var categories: [PaymentCategory]
-    @State var categoriesNames: [String] = PaymentCategory.getDefault()
     
     var body: some View {
         HStack {
@@ -25,8 +24,8 @@ struct SpendingsSettingsView: View {
                 
                 Button(action: {
                     try? context.delete(model: PaymentCategory.self)
-                    for cat in categoriesNames {
-                        context.insert(PaymentCategory(name: cat))
+                    for cat in SpendingsSettingsView.getDefaultCategories() {
+                        context.insert(cat)
                     }
                     try? context.save()
                 })
@@ -46,7 +45,13 @@ struct SpendingsSettingsView: View {
                     TextField("Enter text here", text: $userInput).textFieldStyle(RoundedBorderTextFieldStyle())
                     
                     Button(action: {
-                        context.insert(PaymentCategory(name: userInput))
+                        context.insert(PaymentCategory(name: userInput,
+                            graphColor: NSColor(
+                                red: CGFloat.random(in: 0...1),
+                                green: CGFloat.random(in: 0...1),
+                                blue: CGFloat.random(in: 0...1),
+                                alpha: 1.0
+                            )))
                         try? context.save()
                         userInput = ""
                     }) {
@@ -70,5 +75,20 @@ struct SpendingsSettingsView: View {
                 }.frame(alignment: .top)
             }
         }
+    }
+    
+    static func getDefaultCategories() -> [PaymentCategory] {
+        return [
+            PaymentCategory(name: "Entertainment", graphColor: .red),
+            PaymentCategory(name: "Groceries", graphColor: .blue),
+            PaymentCategory(name: "For Parents", graphColor: .green),
+            PaymentCategory(name: "Fuel", graphColor: .red),
+            PaymentCategory(name: "Gift", graphColor: .red),
+            PaymentCategory(name: "New Things", graphColor: .red),
+            PaymentCategory(name: "Going out", graphColor: .red),
+            PaymentCategory(name: "Subscriptions", graphColor: .red),
+            PaymentCategory(name: "Transport", graphColor: .red),
+            PaymentCategory(name: "Other", graphColor: .red),
+        ]
     }
 }

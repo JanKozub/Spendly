@@ -4,7 +4,6 @@ struct PaymentRow: View {
     @Binding var payment: Payment
     @Binding var width: CGFloat
     @Binding var categories: [String]
-    @State private var showDialog = false
     @State private var isEditing = false
     @State var onPaymentChanged: (Payment) -> Void
     var onDelete: () -> Void
@@ -13,23 +12,19 @@ struct PaymentRow: View {
     private let myGreen = Color(red: 36/255, green: 238/255, blue: 0/255).opacity(0.1)
     
     var body: some View {
-        let rowColor = payment.amount < 0 ? myRed : myGreen
-        let otherMsg = "Message: " + (payment.message.isEmpty ? "None" : payment.message) +
-        "\nBalance: " + String(format: "%.2f", payment.balance) + " zł"
-        
         HStack {
-            Text(payment.transactionDate)
+            Text(payment.dateToString())
                 .frame(maxWidth: width * 0.1, alignment: .center)
             
             if isEditing {
-                TextField("Edit Title", text: $payment.title, onCommit: {
+                TextField("Edit Message", text: $payment.message, onCommit: {
                     isEditing = false
                     onPaymentChanged(payment)
                 })
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .frame(maxWidth: width * 0.5, alignment: .center)
             } else {
-                Text(payment.title).frame(maxWidth: width * 0.5, alignment: .center)
+                Text(payment.message).frame(maxWidth: width * 0.5, alignment: .center)
             }
             
             Text(String(format: "%.2f", abs(payment.amount)) + " " + payment.currency.name)
@@ -65,14 +60,6 @@ struct PaymentRow: View {
                         .foregroundColor(isEditing ? .green : .blue)
                 }
                 
-                Button(action: { showDialog.toggle() }) {Image(systemName: "info.circle").foregroundColor(.gray)}
-                .alert(
-                    Text("Other Information"),
-                    isPresented: $showDialog,
-                    actions: {},
-                    message: { Text(otherMsg) }
-                )
-                
                 Button(action: onDelete) {
                     Image(systemName: "trash.circle")
                         .foregroundColor(.red)
@@ -80,7 +67,7 @@ struct PaymentRow: View {
             }
             .frame(maxWidth: width * 0.1, alignment: .center)
         }
-        .background(rowColor)
+        .background(payment.amount < 0 ? myRed : myGreen)
     }
 }
 

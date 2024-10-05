@@ -27,11 +27,9 @@ class DataParseService {
                         cur = columns[4]
                     } else {
                         let payment = Payment(
-                            transactionDate: columns[1],
-                            title: columns[2],
-                            message:columns[3],
+                            date: Payment.dateFromString(columns[1]) ?? Date(),
+                            message: columns[2] + " " + columns[3],
                             amount: Double(columns[5]) ?? -1,
-                            balance: Double(columns[6]) ?? -1,
                             currency: Currency.nameToType(name: cur.uppercased(with: .autoupdatingCurrent)),
                             category: "",
                             type: .personal
