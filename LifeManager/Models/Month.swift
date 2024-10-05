@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 class Month: Identifiable ,Hashable {
-    @Attribute(.unique) let id: UUID
+    @Attribute(.unique) var id: UUID
     @Attribute var monthName: MonthName
     @Attribute var currency: Currency
     @Relationship(deleteRule: .cascade) var payments: [Payment]

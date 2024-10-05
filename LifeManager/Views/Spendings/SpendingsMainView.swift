@@ -6,7 +6,7 @@
 //
 
 import Charts
-
+import UniformTypeIdentifiers
 import SwiftUI
 
 struct SpendingsMainView: View {
@@ -28,34 +28,13 @@ struct SpendingsMainView: View {
             VStack {
                 HStack {
                     switch displayYear {
-                    case "Year":
-                        Chart(chartEntries) { entry in
-                            ForEach(categories) { category in
-                                BarMark(
-                                    x: .value("Shape Type", entry.monthName.name),
-                                    y: .value("Total Count", entry.sums[category] ?? 0.0)
-                                ).foregroundStyle(by: .value("Shape Color", category.name))
-                            }
-                        }.chartForegroundStyleScale(range: graphColors(for: categories))
-                    case "Month":
-                        HStack {
-                            ForEach(PaymentType.allCases) { type in
-                                Chart(chartEntries) { entry in
-                                    if entry.paymentType == type {
-                                        ForEach(categories) { category in
-                                            SectorMark(
-                                                angle: .value(Text(verbatim: category.name), entry.sums[category] ?? 0),
-                                                angularInset: 3
-                                            ).foregroundStyle(by: .value(Text(verbatim: category.name), category.name))
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    default: HStack {}
+                        case "Year":
+                            getYearChart()
+                        case "Month":
+                            getMonthChart()
+                        default: HStack {}
                     }
-                }
-                .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
+                }.frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
                 
                 Divider()
                 
@@ -70,21 +49,14 @@ struct SpendingsMainView: View {
                     .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
                     Divider()
                     VStack {
-                        Button(action: {
-                            let panel = NSOpenPanel()
-                            panel.begin { result in
-                                if result == .OK, let fileURL = panel.url {
-                                    payments = DataParseService.loadSantanderPaymentsFromCSV(file: fileURL)
-                                }
-                            }
-                        }) {Text("Import new month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
+                        Button(action: openFilesExplorer)
+                        {Text("Import new month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
                         
-                        Button(action: {
-                        }) {Text("Edit this month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
+                        Button(action: {})
+                        {Text("Edit this month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
                         
-                        Button(action: {
-                            isShowingSettings = true
-                        }) {Text("Settings").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
+                        Button(action: {isShowingSettings = true})
+                        {Text("Settings").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
                     }
                     .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
                 }
@@ -150,6 +122,47 @@ struct SpendingsMainView: View {
                         chartEntries.append(chartEntry)
                     }
                 }
+            }
+        }
+    }
+    
+    private func getYearChart() -> some View {
+        return Chart(chartEntries) { entry in
+            ForEach(categories) { category in
+                BarMark(
+                    x: .value("Shape Type", entry.monthName.name),
+                    y: .value("Total Count", entry.sums[category] ?? 0.0)
+                ).foregroundStyle(by: .value("Shape Color", category.name))
+            }
+        }.chartForegroundStyleScale(range: graphColors(for: categories))
+    }
+    
+    private func getMonthChart() -> some View {
+        HStack {
+            ForEach(PaymentType.allCases) { type in
+                Chart(chartEntries) { entry in
+                    if entry.paymentType == type {
+                        ForEach(categories) { category in
+                            SectorMark(
+                                angle: .value(Text(verbatim: category.name), entry.sums[category] ?? 0),
+                                angularInset: 3
+                            ).foregroundStyle(by: .value(Text(verbatim: category.name), category.name))
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func openFilesExplorer() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = true
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = true
+        panel.allowedContentTypes = [UTType.commaSeparatedText]
+        panel.begin { result in
+            if result == .OK {
+                payments = DataParseService.loadDataFromBank(files: panel.urls)
             }
         }
     }

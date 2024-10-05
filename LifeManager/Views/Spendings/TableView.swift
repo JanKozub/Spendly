@@ -1,10 +1,3 @@
-//
-//  TableView.swift
-//  LifeManager
-//
-//  Created by Jan Kozub on 02/07/2024.
-//
-
 import SwiftUI
 import SwiftData
 
@@ -19,7 +12,9 @@ struct TableView: View {
     @State private var isPresentingConfirmCancel: Bool = false
     @State private var isPresentingConfirmSubmit: Bool = false
     @State private var isPresentingAlert = false
+    @State private var isPresentingTextFieldPopup = false
     @State private var constantTextPart: String = ""
+    @State private var newConstantTextPart: String = ""
     
     @State var years: [Year]
     @State var categories: [String]
@@ -42,7 +37,7 @@ struct TableView: View {
                 
                 List {
                     ForEach($payments, id: \.self) { $payment in
-                        PaymentRow(payment: $payment, width: .constant(reader.size.width), categories: $categories, constantTextPart: $constantTextPart, onPaymentChanged: { newPayment in calculateSums() })
+                        PaymentRow(payment: $payment, width: .constant(reader.size.width), categories: $categories, onPaymentChanged: { newPayment in calculateSums() })
                     }
                 }
                 .edgesIgnoringSafeArea(.all)
@@ -91,10 +86,36 @@ struct TableView: View {
         }
         .toolbar {
             ToolbarItemGroup {
-                TextField("Enter text here", text: $constantTextPart).textFieldStyle(RoundedBorderTextFieldStyle())
+                Button("Edit Titles") {
+                    newConstantTextPart = constantTextPart
+                    isPresentingTextFieldPopup = true
+                }
                 
                 Text("Currency: " + currency.name)
             }
+        }
+        .sheet(isPresented: $isPresentingTextFieldPopup) {
+            VStack {
+                Text("Edit Payment Titles")
+                    .font(.headline)
+                TextField("Enter new text", text: $newConstantTextPart)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding()
+                
+                HStack {
+                    Button("Cancel") {
+                        isPresentingTextFieldPopup = false
+                    }
+                    Spacer()
+                    Button("Submit") {
+                        constantTextPart = newConstantTextPart
+                        updatePaymentTitles()
+                        isPresentingTextFieldPopup = false
+                    }
+                }
+                .padding()
+            }
+            .padding()
         }
         .onAppear(perform: {
             calculateSums()
@@ -166,6 +187,12 @@ struct TableView: View {
         
         try? context.save()
         payments = []
+    }
+    
+    private func updatePaymentTitles() {
+        for index in payments.indices {
+            payments[index].title = payments[index].title.replacingOccurrences(of: constantTextPart, with: "")
+        }
     }
 }
 

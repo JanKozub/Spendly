@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 class Payment: Identifiable, Hashable, ObservableObject {
-    @Attribute(.unique) let id: UUID
+    @Attribute(.unique) var id: UUID
     @Attribute var issuedDate: String
     @Attribute var transactionDate: String
     @Attribute var title: String
@@ -48,5 +48,19 @@ class Payment: Identifiable, Hashable, ObservableObject {
     
     static func == (lhs: Payment, rhs: Payment) -> Bool {
         lhs.id == rhs.id;
+    }
+    
+    func dateFromString(_ dateString: String) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd-MM-yyyy"
+        return dateFormatter.date(from: dateString)
+    }
+    
+    static func sortPaymentsByTransactionDate(payments: [Payment]) -> [Payment] {
+        return payments.sorted {
+            guard let date1 = $0.dateFromString($0.transactionDate),
+                  let date2 = $1.dateFromString($1.transactionDate) else { return false }
+            return date1 > date2
+        }
     }
 }

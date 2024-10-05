@@ -8,6 +8,19 @@
 import Foundation
 
 class DataParseService {
+    static func loadDataFromBank(files: [URL]) -> [Payment] {
+        var combinedPayments = [Payment]()
+        
+        for file in files {
+            let payments = loadSantanderPaymentsFromCSV(file: file)
+            combinedPayments.append(contentsOf: payments)
+        }
+        
+        combinedPayments = Payment.sortPaymentsByTransactionDate(payments: combinedPayments)
+        
+        return combinedPayments
+    }
+    
     static func loadSantanderPaymentsFromCSV(file: URL) -> [Payment] {
         do {
             let fileContent = try String(contentsOf: file, encoding: .utf8)

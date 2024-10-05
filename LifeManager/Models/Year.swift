@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 class Year: Identifiable, Equatable {
-    @Attribute(.unique) let id: UUID
+    @Attribute(.unique) var id: UUID
     @Attribute var number: Int
     @Relationship var months: [Month]
     

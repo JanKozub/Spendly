@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 class PaymentCategory: Identifiable, Equatable, Encodable, Decodable {
-    @Attribute(.unique) let id: UUID
+    @Attribute(.unique) var id: UUID
     @Attribute(.unique) var name: String
     
     enum CodingKeys: String, CodingKey {

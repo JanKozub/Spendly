@@ -11,7 +11,6 @@ struct PaymentRow: View {
     @Binding var payment: Payment
     @Binding var width: CGFloat
     @Binding var categories: [String]
-    @Binding var constantTextPart: String
     @State private var showDialog = false
     @State var onPaymentChanged: (Payment) -> Void
     
@@ -26,9 +25,9 @@ struct PaymentRow: View {
         
         HStack {
             Text(payment.transactionDate).frame(maxWidth: width * 0.1, alignment: .center)
-            Text(payment.title.replacingOccurrences(of: constantTextPart, with: "")).frame(maxWidth: width * 0.6, alignment: .center)
+            Text(payment.title).frame(maxWidth: width * 0.6, alignment: .center)
             
-            Text(String(format: "%.2f", abs(payment.amount))).frame(maxWidth: width * 0.07, alignment: .center)
+            Text(String(format: "%.2f", abs(payment.amount)) + " " + payment.currency.name).frame(maxWidth: width * 0.07, alignment: .center)
             
             DropdownMenu(selectedCategory: "", elements: categories, onChange: Binding(
                 get: {{ newValue in
@@ -62,5 +61,5 @@ struct PaymentRow: View {
 }
 
 #Preview {
-    PaymentRow(payment: .constant(Payment.example()), width: .constant(CGFloat.infinity), categories: .constant([]), constantTextPart: .constant(""), onPaymentChanged: {_ in})
+    PaymentRow(payment: .constant(Payment.example()), width: .constant(CGFloat.infinity), categories: .constant([]), onPaymentChanged: {_ in})
 }

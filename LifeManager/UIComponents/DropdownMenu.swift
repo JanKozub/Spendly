@@ -38,7 +38,7 @@ struct DropdownMenu: View {
 }
 
 #Preview {
-    @State var onChangeHandler: ((String) -> Void)? = nil
+    @Previewable @State var onChangeHandler: ((String) -> Void)? = nil
     
     return DropdownMenu(selectedCategory: "Other", elements: ["Category 1", "Category 2", "Other"], onChange: $onChangeHandler)
 }

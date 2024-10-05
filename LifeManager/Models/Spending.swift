@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 class Spending: Identifiable, Hashable, Encodable, Decodable {
-    @Attribute(.unique) let id: UUID
+    @Attribute(.unique) var id: UUID
     @Attribute var sums: [String: Double]
     
     enum CodingKeys: String, CodingKey {
