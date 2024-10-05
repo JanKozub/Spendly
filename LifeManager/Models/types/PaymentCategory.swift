@@ -37,24 +37,16 @@ class PaymentCategory: Identifiable, Equatable, Encodable, Decodable {
     
     static func getDefault() -> [String] {
         return [
-            "Cash Deposit",
-            "Cash Withdraw",
-            "Clothes",
-            "Commission Fee",
-            "Debt",
             "Entertainment",
-            "Exchange",
-            "Food",
+            "Groceries",
             "For Parents",
             "Fuel",
             "Gift",
-            "Hygiene",
             "New Things",
-            "Other",
-            "Other",
-            "Return",
+            "Going out",
             "Subscriptions",
-            "Transport"
+            "Transport",
+            "Other"
         ]
     }
     

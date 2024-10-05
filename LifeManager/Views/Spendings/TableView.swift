@@ -25,19 +25,20 @@ struct TableView: View {
         let currency: Currency = payments.count > 0 ? payments[0].currency : .pln
         GeometryReader { reader in
             VStack {
-                HStack {
-                    HeaderText(text: "Transaction Date", percentage: 0.1, size: reader.size)
-                    HeaderText(text: "Title", percentage: 0.6, size: reader.size)
-                    HeaderText(text: "Amount", percentage: 0.07, size: reader.size)
-                    HeaderText(text: "Category", percentage: 0.1, size: reader.size)
-                    HeaderText(text: "Type", percentage: 0.08, size: reader.size)
-                    HeaderText(text: "Other", percentage: 0.05, size: reader.size)
-                }
-                .frame(maxWidth: .infinity, maxHeight: 30, alignment: .center).padding(.leading, 10).padding(.trailing, 25)
-                
                 List {
                     ForEach($payments, id: \.self) { $payment in
-                        PaymentRow(payment: $payment, width: .constant(reader.size.width), categories: $categories, onPaymentChanged: { newPayment in calculateSums() })
+                        PaymentRow(
+                            payment: $payment,
+                            width: .constant(reader.size.width),
+                            categories: $categories,
+                            onPaymentChanged: { newPayment in calculateSums() },
+                            onDelete: {
+                                deletePayment(payment: payment)
+                            }
+                        )
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
                     }
                 }
                 .edgesIgnoringSafeArea(.all)
@@ -60,15 +61,23 @@ struct TableView: View {
                         }
                     }.dialogIcon(Image(systemName: "x.circle.fill"))
                     
-                    DropdownMenu(selectedCategory: String(YearName.currentYear), elements: YearName.allYearsNames, onChange: Binding(
-                        get: {{newValue in yearName = newValue}},
-                        set: {_ in}
-                    )).frame(maxWidth: 100)
+                    DropdownMenu(
+                        selectedCategory: String(YearName.currentYear),
+                        elements: YearName.allYearsNames,
+                        onChange: Binding(
+                            get: {{newValue in yearName = newValue}},
+                            set: {_ in}
+                        )
+                    ).frame(maxWidth: 100)
                     
-                    DropdownMenu(selectedCategory: MonthName.january.name, elements: MonthName.allCasesNames, onChange: Binding(
-                        get: {{newValue in monthName = MonthName.nameToType(name: newValue)}},
-                        set: {_ in}
-                    )).frame(maxWidth: 100)
+                    DropdownMenu(
+                        selectedCategory: MonthName.january.name,
+                        elements: MonthName.allCasesNames,
+                        onChange: Binding(
+                            get: {{newValue in monthName = MonthName.nameToType(name: newValue)}},
+                            set: {_ in}
+                        )
+                    ).frame(maxWidth: 100)
                     
                     Button("Add month", role: .destructive) {
                         isPresentingConfirmSubmit = true
@@ -153,6 +162,11 @@ struct TableView: View {
         }
         
         return output
+    }
+    
+    private func deletePayment(payment: Payment) {
+        payments.removeAll(where: { $0.id == payment.id })
+        calculateSums()
     }
     
     private func addMonth(currency: Currency) {
