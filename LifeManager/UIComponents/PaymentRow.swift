@@ -1,10 +1,3 @@
-//
-//  PaymentView.swift
-//  LifeManager
-//
-//  Created by Jan Kozub on 02/07/2024.
-//
-
 import SwiftUI
 
 struct PaymentRow: View {
@@ -20,9 +13,8 @@ struct PaymentRow: View {
     private let myGreen = Color(red: 36/255, green: 238/255, blue: 0/255).opacity(0.1)
     
     var body: some View {
-        let rowColor = payment.amount < 0 ? myRed: myGreen
-        let otherMsg = "Issued Date: " + payment.issuedDate +
-        "\nMessage: " + (payment.message == "" ? "None" : payment.message) +
+        let rowColor = payment.amount < 0 ? myRed : myGreen
+        let otherMsg = "Message: " + (payment.message.isEmpty ? "None" : payment.message) +
         "\nBalance: " + String(format: "%.2f", payment.balance) + " zł"
         
         HStack {
@@ -68,18 +60,23 @@ struct PaymentRow: View {
             ).frame(maxWidth: width * 0.08, alignment: .center)
             
             HStack {
-                Button(action: {isEditing.toggle()}) {
+                Button(action: { isEditing.toggle() }) {
                     Image(systemName: isEditing ? "checkmark.circle" : "pencil.circle")
                         .foregroundColor(isEditing ? .green : .blue)
                 }
                 
-                Button(action: {showDialog.toggle()}) {Image(systemName: "info.circle").foregroundColor(.gray)}
+                Button(action: { showDialog.toggle() }) {Image(systemName: "info.circle").foregroundColor(.gray)}
                 .alert(
                     Text("Other Information"),
-                    isPresented: $showDialog
-                ) {} message: {Text(otherMsg)}
+                    isPresented: $showDialog,
+                    actions: {},
+                    message: { Text(otherMsg) }
+                )
                 
-                Button(action: onDelete) {Image(systemName: "trash.circle").foregroundColor(.red)}
+                Button(action: onDelete) {
+                    Image(systemName: "trash.circle")
+                        .foregroundColor(.red)
+                }
             }
             .frame(maxWidth: width * 0.1, alignment: .center)
         }
@@ -92,7 +89,7 @@ struct PaymentRow: View {
         payment: .constant(Payment.example()),
         width: .constant(CGFloat.infinity),
         categories: .constant([]),
-        onPaymentChanged: {_ in},
+        onPaymentChanged: { _ in },
         onDelete: {}
     )
 }

@@ -1,10 +1,3 @@
-//
-//  SpendingsMainView.swift
-//  LifeManager
-//
-//  Created by Jan Kozub on 30/07/2024.
-//
-
 import Charts
 import UniformTypeIdentifiers
 import SwiftUI

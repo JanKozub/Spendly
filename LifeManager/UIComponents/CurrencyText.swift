@@ -1,10 +1,3 @@
-//
-//  CurrencyText.swift
-//  LifeManager
-//
-//  Created by Jan Kozub on 03/07/2024.
-//
-
 import SwiftUI
 
 struct CurrencyText: View {

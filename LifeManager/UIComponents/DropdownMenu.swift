@@ -1,10 +1,3 @@
-//
-//  CategoryMenu.swift
-//  LifeManager
-//
-//  Created by Jan Kozub on 02/07/2024.
-//
-
 import SwiftUI
 
 struct DropdownMenu: View {

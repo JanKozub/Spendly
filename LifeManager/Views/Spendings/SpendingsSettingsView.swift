@@ -1,10 +1,3 @@
-//
-//  SettingsWindow.swift
-//  LifeManager
-//
-//  Created by Jan Kozub on 25/07/2024.
-//
-
 import Foundation
 import SwiftUI
 import SwiftData

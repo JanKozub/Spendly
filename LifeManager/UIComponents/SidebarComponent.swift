@@ -1,10 +1,3 @@
-//
-//  SidebarView.swift
-//  LifeManager
-//
-//  Created by Jan Kozub on 01/07/2024.
-//
-
 import SwiftUI
 
 struct SidebarComponent: View {

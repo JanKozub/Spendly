@@ -1,10 +1,3 @@
-//
-//  DataParser.swift
-//  LifeManager
-//
-//  Created by Jan Kozub on 25/07/2024.
-//
-
 import Foundation
 
 class DataParseService {
@@ -34,11 +27,9 @@ class DataParseService {
                         cur = columns[4]
                     } else {
                         let payment = Payment(
-                            issuedDate: columns[0],
                             transactionDate: columns[1],
                             title: columns[2],
                             message:columns[3],
-                            accountNumber: Int(columns[4]) ?? -1,
                             amount: Double(columns[5]) ?? -1,
                             balance: Double(columns[6]) ?? -1,
                             currency: Currency.nameToType(name: cur.uppercased(with: .autoupdatingCurrent)),

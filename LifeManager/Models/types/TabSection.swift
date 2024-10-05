@@ -1,10 +1,3 @@
-//
-//  TabSelection.swift
-//  LifeManager
-//
-//  Created by Jan Kozub on 01/07/2024.
-//
-
 import Foundation
 
 enum TabSection: Identifiable, CaseIterable, Hashable {

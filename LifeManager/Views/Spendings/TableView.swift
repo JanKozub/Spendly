@@ -13,8 +13,20 @@ struct TableView: View {
     @State private var isPresentingConfirmSubmit: Bool = false
     @State private var isPresentingAlert = false
     @State private var isPresentingTextFieldPopup = false
+    @State private var isPresentingAddPaymentPopup = false // State for Add Payment popup
+    
     @State private var constantTextPart: String = ""
     @State private var newConstantTextPart: String = ""
+    
+    // State variables for the "Add Payment" popup fields
+    @State private var newPaymentTransactionDate: String = ""
+    @State private var newPaymentTitle: String = ""
+    @State private var newPaymentMessage: String = ""
+    @State private var newPaymentAmount: String = ""
+    @State private var newPaymentBalance: String = ""
+    @State private var newPaymentCategory: String = ""
+    @State private var newPaymentType: PaymentType = .personal
+    @State private var newPaymentCurrency: Currency = .pln
     
     @State var years: [Year]
     @State var categories: [String]
@@ -100,26 +112,68 @@ struct TableView: View {
                     isPresentingTextFieldPopup = true
                 }
                 
+                Button("Add Payment") { // New button for adding payment
+                    isPresentingAddPaymentPopup = true
+                }
+                
                 Text("Currency: " + currency.name)
             }
         }
-        .sheet(isPresented: $isPresentingTextFieldPopup) {
+        .sheet(isPresented: $isPresentingAddPaymentPopup) { // New sheet for adding a payment
             VStack {
-                Text("Edit Payment Titles")
+                Text("Add New Payment")
                     .font(.headline)
-                TextField("Enter new text", text: $newConstantTextPart)
+                    .padding(.bottom, 20)
+                
+                TextField("Transaction Date (dd-MM-yyyy)", text: $newPaymentTransactionDate)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
                 
+                TextField("Payment Title", text: $newPaymentTitle)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding()
+                
+                TextField("Message", text: $newPaymentMessage)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding()
+                
+                TextField("Amount", text: $newPaymentAmount)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding()
+                
+                TextField("Balance", text: $newPaymentBalance)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding()
+                
+                Picker("Category", selection: $newPaymentCategory) {
+                    ForEach(categories, id: \.self) { category in
+                        Text(category)
+                    }
+                }
+                .padding()
+                
+                Picker("Type", selection: $newPaymentType) {
+                    ForEach(PaymentType.allCases, id: \.self) { type in
+                        Text(type.rawValue.capitalized)
+                    }
+                }
+                .padding()
+                
+                Picker("Currency", selection: $newPaymentCurrency) {
+                    ForEach(Currency.allCases, id: \.self) { currency in
+                        Text(currency.name)
+                    }
+                }
+                .padding()
+                
                 HStack {
                     Button("Cancel") {
-                        isPresentingTextFieldPopup = false
+                        isPresentingAddPaymentPopup = false
                     }
                     Spacer()
-                    Button("Submit") {
-                        constantTextPart = newConstantTextPart
-                        updatePaymentTitles()
-                        isPresentingTextFieldPopup = false
+                    Button("Add Payment") {
+                        addNewPayment()
+                        isPresentingAddPaymentPopup = false
                     }
                 }
                 .padding()
@@ -134,6 +188,24 @@ struct TableView: View {
             Button("OK", role: .cancel) { }
         }
         .dialogIcon(Image(systemName: "x.circle.fill"))
+    }
+    
+    private func addNewPayment() {
+        guard let amount = Double(newPaymentAmount),
+              let balance = Double(newPaymentBalance) else { return }
+        
+        let newPayment = Payment(
+            transactionDate: newPaymentTransactionDate,
+            title: newPaymentTitle,
+            message: newPaymentMessage,
+            amount: amount,
+            balance: balance,
+            currency: newPaymentCurrency,
+            category: newPaymentCategory,
+            type: newPaymentType
+        )
+        payments.append(newPayment)
+        calculateSums()
     }
     
     private func calculateSums() {

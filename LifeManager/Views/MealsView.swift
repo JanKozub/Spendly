@@ -1,10 +1,3 @@
-//
-//  MealsView.swift
-//  LifeManager
-//
-//  Created by Jan Kozub on 22/06/2024.
-//
-
 import SwiftUI
 
 struct MealsView: View {

@@ -1,10 +1,3 @@
-//
-//  DataExporter.swift
-//  LifeManager
-//
-//  Created by Jan Kozub on 18/07/2024.
-//
-
 import SwiftData
 import Foundation
 import AppKit
@@ -33,11 +26,9 @@ class DataExportService {
                         payments: month.payments.map { payment in
                             EncodablePayment(
                                 id: payment.id,
-                                issuedDate: payment.issuedDate,
                                 transactionDate: payment.transactionDate,
                                 title: payment.title,
                                 message: payment.message,
-                                accountNumber: payment.accountNumber,
                                 amount: payment.amount,
                                 balance: payment.balance,
                                 currency: payment.currency.rawValue,
@@ -111,11 +102,9 @@ class DataExportService {
     
     struct EncodablePayment: Encodable {
         let id: UUID
-        let issuedDate: String
         let transactionDate: String
         let title: String
         let message: String
-        let accountNumber: Int
         let amount: Double
         let balance: Double
         let currency: String
