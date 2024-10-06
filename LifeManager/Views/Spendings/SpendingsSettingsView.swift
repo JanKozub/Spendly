@@ -79,16 +79,26 @@ struct SpendingsSettingsView: View {
     
     static func getDefaultCategories() -> [PaymentCategory] {
         return [
-            PaymentCategory(name: "Entertainment", graphColor: .red),
-            PaymentCategory(name: "Groceries", graphColor: .blue),
-            PaymentCategory(name: "For Parents", graphColor: .green),
-            PaymentCategory(name: "Fuel", graphColor: .red),
-            PaymentCategory(name: "Gift", graphColor: .red),
-            PaymentCategory(name: "New Things", graphColor: .red),
-            PaymentCategory(name: "Going out", graphColor: .red),
-            PaymentCategory(name: "Subscriptions", graphColor: .red),
-            PaymentCategory(name: "Transport", graphColor: .red),
-            PaymentCategory(name: "Other", graphColor: .red),
+            PaymentCategory(name: "Entertainment", graphColor:
+                                NSColor(red: 240.0/255, green: 68.0/255, blue: 0, alpha: 1.0)),
+            PaymentCategory(name: "Groceries", graphColor:
+                                NSColor(red: 240.0/255, green: 26.0/255, blue: 0, alpha: 1.0)),
+            PaymentCategory(name: "For Parents", graphColor:
+                                NSColor(red: 112.0/255, green: 91.0/255, blue: 56.0/255, alpha: 1.0)),
+            PaymentCategory(name: "Fuel", graphColor:
+                                NSColor(red: 112.0/255, green: 56.0/255, blue: 69.0/255, alpha: 1.0)),
+            PaymentCategory(name: "Gift", graphColor:
+                                NSColor(red: 112.0/255, green: 82.0/255, blue: 56.0/255, alpha: 1.0)),
+            PaymentCategory(name: "New Things", graphColor:
+                                NSColor(red: 112.0/255, green: 62.0/255, blue: 56.0/255, alpha: 1.0)),
+            PaymentCategory(name: "Going out", graphColor:
+                                NSColor(red: 240.0/255, green: 125.0/255, blue: 80.0/255, alpha: 1.0)),
+            PaymentCategory(name: "Subscriptions", graphColor:
+                                NSColor(red: 240.0/255, green: 110.0/255, blue: 0, alpha: 1.0)),
+            PaymentCategory(name: "Transport", graphColor:
+                                NSColor(red: 240.0/255, green: 0, blue: 55.0/255, alpha: 1.0)),
+            PaymentCategory(name: "Other", graphColor:
+                                NSColor(red: 245.0/255, green: 164.0/255, blue: 34.0/255, alpha: 1.0)),
         ]
     }
 }
