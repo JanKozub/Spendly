@@ -30,7 +30,7 @@ class DataExportService {
                                 message: payment.message,
                                 amount: payment.amount,
                                 currency: payment.currency.rawValue,
-                                category: payment.category,
+                                category: payment.category.name,
                                 type: payment.type.rawValue
                             )
                         },
@@ -39,8 +39,8 @@ class DataExportService {
                                 type: key.rawValue,
                                 spending: SpendingDetails(
                                     id: value.id,
-                                    sums: Dictionary(uniqueKeysWithValues: value.sums.map { (key, value) in
-                                        (key, value)
+                                    sums: Dictionary<String, Double>(uniqueKeysWithValues: value.sums.map { (innerKey, innerValue) in
+                                        (innerKey.name, innerValue)
                                     })
                                 )
                             )

@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 import SwiftData
 
-struct SpendingsSettingsView: View {
+struct SettingsView: View {
     @Binding var isShowing: Bool
     @State private var userInput: String = ""
     @State var context: ModelContext
@@ -24,7 +24,7 @@ struct SpendingsSettingsView: View {
                 
                 Button(action: {
                     try? context.delete(model: PaymentCategory.self)
-                    for cat in SpendingsSettingsView.getDefaultCategories() {
+                    for cat in SettingsView.getDefaultCategories() {
                         context.insert(cat)
                     }
                     try? context.save()

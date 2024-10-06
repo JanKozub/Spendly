@@ -2,7 +2,7 @@ import Charts
 import UniformTypeIdentifiers
 import SwiftUI
 
-struct SpendingsMainView: View {
+struct MainView: View {
     @Binding var payments: [Payment]
     @Binding var isShowingSettings: Bool
     
@@ -13,7 +13,7 @@ struct SpendingsMainView: View {
     
     @State var years: [Year]
     @State var categories: [PaymentCategory]
-    @State var allPayments: [Payment]
+    @State var savedPayments: [Payment]
     @State private var chartEntries: [ChartEntry] = []
     
     var body: some View {
@@ -84,8 +84,8 @@ struct SpendingsMainView: View {
     }
     
     private func refreshChart() {
-        allPayments.sort(by: { $0.amount < $1.amount} ) // Getting lowest value because expenses have minus sign
-        top10Payments = Array(allPayments.prefix(15))
+        savedPayments.sort(by: { $0.amount < $1.amount} ) // Getting lowest value because expenses have minus sign
+        top10Payments = Array(savedPayments.prefix(15))
         
         chartEntries = []
         if let year = years.first(where: {$0.number == YearName.currentYear}) {
@@ -160,9 +160,9 @@ struct SpendingsMainView: View {
         return (value ?? 0) * Currency.exchangeRate(from: fromCur, to: currency)
     }
     
-    private func addSumsToEntry(entry: inout ChartEntry, sums: Dictionary<String, Double>, currency: Currency) {
+    private func addSumsToEntry(entry: inout ChartEntry, sums: Dictionary<PaymentCategory, Double>, currency: Currency) {
         for category in categories {
-            entry.sums[category]! += exchangeValue(value: sums[category.name], fromCur: currency)
+            entry.sums[category]! += exchangeValue(value: sums[category], fromCur: currency)
         }
     }
     
@@ -176,5 +176,5 @@ struct SpendingsMainView: View {
 }
 
 #Preview {
-    SpendingsMainView(payments: .constant([]), isShowingSettings: .constant(false), years: [], categories: [], allPayments: [])
+    MainView(payments: .constant([]), isShowingSettings: .constant(false), years: [], categories: [], savedPayments: [])
 }

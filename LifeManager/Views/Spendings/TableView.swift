@@ -21,12 +21,12 @@ struct TableView: View {
     @State private var newPaymentDate: String = ""
     @State private var newPaymentMessage: String = ""
     @State private var newPaymentAmount: String = ""
-    @State private var newPaymentCategory: String = ""
+    @State private var newPaymentCategory: PaymentCategory = PaymentCategory(name: "", graphColor: .red)
     @State private var newPaymentType: PaymentType = .personal
     @State private var newPaymentCurrency: Currency = .pln
     
     @State var years: [Year]
-    @State var categories: [String]
+    @State var categories: [PaymentCategory]
     
     @Environment(\.modelContext) private var context
     
@@ -159,7 +159,7 @@ struct TableView: View {
                 
                 Picker("Category", selection: $newPaymentCategory) {
                     ForEach(categories, id: \.self) { category in
-                        Text(category)
+                        Text(category.name)
                     }
                 }
                 .padding()
@@ -234,7 +234,7 @@ struct TableView: View {
         var output: Dictionary<PaymentType, Spending> = [:]
         
         for paymentType in PaymentType.allCases {
-            var temp: Dictionary<String, Double> = [:]
+            var temp: Dictionary<PaymentCategory, Double> = [:]
             for paymentCategory in categories {
                 temp[paymentCategory] = 0.0
             }
@@ -252,7 +252,7 @@ struct TableView: View {
     
     private func addMonth(currency: Currency) {
         for payment in payments {
-            if payment.category == "" {
+            if payment.category.name == "" {
                 isPresentingAlert = true
                 return
             }

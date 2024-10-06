@@ -34,6 +34,10 @@ class PaymentCategory: Identifiable, Equatable, Codable {
         name = try container.decode(String.self, forKey: .name)
         graphColor = try container.decode(GraphColor.self, forKey: .graphColor)
     }
+    
+    static func example() -> PaymentCategory {
+        PaymentCategory(name: "", graphColor: .red)
+    }
 
     static func convertToStringArray(inputArray: [PaymentCategory]) -> [String] {
         var temp: [String] = []

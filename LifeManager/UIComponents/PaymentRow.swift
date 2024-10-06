@@ -3,7 +3,7 @@ import SwiftUI
 struct PaymentRow: View {
     @Binding var payment: Payment
     @Binding var width: CGFloat
-    @Binding var categories: [String]
+    @Binding var categories: [PaymentCategory]
     @State private var isEditing = false
     @State var onPaymentChanged: (Payment) -> Void
     var onDelete: () -> Void
@@ -31,11 +31,11 @@ struct PaymentRow: View {
                 .frame(maxWidth: width * 0.07, alignment: .center)
             
             DropdownMenu(
-                selectedCategory: payment.category,
-                elements: categories,
+                selectedCategory: payment.category.name,
+                elements: PaymentCategory.convertToStringArray(inputArray: categories),
                 onChange: Binding(
                     get: {{ newValue in
-                        payment.category = newValue
+                        payment.category = categories.first(where: { $0.name == newValue }) ?? PaymentCategory.example()
                         onPaymentChanged(payment)
                     }},
                     set: {_ in}

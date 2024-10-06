@@ -8,10 +8,10 @@ class Payment: Identifiable, Hashable, ObservableObject {
     @Attribute var message: String
     @Attribute var amount: Double
     @Attribute var currency: Currency
-    @Attribute var category: String
+    @Attribute var category: PaymentCategory
     @Attribute var type: PaymentType
     
-    init(date: Date, message: String, amount: Double, currency: Currency, category: String, type: PaymentType) {
+    init(date: Date, message: String, amount: Double, currency: Currency, category: PaymentCategory, type: PaymentType) {
         self.id = UUID()
         self.date = date
         self.message = message
@@ -34,7 +34,7 @@ class Payment: Identifiable, Hashable, ObservableObject {
     }
     
     static func example() -> Payment {
-        Payment(date: Date(), message: "", amount: 0, currency: .pln, category: "", type: .personal)
+        Payment(date: Date(), message: "", amount: 0, currency: .pln, category: PaymentCategory.example(), type: .personal)
     }
     
     public func hash(into hasher: inout Hasher) {
