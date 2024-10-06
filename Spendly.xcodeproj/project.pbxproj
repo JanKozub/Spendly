@@ -18,12 +18,10 @@
 		E787448B2C47FC59001ED1C7 /* YearName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E787448A2C47FC59001ED1C7 /* YearName.swift */; };
 		E7926D4B2C52D01E001865D3 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7926D4A2C52D01E001865D3 /* SettingsView.swift */; };
 		E7926D4F2C52E9D7001865D3 /* DataParseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7926D4E2C52E9D7001865D3 /* DataParseService.swift */; };
-		E7BF90342C1E1BF3002A61CC /* LifeManagerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7BF90332C1E1BF3002A61CC /* LifeManagerApp.swift */; };
+		E7BF90342C1E1BF3002A61CC /* SpendlyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7BF90332C1E1BF3002A61CC /* SpendlyApp.swift */; };
 		E7BF90362C1E1BF3002A61CC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7BF90352C1E1BF3002A61CC /* ContentView.swift */; };
 		E7BF90382C1E1BF4002A61CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7BF90372C1E1BF4002A61CC /* Assets.xcassets */; };
 		E7BF903C2C1E1BF4002A61CC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7BF903B2C1E1BF4002A61CC /* Preview Assets.xcassets */; };
-		E7BF905F2C1E2162002A61CC /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = E7BF90502C1E2162002A61CC /* LICENSE.txt */; };
-		E7BF90602C1E2162002A61CC /* landmarkData.json in Resources */ = {isa = PBXBuildFile; fileRef = E7BF90522C1E2162002A61CC /* landmarkData.json */; };
 		E7C92F082C344C5F001456E2 /* DropdownMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C92F072C344C5F001456E2 /* DropdownMenu.swift */; };
 		E7C92F0A2C347D75001456E2 /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C92F092C347D75001456E2 /* TableView.swift */; };
 		E7C92F0E2C34B7AD001456E2 /* CurrencyText.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C92F0D2C34B7AD001456E2 /* CurrencyText.swift */; };
@@ -46,14 +44,12 @@
 		E787448A2C47FC59001ED1C7 /* YearName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearName.swift; sourceTree = "<group>"; };
 		E7926D4A2C52D01E001865D3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E7926D4E2C52E9D7001865D3 /* DataParseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataParseService.swift; sourceTree = "<group>"; };
-		E7BF90302C1E1BF3002A61CC /* LifeManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LifeManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E7BF90332C1E1BF3002A61CC /* LifeManagerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifeManagerApp.swift; sourceTree = "<group>"; };
+		E7BF90302C1E1BF3002A61CC /* Spendly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spendly.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E7BF90332C1E1BF3002A61CC /* SpendlyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendlyApp.swift; sourceTree = "<group>"; };
 		E7BF90352C1E1BF3002A61CC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E7BF90372C1E1BF4002A61CC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		E7BF90392C1E1BF4002A61CC /* LifeManager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LifeManager.entitlements; sourceTree = "<group>"; };
+		E7BF90392C1E1BF4002A61CC /* Spendly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Spendly.entitlements; sourceTree = "<group>"; };
 		E7BF903B2C1E1BF4002A61CC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		E7BF90502C1E2162002A61CC /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
-		E7BF90522C1E2162002A61CC /* landmarkData.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = landmarkData.json; sourceTree = "<group>"; };
 		E7C92F072C344C5F001456E2 /* DropdownMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropdownMenu.swift; sourceTree = "<group>"; };
 		E7C92F092C347D75001456E2 /* TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
 		E7C92F0D2C34B7AD001456E2 /* CurrencyText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyText.swift; sourceTree = "<group>"; };
@@ -78,7 +74,7 @@
 		E7BF90272C1E1BF3002A61CC = {
 			isa = PBXGroup;
 			children = (
-				E7BF90322C1E1BF3002A61CC /* LifeManager */,
+				E7BF90322C1E1BF3002A61CC /* Spendly */,
 				E7BF90312C1E1BF3002A61CC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -86,12 +82,12 @@
 		E7BF90312C1E1BF3002A61CC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E7BF90302C1E1BF3002A61CC /* LifeManager.app */,
+				E7BF90302C1E1BF3002A61CC /* Spendly.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E7BF90322C1E1BF3002A61CC /* LifeManager */ = {
+		E7BF90322C1E1BF3002A61CC /* Spendly */ = {
 			isa = PBXGroup;
 			children = (
 				E7F566722C596B5D0029EB82 /* Services */,
@@ -99,13 +95,13 @@
 				E7F566742C596C6E0029EB82 /* UIComponents */,
 				E7F566732C596BF10029EB82 /* Modules */,
 				E7DE76D12C3313C7002DE392 /* Views */,
-				E7BF90332C1E1BF3002A61CC /* LifeManagerApp.swift */,
+				E7BF90332C1E1BF3002A61CC /* SpendlyApp.swift */,
 				E7BF90372C1E1BF4002A61CC /* Assets.xcassets */,
 				E7BF903A2C1E1BF4002A61CC /* Preview Content */,
 				E7BF90532C1E2162002A61CC /* Resources */,
-				E7BF90392C1E1BF4002A61CC /* LifeManager.entitlements */,
+				E7BF90392C1E1BF4002A61CC /* Spendly.entitlements */,
 			);
-			path = LifeManager;
+			path = Spendly;
 			sourceTree = "<group>";
 		};
 		E7BF903A2C1E1BF4002A61CC /* Preview Content */ = {
@@ -116,19 +112,9 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		E7BF90512C1E2162002A61CC /* LICENSE */ = {
-			isa = PBXGroup;
-			children = (
-				E7BF90502C1E2162002A61CC /* LICENSE.txt */,
-			);
-			path = LICENSE;
-			sourceTree = "<group>";
-		};
 		E7BF90532C1E2162002A61CC /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				E7BF90512C1E2162002A61CC /* LICENSE */,
-				E7BF90522C1E2162002A61CC /* landmarkData.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -207,9 +193,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E7BF902F2C1E1BF3002A61CC /* LifeManager */ = {
+		E7BF902F2C1E1BF3002A61CC /* Spendly */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E7BF903F2C1E1BF4002A61CC /* Build configuration list for PBXNativeTarget "LifeManager" */;
+			buildConfigurationList = E7BF903F2C1E1BF4002A61CC /* Build configuration list for PBXNativeTarget "Spendly" */;
 			buildPhases = (
 				E7BF902C2C1E1BF3002A61CC /* Sources */,
 				E7BF902D2C1E1BF3002A61CC /* Frameworks */,
@@ -219,9 +205,9 @@
 			);
 			dependencies = (
 			);
-			name = LifeManager;
+			name = Spendly;
 			productName = LifeManager;
-			productReference = E7BF90302C1E1BF3002A61CC /* LifeManager.app */;
+			productReference = E7BF90302C1E1BF3002A61CC /* Spendly.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -239,7 +225,7 @@
 					};
 				};
 			};
-			buildConfigurationList = E7BF902B2C1E1BF3002A61CC /* Build configuration list for PBXProject "LifeManager" */;
+			buildConfigurationList = E7BF902B2C1E1BF3002A61CC /* Build configuration list for PBXProject "Spendly" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -252,7 +238,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E7BF902F2C1E1BF3002A61CC /* LifeManager */,
+				E7BF902F2C1E1BF3002A61CC /* Spendly */,
 			);
 		};
 /* End PBXProject section */
@@ -264,8 +250,6 @@
 			files = (
 				E7BF903C2C1E1BF4002A61CC /* Preview Assets.xcassets in Resources */,
 				E7BF90382C1E1BF4002A61CC /* Assets.xcassets in Resources */,
-				E7BF905F2C1E2162002A61CC /* LICENSE.txt in Resources */,
-				E7BF90602C1E2162002A61CC /* landmarkData.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,7 +274,7 @@
 				E7C92F082C344C5F001456E2 /* DropdownMenu.swift in Sources */,
 				E71399772C3C907E0017385E /* ChartEntry.swift in Sources */,
 				E7DE76D52C337489002DE392 /* PaymentRow.swift in Sources */,
-				E7BF90342C1E1BF3002A61CC /* LifeManagerApp.swift in Sources */,
+				E7BF90342C1E1BF3002A61CC /* SpendlyApp.swift in Sources */,
 				E7EA4A7C2C3889CF00F66E03 /* Year.swift in Sources */,
 				E753CCD22C3D9FE90043D551 /* Currency.swift in Sources */,
 				E787448B2C47FC59001ED1C7 /* YearName.swift in Sources */,
@@ -424,11 +408,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = LifeManager/LifeManager.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Spendly/Spendly.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"LifeManager/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Spendly/Preview Content\"";
 				DEVELOPMENT_TEAM = Z432WZK2G2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -443,12 +428,12 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.jk.LifeManager;
+				PRODUCT_BUNDLE_IDENTIFIER = org.jk.Spendly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -463,11 +448,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = LifeManager/LifeManager.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Spendly/Spendly.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"LifeManager/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Spendly/Preview Content\"";
 				DEVELOPMENT_TEAM = Z432WZK2G2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -482,12 +468,12 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.jk.LifeManager;
+				PRODUCT_BUNDLE_IDENTIFIER = org.jk.Spendly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -500,7 +486,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E7BF902B2C1E1BF3002A61CC /* Build configuration list for PBXProject "LifeManager" */ = {
+		E7BF902B2C1E1BF3002A61CC /* Build configuration list for PBXProject "Spendly" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E7BF903D2C1E1BF4002A61CC /* Debug */,
@@ -509,7 +495,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E7BF903F2C1E1BF4002A61CC /* Build configuration list for PBXNativeTarget "LifeManager" */ = {
+		E7BF903F2C1E1BF4002A61CC /* Build configuration list for PBXNativeTarget "Spendly" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E7BF90402C1E1BF4002A61CC /* Debug */,
