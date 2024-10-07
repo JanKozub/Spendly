@@ -36,7 +36,7 @@ struct MainView: View {
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
-
+                    
                     VStack {
                         Button(action: openFilesExplorer)
                         {Text("Import new month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
@@ -151,7 +151,11 @@ struct MainView: View {
         panel.allowedContentTypes = [UTType.commaSeparatedText]
         panel.begin { result in
             if result == .OK {
-                payments = DataParseService.loadDataFromBank(files: panel.urls)
+                do {
+                    payments = try DataParseService.loadDataFromBank(files: panel.urls)
+                } catch {
+                    //TODO handling
+                }
             }
         }
     }

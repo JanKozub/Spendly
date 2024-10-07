@@ -4,73 +4,12 @@ import AppKit
 
 class DataExportService {
     @MainActor
-    static func exportToJSON(context: ModelContext) -> Void {
-        var years: [Year] = []
+    static func exportToJSON(context: ModelContext) throws -> Void {
+        let years = try getYears(context: context)
         
-        do {
-            years = try context.fetch(FetchDescriptor<Year>())
-        } catch {
-            print("Failed fetch context of years") //TODO error handling
-            return
-        }
+        let jsonString = try encodeData(years: years)
         
-        let encodableYears = years.map { year in
-            EncodableYear(
-                id: year.id,
-                number: year.number,
-                months: year.months.map { month in
-                    EncodableMonth(
-                        id: month.id,
-                        monthName: month.monthName.rawValue,
-                        currency: month.currency.rawValue,
-                        payments: month.payments.map { payment in
-                            EncodablePayment(
-                                id: payment.id,
-                                date: payment.date,
-                                message: payment.message,
-                                amount: payment.amount,
-                                currency: payment.currency.rawValue,
-                                category: payment.category.name,
-                                type: payment.type.rawValue
-                            )
-                        },
-                        spendings: month.spendings.map { (key, value) in
-                            EncodableSpending(
-                                type: key.rawValue,
-                                spending: SpendingDetails(
-                                    id: value.id,
-                                    sums: Dictionary<String, Double>(uniqueKeysWithValues: value.sums.map { (innerKey, innerValue) in
-                                        (innerKey.name, innerValue)
-                                    })
-                                )
-                            )
-                        },
-                        income: month.income
-                    )
-                }
-            )
-        }
-        
-        let jsonEncoder = JSONEncoder()
-        jsonEncoder.outputFormatting = .prettyPrinted
-        var jsonString: String = ""
-        do {
-            jsonString = String(data: try jsonEncoder.encode(encodableYears), encoding: .utf8) ?? ""
-        } catch {
-            print("Error while encoing string")
-            return
-        }
-        
-        let savePanel = NSSavePanel()
-        savePanel.canCreateDirectories = true
-        savePanel.showsTagField = false
-        savePanel.nameFieldStringValue = "Testjson.json"
-        savePanel.allowedContentTypes = [.json]
-        savePanel.allowsOtherFileTypes = false
-        savePanel.isExtensionHidden = false
-        savePanel.message = "Choose a location to save the JSON file"
-        savePanel.prompt = "Save"
-        
+        let savePanel = prepareSavePanel()
         savePanel.begin { result in
             if result == .OK, let url = savePanel.url {
                 do {
@@ -81,6 +20,67 @@ class DataExportService {
                 }
             }
         }
+    }
+    
+    private static func getYears(context: ModelContext) throws -> [Year] {
+        do {
+            return try context.fetch(FetchDescriptor<Year>())
+        } catch {
+            throw NSError(domain: "Years not found", code: 0, userInfo: ["No years data recorted in the system": 0])
+        }
+    }
+    
+    private static func encodeData(years: [Year]) throws -> String {
+        let encodableYears = years.map { year in
+            EncodableYear(id: year.id, number: year.number, months: year.months.map { month in
+                EncodableMonth(id: month.id, monthName: month.monthName.rawValue, currency: month.currency.rawValue,
+                    payments: month.payments.map { payment in
+                        EncodablePayment(id: payment.id, date: payment.date, message: payment.message,
+                            amount: payment.amount, currency: payment.currency.rawValue,
+                            category: payment.category.name, type: payment.type.rawValue
+                        )
+                    },
+                    spendings: month.spendings.map { (key, value) in
+                        EncodableSpending(
+                            type: key.rawValue,
+                            spending: SpendingDetails(
+                                id: value.id,
+                                sums: Dictionary<String, Double>(uniqueKeysWithValues: value.sums.map { (innerKey, innerValue) in
+                                    (innerKey.name, innerValue)
+                                })
+                            )
+                        )
+                    },
+                    income: month.income
+                )
+            }
+            )
+        }
+        
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .prettyPrinted
+        var jsonString: String = ""
+        do {
+            jsonString = String(data: try jsonEncoder.encode(encodableYears), encoding: .utf8) ?? ""
+        } catch {
+            throw NSError(domain: "Error while encoding json", code: 0, userInfo: ["Error while encoding json": 0])
+        }
+        
+        return jsonString
+    }
+    
+    private static func prepareSavePanel() -> NSSavePanel {
+        let savePanel = NSSavePanel()
+        savePanel.canCreateDirectories = true
+        savePanel.showsTagField = false
+        savePanel.nameFieldStringValue = "Testjson.json"
+        savePanel.allowedContentTypes = [.json]
+        savePanel.allowsOtherFileTypes = false
+        savePanel.isExtensionHidden = false
+        savePanel.message = "Choose a location to save the JSON file"
+        savePanel.prompt = "Save"
+        
+        return savePanel
     }
     
     struct EncodableYear: Encodable {

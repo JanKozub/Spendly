@@ -1,20 +1,18 @@
 import Foundation
 
 class DataParseService {
-    static func loadDataFromBank(files: [URL]) -> [Payment] {
+    static func loadDataFromBank(files: [URL]) throws -> [Payment] {
         var combinedPayments = [Payment]()
         
         for file in files {
-            let payments = loadSantanderPaymentsFromCSV(file: file)
+            let payments = try loadSantanderPaymentsFromCSV(file: file)
             combinedPayments.append(contentsOf: payments)
         }
         
-        combinedPayments = Payment.sortPaymentsByTransactionDate(payments: combinedPayments)
-        
-        return combinedPayments
+        return Payment.sortPaymentsByTransactionDate(payments: combinedPayments)
     }
     
-    static func loadSantanderPaymentsFromCSV(file: URL) -> [Payment] {
+    static func loadSantanderPaymentsFromCSV(file: URL) throws -> [Payment] {
         do {
             let fileContent = try String(contentsOf: file, encoding: .utf8)
             let rows = fileContent.components(separatedBy: "\n")
@@ -40,8 +38,7 @@ class DataParseService {
             }
             return newPayments;
         } catch {
-            print("error: \(error)")
-            return []
+            throw NSError(domain: "Parsing error", code: 0, userInfo: ["Parsing error": 0])
         }
     }
 }

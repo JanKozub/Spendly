@@ -32,7 +32,11 @@ struct SettingsView: View {
                 {Text("Clear And Load Default Categories").font(Font.system(size: 20)).frame(maxWidth: .infinity, minHeight: 100)}
                 
                 Button(action: {
-                    DataExportService.exportToJSON(context: context)
+                    do {
+                        try DataExportService.exportToJSON(context: context)
+                    } catch {
+                        //TODO add handling
+                    }
                 })
                 {Text("Save Data To Json").font(Font.system(size: 20)).frame(maxWidth: .infinity, minHeight: 100)}
                 

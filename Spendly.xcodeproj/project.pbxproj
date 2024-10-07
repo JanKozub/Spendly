@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E71399752C3C32810017385E /* Spending.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71399742C3C32810017385E /* Spending.swift */; };
 		E71399772C3C907E0017385E /* ChartEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71399762C3C907E0017385E /* ChartEntry.swift */; };
+		E7270CB12CB303B000A6BFEB /* CurrencyExchangeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7270CB02CB303A400A6BFEB /* CurrencyExchangeService.swift */; };
 		E744BB362C36B933000FF33B /* Month.swift in Sources */ = {isa = PBXBuildFile; fileRef = E744BB352C36B933000FF33B /* Month.swift */; };
 		E744BB382C36BB33000FF33B /* MonthName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E744BB372C36BB33000FF33B /* MonthName.swift */; };
 		E744BB3A2C36BEEF000FF33B /* PaymentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E744BB392C36BEEF000FF33B /* PaymentType.swift */; };
@@ -35,6 +36,7 @@
 /* Begin PBXFileReference section */
 		E71399742C3C32810017385E /* Spending.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spending.swift; sourceTree = "<group>"; };
 		E71399762C3C907E0017385E /* ChartEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartEntry.swift; sourceTree = "<group>"; };
+		E7270CB02CB303A400A6BFEB /* CurrencyExchangeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyExchangeService.swift; sourceTree = "<group>"; };
 		E744BB352C36B933000FF33B /* Month.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Month.swift; sourceTree = "<group>"; };
 		E744BB372C36BB33000FF33B /* MonthName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthName.swift; sourceTree = "<group>"; };
 		E744BB392C36BEEF000FF33B /* PaymentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentType.swift; sourceTree = "<group>"; };
@@ -119,16 +121,6 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		E7C92F0B2C347EB3001456E2 /* Spendings */ = {
-			isa = PBXGroup;
-			children = (
-				E7C92F092C347D75001456E2 /* TableView.swift */,
-				E7926D4A2C52D01E001865D3 /* SettingsView.swift */,
-				E7F566762C596D800029EB82 /* MainView.swift */,
-			);
-			path = Spendings;
-			sourceTree = "<group>";
-		};
 		E7DE76D02C3313A6002DE392 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -137,6 +129,7 @@
 				E744BB352C36B933000FF33B /* Month.swift */,
 				E7EA4A7B2C3889CF00F66E03 /* Year.swift */,
 				E71399742C3C32810017385E /* Spending.swift */,
+				E753CCD12C3D9FE90043D551 /* Currency.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -144,8 +137,10 @@
 		E7DE76D12C3313C7002DE392 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				E7C92F0B2C347EB3001456E2 /* Spendings */,
 				E7BF90352C1E1BF3002A61CC /* ContentView.swift */,
+				E7C92F092C347D75001456E2 /* TableView.swift */,
+				E7926D4A2C52D01E001865D3 /* SettingsView.swift */,
+				E7F566762C596D800029EB82 /* MainView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -157,7 +152,6 @@
 				E744BB392C36BEEF000FF33B /* PaymentType.swift */,
 				E744BB3B2C36C013000FF33B /* PaymentCategory.swift */,
 				E71399762C3C907E0017385E /* ChartEntry.swift */,
-				E753CCD12C3D9FE90043D551 /* Currency.swift */,
 				E787448A2C47FC59001ED1C7 /* YearName.swift */,
 			);
 			path = types;
@@ -166,6 +160,7 @@
 		E7F566722C596B5D0029EB82 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				E7270CB02CB303A400A6BFEB /* CurrencyExchangeService.swift */,
 				E751B02B2C49617B007F473C /* DataExportService.swift */,
 				E7926D4E2C52E9D7001865D3 /* DataParseService.swift */,
 			);
@@ -279,6 +274,7 @@
 				E753CCD22C3D9FE90043D551 /* Currency.swift in Sources */,
 				E787448B2C47FC59001ED1C7 /* YearName.swift in Sources */,
 				E744BB3C2C36C013000FF33B /* PaymentCategory.swift in Sources */,
+				E7270CB12CB303B000A6BFEB /* CurrencyExchangeService.swift in Sources */,
 				E744BB382C36BB33000FF33B /* MonthName.swift in Sources */,
 				E744BB362C36B933000FF33B /* Month.swift in Sources */,
 			);
