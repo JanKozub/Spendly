@@ -6,7 +6,7 @@ struct TableBottomBar: View {
     @Binding var incomeSum: Double
     @Binding var yearName: String
     @Binding var monthName: MonthName
-    @Binding var expensesForType: [PaymentType: Double]
+    @Binding var expenseGroups: [TypeAndCurrencyGroup: Double]
     
     var addMonth: (CurrencyName) async throws -> Void
     
@@ -15,11 +15,11 @@ struct TableBottomBar: View {
     
     var body: some View {
         HStack {
-            CurrencyText(title: "Income", value: $incomeSum, currency: currency)
+            //CurrencyText(text: "Income", value: $incomeSum, currency: currency)
             Divider()
-            CurrencyText(title: "Personal", value: .constant(expensesForType[.personal, default: 0.0]), currency: currency)
+            CurrencyText(type: .personal, expenseGroups: $expenseGroups)
             Divider()
-            CurrencyText(title: "Refunded", value: .constant(expensesForType[.refunded, default: 0.0]), currency: currency)
+            CurrencyText(type: .refunded, expenseGroups: $expenseGroups)
             Divider()
             
             Button("Cancel", role: .destructive) {
@@ -61,6 +61,6 @@ struct TableBottomBar: View {
             }.dialogIcon(Image(systemName: "pencil.circle.fill"))
             
             Spacer()
-        }.frame(maxWidth: .infinity, maxHeight: 30, alignment: .center).padding(3)
+        }.frame(maxWidth: .infinity, maxHeight: 80, alignment: .center).padding(3)
     }
 }

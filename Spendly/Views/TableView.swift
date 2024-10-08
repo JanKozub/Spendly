@@ -6,7 +6,7 @@ struct TableView: View {
   
     @State var years: [Year]
     @State var categories: [PaymentCategory]
-    @State var expensesForType: [PaymentType: Double] = [:]
+    @State var expenseGroups: [TypeAndCurrencyGroup: Double] = [:]
     @State private var incomeSum: Double = 0
     @State private var yearName: String = String(YearName.currentYear)
     @State private var monthName: MonthName = MonthName.january
@@ -36,18 +36,17 @@ struct TableView: View {
                 .frame(maxWidth: .infinity, maxHeight: abs(reader.size.height - 60))
                 
                 TableBottomBar(payments: $payments, incomeSum: $incomeSum, yearName: $yearName,
-                               monthName: $monthName, expensesForType: $expensesForType, addMonth: addMonth)
+                               monthName: $monthName, expenseGroups: $expenseGroups, addMonth: addMonth)
             }.frame(maxWidth: .infinity, maxHeight: reader.size.height)
         }.toolbar {
             ToolbarItemGroup {
                 Button("Edit Messages") { isEditPaymentNamesShown = true }
-                
                 Button("Add Payment") { isAddPaymentShown = true }
             }
         }.sheet(isPresented: $isEditPaymentNamesShown) {
             EditPaymentNames(isShown: $isEditPaymentNamesShown, payments: $payments)
         }.sheet(isPresented: $isAddPaymentShown) {
-            NewPaymentPopup(payments: $payments, categories: $categories, isShown: $isAddPaymentShown, expensesForType: $expensesForType)
+            NewPaymentPopup(payments: $payments, categories: $categories, isShown: $isAddPaymentShown, expenseGroups: $expenseGroups)
         }.onAppear(perform: updateIncome)
         .padding(.top, 1)
         .alert("Every category has to be filled", isPresented: $isMonthCompleteAlert) {
@@ -64,11 +63,12 @@ struct TableView: View {
     }
     
     private func updateExpenses(oldPayment: Payment, newPayment: Payment) {
+        let group = newPayment.getTypeAndCurrencyGroup()
         if (oldPayment.type != newPayment.type) {
-            expensesForType[oldPayment.type, default: 0] -= abs(oldPayment.amount)
-            expensesForType[newPayment.type, default: 0] += abs(newPayment.amount)
+            expenseGroups[group, default: 0] -= abs(oldPayment.amount)
+            expenseGroups[group, default: 0] += abs(newPayment.amount)
         } else if oldPayment.category.name.isEmpty {
-            expensesForType[newPayment.type, default: 0] += abs(newPayment.amount)
+            expenseGroups[group, default: 0] += abs(newPayment.amount)
         }
     }
     
@@ -76,7 +76,7 @@ struct TableView: View {
         if payment.amount > 0 {
             incomeSum -= payment.amount
         } else {
-            expensesForType[payment.type, default: 0] -= abs(payment.amount)
+            expenseGroups[payment.getTypeAndCurrencyGroup(), default: 0] -= abs(payment.amount)
         }
         
         payments.removeAll(where: { $0.id == payment.id })

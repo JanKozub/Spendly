@@ -4,7 +4,7 @@ struct NewPaymentPopup: View {
     @Binding var payments: [Payment]
     @Binding var categories: [PaymentCategory]
     @Binding var isShown: Bool
-    @Binding var expensesForType: [PaymentType: Double]
+    @Binding var expenseGroups: [TypeAndCurrencyGroup: Double]
     
     @State private var newPaymentDate: String = ""
     @State private var newPaymentMessage: String = ""
@@ -66,6 +66,6 @@ struct NewPaymentPopup: View {
         )
         
         payments.append(newPayment)
-        expensesForType[newPayment.type, default: 0] += abs(newPayment.amount)
+        expenseGroups[newPayment.getTypeAndCurrencyGroup(), default: 0] += abs(newPayment.amount)
     }
 }

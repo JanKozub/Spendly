@@ -23,7 +23,7 @@ class Month: Identifiable ,Hashable {
                 self.currenciesInTheMonth.append(payment.currency)
             }
             
-            let paymentGroup = PaymentGroup(paymentType: payment.type, paymentCategory: payment.category)
+            let paymentGroup = PaymentGroup(type: payment.type, category: payment.category)
             groupedExpenses[paymentGroup, default: []].append(payment)
             summedExpenesesInEUR[paymentGroup, default: 0] += try abs(payment.amount) * getExchangeRateOnDay(from: payment.currency,
                                                                                                     to: .eur,
@@ -61,7 +61,7 @@ class Month: Identifiable ,Hashable {
             throw NSError(domain: "There are no payments with this currency", code: 0)
         }
         
-        return summedExpenesesInEUR[PaymentGroup(paymentType: paymentType, paymentCategory: paymentCategory), default: 0.0] * averageExchangeRate[currency]!
+        return summedExpenesesInEUR[PaymentGroup(type: paymentType, category: paymentCategory), default: 0.0] * averageExchangeRate[currency]!
     }
     
     public func getExchangeRateOnDay(from: CurrencyName, to: CurrencyName, date: Date) throws -> Double{

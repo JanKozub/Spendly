@@ -81,12 +81,20 @@ class Payment: Identifiable, Hashable, ObservableObject, Encodable, Decodable {
         try container.encode(type, forKey: .type)
     }
     
-    func copy() -> Payment {
+    public func copy() -> Payment {
         return Payment(date: self.date,
                        message: self.message,
                        amount: self.amount,
                        currency: self.currency,
                        category: self.category,
                        type: self.type)
+    }
+    
+    public func getGroupOfPayment() -> PaymentGroup {
+        return PaymentGroup(type: self.type, category: self.category)
+    }
+    
+    public func getTypeAndCurrencyGroup() -> TypeAndCurrencyGroup {
+        return TypeAndCurrencyGroup(type: self.type, currency: self.currency)
     }
 }

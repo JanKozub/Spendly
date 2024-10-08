@@ -1,15 +1,15 @@
 import SwiftUI
 
 struct CurrencyText: View {
-    @State var title: String;
-    @Binding var value: Double;
-    @State var currency: CurrencyName;
+    @State var type: PaymentType
+    @Binding var expenseGroups: [TypeAndCurrencyGroup: Double]
     
     var body: some View {
-        Text(title + ": " + String(format: "%.2f", value) + " " + currency.name).frame(maxWidth: .infinity, alignment: .center)
+        VStack {
+            Text(type.name + ":\n").frame(maxWidth: .infinity, alignment: .center)
+            ForEach(expenseGroups.filter { $0.key.type == type }, id: \.key) { key, value in
+                Text(String(value) + " " + key.currency.name)
+            }
+        }
     }
-}
-
-#Preview {
-    CurrencyText(title: "", value: .constant(0.0), currency: .pln)
 }

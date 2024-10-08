@@ -35,7 +35,7 @@ class DataExportService {
                         id: month.id,
                         monthName: month.monthName.rawValue,
                         groupedExpenses: month.groupedExpenses.mapKeys { group in
-                            EncodablePaymentGroup(type: group.paymentType.rawValue, category: group.paymentCategory.name)
+                            EncodablePaymentGroup(type: group.type.rawValue, category: group.category.name)
                         }.mapValues { payments in
                             payments.map { payment in
                                 EncodablePayment(
@@ -50,7 +50,7 @@ class DataExportService {
                             }
                         },
                         summedExpenesesInEUR: month.summedExpenesesInEUR.mapKeys { group in
-                            EncodablePaymentGroup(type: group.paymentType.rawValue, category: group.paymentCategory.name)
+                            EncodablePaymentGroup(type: group.type.rawValue, category: group.category.name)
                         },
                         currenciesInMonth: month.currenciesInTheMonth.map { $0.rawValue },
                         exchangeRates: month.exchangeRates.mapKeys { $0.rawValue }.mapValues { rates in
