@@ -3,7 +3,7 @@ import SwiftUI
 struct CurrencyText: View {
     @State var title: String;
     @Binding var value: Double;
-    @State var currency: Currency;
+    @State var currency: CurrencyName;
     
     var body: some View {
         Text(title + ": " + String(format: "%.2f", value) + " " + currency.name).frame(maxWidth: .infinity, alignment: .center)

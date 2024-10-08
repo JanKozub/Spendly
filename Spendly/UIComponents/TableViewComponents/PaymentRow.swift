@@ -5,7 +5,7 @@ struct PaymentRow: View {
     @Binding var width: CGFloat
     @Binding var categories: [PaymentCategory]
     @State private var isEditing = false
-    @State var onPaymentChanged: (Payment) -> Void
+    @State var onPaymentChanged: (Payment, Payment) -> Void
     var onDelete: () -> Void
     
     private let myRed = Color(red: 238/255, green: 36/255, blue: 0/255).opacity(0.1)
@@ -19,7 +19,7 @@ struct PaymentRow: View {
             if isEditing {
                 TextField("Edit Message", text: $payment.message, onCommit: {
                     isEditing = false
-                    onPaymentChanged(payment)
+                    onPaymentChanged(payment, payment)
                 })
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .frame(maxWidth: width * 0.5, alignment: .center)
@@ -35,8 +35,9 @@ struct PaymentRow: View {
                 elements: PaymentCategory.convertToStringArray(inputArray: categories),
                 onChange: Binding(
                     get: {{ newValue in
+                        let oldPayment = payment.copy()
                         payment.category = categories.first(where: { $0.name == newValue }) ?? PaymentCategory.example()
-                        onPaymentChanged(payment)
+                        onPaymentChanged(oldPayment, payment)
                     }},
                     set: {_ in}
                 )
@@ -47,8 +48,9 @@ struct PaymentRow: View {
                 elements: PaymentType.allCasesNames,
                 onChange: Binding(
                     get: {{ newValue in
+                        let oldPayment = payment.copy()
                         payment.type = PaymentType.nameToType(name: newValue)
-                        onPaymentChanged(payment)
+                        onPaymentChanged(oldPayment, payment)
                     }},
                     set: {_ in}
                 )
@@ -67,6 +69,9 @@ struct PaymentRow: View {
             }
             .frame(maxWidth: width * 0.1, alignment: .center)
         }
+        .listRowSeparator(.hidden)
+        .listRowInsets(EdgeInsets())
+        .listRowBackground(Color.clear)
         .background(payment.amount < 0 ? myRed : myGreen)
     }
 }
@@ -76,7 +81,7 @@ struct PaymentRow: View {
         payment: .constant(Payment.example()),
         width: .constant(CGFloat.infinity),
         categories: .constant([]),
-        onPaymentChanged: { _ in },
+        onPaymentChanged: { old, new in },
         onDelete: {}
     )
 }

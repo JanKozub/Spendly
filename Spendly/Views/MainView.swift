@@ -8,7 +8,7 @@ struct MainView: View {
     
     @State private var displayMonth: String = MonthName.currentMonth.name
     @State private var displayYear: String = "Year"
-    @State private var currency: Currency = .pln
+    @State private var currency: CurrencyName = .pln
     @State private var top10Payments: [Payment] = []
     
     @State var years: [Year]
@@ -69,9 +69,9 @@ struct MainView: View {
                     set: {_ in}
                 )).frame(width: 150)
                 
-                DropdownMenu(selectedCategory: currency.name, elements: Currency.allCasesNames, onChange: Binding(
+                DropdownMenu(selectedCategory: currency.name, elements: CurrencyName.allCasesNames, onChange: Binding(
                     get: {{ newValue in
-                        currency = Currency.nameToType(name: newValue)
+                        currency = CurrencyName.nameToType(name: newValue)
                         refreshChart()
                     }},
                     set: {_ in}
@@ -97,7 +97,11 @@ struct MainView: View {
                         for type in PaymentType.allCases {
                             chartEntry.paymentType = type
                             
-                            addSumsToEntry(entry: &chartEntry, sums: month.spendings[type]!.sums, currency: month.currency)
+                            do {
+                                try addSumsToEntry(entry: &chartEntry, month: month, type: type)
+                            } catch {
+                                // TODO handle error
+                            }
                         }
                     }
                     chartEntries.append(chartEntry)
@@ -107,7 +111,12 @@ struct MainView: View {
                     for type in PaymentType.allCases {
                         var chartEntry = ChartEntry(monthName: MonthName.nameToType(name: displayMonth), paymentType: type, categories: categories)
                         
-                        addSumsToEntry(entry: &chartEntry, sums: month.spendings[type]!.sums, currency: month.currency)
+                        do {
+                            try addSumsToEntry(entry: &chartEntry, month: month, type: type)
+                        } catch {
+                            //TODO handle error
+                        }
+                        
                         chartEntries.append(chartEntry)
                     }
                 }
@@ -160,13 +169,9 @@ struct MainView: View {
         }
     }
     
-    private func exchangeValue(value: Optional<Double>, fromCur: Currency) -> Double {
-        return (value ?? 0) * Currency.exchangeRate(from: fromCur, to: currency)
-    }
-    
-    private func addSumsToEntry(entry: inout ChartEntry, sums: Dictionary<PaymentCategory, Double>, currency: Currency) {
+    private func addSumsToEntry(entry: inout ChartEntry, month: Month, type: PaymentType) throws{
         for category in categories {
-            entry.sums[category]! += exchangeValue(value: sums[category], fromCur: currency)
+            entry.sums[category]! += try month.getExpensesForGroup(paymentType: type, paymentCategory: category, currency: currency)
         }
     }
     

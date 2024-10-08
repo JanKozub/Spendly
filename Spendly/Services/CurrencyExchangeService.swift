@@ -1,7 +1,7 @@
 import Foundation
 
 class CurrencyExchangeService {
-    static func getExchangeRates(base: Currency, target: Currency, startDate: Date, endDate: Date) async throws -> [Date: Double] {
+    static func getExchangeRates(base: CurrencyName, target: CurrencyName, startDate: Date, endDate: Date) async throws -> [Date: Double] {
         if endDate > Date() {
             throw NSError(domain: "CurrencyExchangeService", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot get exchange rates for the future."])
         }

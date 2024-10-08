@@ -7,7 +7,7 @@ struct SpendlyApp: App {
     
     init() {
         do {
-            container = try ModelContainer(for: Year.self, Month.self, Payment.self, Spending.self, PaymentCategory.self)
+            container = try ModelContainer(for: Year.self, Month.self, Payment.self, PaymentCategory.self)
         } catch {
             fatalError("Failed to create ModelContainer: \(error.localizedDescription)")
         }

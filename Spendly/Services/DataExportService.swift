@@ -4,7 +4,7 @@ import AppKit
 
 class DataExportService {
     @MainActor
-    static func exportToJSON(context: ModelContext) throws -> Void {
+    static func exportToJSON(context: ModelContext) throws {
         let years = try getYears(context: context)
         
         let jsonString = try encodeData(years: years)
@@ -16,54 +16,69 @@ class DataExportService {
                     try jsonString.write(to: url, atomically: true, encoding: .utf8)
                 } catch {
                     print("Error saving JSON to file: \(error)")
-                    return
                 }
             }
         }
     }
     
     private static func getYears(context: ModelContext) throws -> [Year] {
-        do {
-            return try context.fetch(FetchDescriptor<Year>())
-        } catch {
-            throw NSError(domain: "Years not found", code: 0, userInfo: ["No years data recorted in the system": 0])
-        }
+        return try context.fetch(FetchDescriptor<Year>())
     }
     
     private static func encodeData(years: [Year]) throws -> String {
         let encodableYears = years.map { year in
-            EncodableYear(id: year.id, number: year.number, months: year.months.map { month in
-                EncodableMonth(id: month.id, monthName: month.monthName.rawValue, currency: month.currency.rawValue,
-                    payments: month.payments.map { payment in
-                        EncodablePayment(id: payment.id, date: payment.date, message: payment.message,
-                            amount: payment.amount, currency: payment.currency.rawValue,
-                            category: payment.category.name, type: payment.type.rawValue
-                        )
-                    },
-                    spendings: month.spendings.map { (key, value) in
-                        EncodableSpending(
-                            type: key.rawValue,
-                            spending: SpendingDetails(
-                                id: value.id,
-                                sums: Dictionary<String, Double>(uniqueKeysWithValues: value.sums.map { (innerKey, innerValue) in
-                                    (innerKey.name, innerValue)
-                                })
+            EncodableYear(
+                id: year.id,
+                number: year.number,
+                months: year.months.map { month in
+                    EncodableMonth(
+                        id: month.id,
+                        monthName: month.monthName.rawValue,
+                        groupedExpenses: month.groupedExpenses.mapKeys { group in
+                            EncodablePaymentGroup(type: group.paymentType.rawValue, category: group.paymentCategory.name)
+                        }.mapValues { payments in
+                            payments.map { payment in
+                                EncodablePayment(
+                                    id: payment.id,
+                                    date: ISO8601DateFormatter().string(from: payment.date),
+                                    message: payment.message,
+                                    amount: payment.amount,
+                                    currency: payment.currency.rawValue,
+                                    category: payment.category.name,
+                                    type: payment.type.rawValue
+                                )
+                            }
+                        },
+                        summedExpenesesInEUR: month.summedExpenesesInEUR.mapKeys { group in
+                            EncodablePaymentGroup(type: group.paymentType.rawValue, category: group.paymentCategory.name)
+                        },
+                        currenciesInMonth: month.currenciesInTheMonth.map { $0.rawValue },
+                        exchangeRates: month.exchangeRates.mapKeys { $0.rawValue }.mapValues { rates in
+                            rates.mapKeys { ISO8601DateFormatter().string(from: $0) }
+                        },
+                        averageExchangeRate: month.averageExchangeRate.mapKeys { $0.rawValue },
+                        payments: month.payments.map { payment in
+                            EncodablePayment(
+                                id: payment.id,
+                                date: ISO8601DateFormatter().string(from: payment.date),
+                                message: payment.message,
+                                amount: payment.amount,
+                                currency: payment.currency.rawValue,
+                                category: payment.category.name,
+                                type: payment.type.rawValue
                             )
-                        )
-                    },
-                    income: month.income
-                )
-            }
+                        }
+                    )
+                }
             )
         }
-        
+
         let jsonEncoder = JSONEncoder()
         jsonEncoder.outputFormatting = .prettyPrinted
-        var jsonString: String = ""
-        do {
-            jsonString = String(data: try jsonEncoder.encode(encodableYears), encoding: .utf8) ?? ""
-        } catch {
-            throw NSError(domain: "Error while encoding json", code: 0, userInfo: ["Error while encoding json": 0])
+        let jsonData = try jsonEncoder.encode(encodableYears)
+        
+        guard let jsonString = String(data: jsonData, encoding: .utf8) else {
+            throw NSError(domain: "DataExportService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode JSON"])
         }
         
         return jsonString
@@ -73,7 +88,7 @@ class DataExportService {
         let savePanel = NSSavePanel()
         savePanel.canCreateDirectories = true
         savePanel.showsTagField = false
-        savePanel.nameFieldStringValue = "Testjson.json"
+        savePanel.nameFieldStringValue = "ExportedData.json"
         savePanel.allowedContentTypes = [.json]
         savePanel.allowsOtherFileTypes = false
         savePanel.isExtensionHidden = false
@@ -92,15 +107,17 @@ class DataExportService {
     struct EncodableMonth: Encodable {
         let id: UUID
         let monthName: String
-        let currency: String
+        let groupedExpenses: [EncodablePaymentGroup: [EncodablePayment]]
+        let summedExpenesesInEUR: [EncodablePaymentGroup: Double]
+        let currenciesInMonth: [String]
+        let exchangeRates: [String: [String: Double]]
+        let averageExchangeRate: [String: Double]
         let payments: [EncodablePayment]
-        let spendings: [EncodableSpending]
-        let income: Double
     }
     
     struct EncodablePayment: Encodable {
         let id: UUID
-        let date: Date
+        let date: String
         let message: String
         let amount: Double
         let currency: String
@@ -108,13 +125,20 @@ class DataExportService {
         let type: String
     }
     
-    struct EncodableSpending: Encodable {
+    struct EncodableExpenseGroup: Encodable {
         let type: String
-        let spending: SpendingDetails
+        let category: String
+        let sum: Double
     }
     
-    struct SpendingDetails: Encodable {
-        let id: UUID
-        let sums: [String: Double]
+    struct EncodablePaymentGroup: Encodable, Hashable {
+        let type: String
+        let category: String
+    }
+}
+
+extension Dictionary {
+    func mapKeys<T: Hashable>(_ transform: (Key) throws -> T) rethrows -> [T: Value] {
+        return Dictionary<T, Value>(uniqueKeysWithValues: try map { (key, value) in (try transform(key), value) })
     }
 }

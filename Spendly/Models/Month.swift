@@ -5,19 +5,95 @@ import SwiftData
 class Month: Identifiable ,Hashable {
     @Attribute(.unique) var id: UUID
     @Attribute var monthName: MonthName
-    @Attribute var currency: Currency
+    @Attribute var groupedExpenses: [PaymentGroup: [Payment]] = [:]
+    @Attribute var summedExpenesesInEUR: [PaymentGroup: Double] = [:]
+    @Attribute var currenciesInTheMonth: [CurrencyName] = []
+    @Attribute var exchangeRates: [CurrencyName: [Date: Double]] = [:] //EUR -> Each currency
+    @Attribute var averageExchangeRate: [CurrencyName: Double] = [:]
+    @Attribute var income: Double = 0
     @Relationship(deleteRule: .cascade) var payments: [Payment]
-    @Relationship(deleteRule: .cascade) var spendings: [PaymentType: Spending]
-    @Attribute var income: Double
     
-    init(monthName: MonthName, currency: Currency, payments: [Payment], spendings: Dictionary<PaymentType, Spending>, income: Double) {
+    init(monthName: MonthName, year: Int, payments: [Payment]) async throws {
         self.id = UUID()
         self.monthName = monthName
-        self.currency = currency
         self.payments = payments
-        self.spendings = spendings
-        self.income = income
+        
+        for payment in payments {
+            if !self.currenciesInTheMonth.contains(payment.currency) {
+                self.currenciesInTheMonth.append(payment.currency)
+            }
+            
+            let paymentGroup = PaymentGroup(paymentType: payment.type, paymentCategory: payment.category)
+            groupedExpenses[paymentGroup, default: []].append(payment)
+            summedExpenesesInEUR[paymentGroup, default: 0] += try abs(payment.amount) * getExchangeRateOnDay(from: payment.currency,
+                                                                                                    to: .eur,
+                                                                                                    date: payment.date)
+            if payment.amount > 0 {
+                income += payment.amount
+            }
+        }
+        
+        let (firstDay, lastDay) = getFirstAndLastDayOfMonth(year: year, month: monthName.id)!
+        for currency in currenciesInTheMonth {
+            if currency != .eur {
+                self.exchangeRates[currency] = try await CurrencyExchangeService.getExchangeRates(base: .eur,
+                                                                                                  target: currency,
+                                                                                                  startDate: firstDay,
+                                                                                                  endDate: lastDay)
+            }
+        }
+        
+        for currency in currenciesInTheMonth {
+            averageExchangeRate[currency] = 0.0
+            var currentDate = firstDay
+            var counter = 0
+            while firstDay <= lastDay {
+                averageExchangeRate[currency]! += exchangeRates[currency]![currentDate]!
+                counter += 1
+                currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
+            }
+            averageExchangeRate[currency]! /= Double(counter)
+        }
     }
+    
+    public func getExpensesForGroup(paymentType: PaymentType, paymentCategory: PaymentCategory, currency: CurrencyName) throws -> Double {
+        if !currenciesInTheMonth.contains(currency) {
+            throw NSError(domain: "There are no payments with this currency", code: 0)
+        }
+        
+        return summedExpenesesInEUR[PaymentGroup(paymentType: paymentType, paymentCategory: paymentCategory), default: 0.0] * averageExchangeRate[currency]!
+    }
+    
+    public func getExchangeRateOnDay(from: CurrencyName, to: CurrencyName, date: Date) throws -> Double{
+        if from == to {
+            return 1.0
+        } else {
+            if let exchangeRate = exchangeRates[to] {
+                return exchangeRate[date]!
+            } else {
+                throw NSError(domain: "There are no exchange rates for this required currency", code: 0)
+            }
+        }
+    }
+    
+    private func getFirstAndLastDayOfMonth(year: Int, month: Int) -> (firstDay: Date, lastDay: Date)? {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone.current
+        
+        let startComponents = DateComponents(year: year, month: month, day: 1)
+        guard let firstDay = calendar.date(from: startComponents) else {
+            return nil
+        }
+        
+        guard let range = calendar.range(of: .day, in: .month, for: firstDay) else {
+            return nil
+        }
+        
+        let lastDay = calendar.date(byAdding: .day, value: range.count - 1, to: firstDay)!
+        
+        return (firstDay, lastDay)
+    }
+    
     
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)

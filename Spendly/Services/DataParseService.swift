@@ -24,11 +24,15 @@ class DataParseService {
                     if index == 0 {
                         cur = columns[4]
                     } else {
+                        if (columns[1].isEmpty || columns[5].isEmpty) {
+                            throw NSError(domain: "Parsing error for date or amonunt field", code: 0)
+                        }
+                        
                         let payment = Payment(
-                            date: Payment.dateFromString(columns[1]) ?? Date(),
+                            date: Payment.dateFromString(columns[1])!,
                             message: columns[2] + " " + columns[3],
-                            amount: Double(columns[5]) ?? -1,
-                            currency: Currency.nameToType(name: cur.uppercased(with: .autoupdatingCurrent)),
+                            amount: Double(columns[5])!,
+                            currency: CurrencyName.nameToType(name: cur.uppercased(with: .autoupdatingCurrent)),
                             category: PaymentCategory(name: "", graphColor: .red),
                             type: .personal
                         )
