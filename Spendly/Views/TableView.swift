@@ -4,6 +4,7 @@ import SwiftData
 struct TableView: View {
     @Environment(\.modelContext) private var context
     @Binding var payments: [Payment]
+    @Binding var tabSwitch: TabSwitch
   
     @State var years: [Year]
     @State var categories: [PaymentCategory]
@@ -33,8 +34,7 @@ struct TableView: View {
                 .listStyle(PlainListStyle())
                 .frame(maxWidth: .infinity, maxHeight: abs(reader.size.height - 60))
                 
-                TableBottomBar(payments: $payments, incomeSum: $incomeSum, monthName: $month.monthName,
-                               yearNum: $month.yearNum, expenseGroups: $expenseGroups, addMonth: addMonth)
+                TableBottomBar(payments: $payments, incomeSum: $incomeSum, month: $month, expenseGroups: $expenseGroups, tabSwitch: $tabSwitch, addMonth: addMonth)
             }.frame(maxWidth: .infinity, maxHeight: reader.size.height)
         }.toolbar {
             ToolbarItemGroup {
@@ -106,14 +106,12 @@ struct TableView: View {
                 years[yearIdx].months.append(month)
             }
         } else {
-            let newYear = Year(number: month.yearNum, months: [])
-            context.insert(newYear)
-            newYear.months.append(month)
-            years.append(newYear)
+            addNewYear(newYear: Year(number: month.yearNum, months: [month]))
         }
         
         try? context.save()
         payments = []
+        tabSwitch = .main
     }
     
     private func hasAnyPaymentEmptyCategory() -> Bool {
@@ -127,5 +125,10 @@ struct TableView: View {
             }
             month.payments.append(payment)
         }
+    }
+    
+    private func addNewYear(newYear: Year) {
+        context.insert(newYear)
+        years.append(newYear)
     }
 }

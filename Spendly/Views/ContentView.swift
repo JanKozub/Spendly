@@ -7,17 +7,18 @@ struct ContentView: View {
     @Query private var savedPayments: [Payment]
     
     @State private var payments: [Payment] = []
-    @State private var isShowingSettings:Bool = false
+    @State private var tabSwitch: TabSwitch = .main
     
     @Environment(\.modelContext) private var context
     
     var body: some View {
-        if isShowingSettings {
-            SettingsView(isShowing: $isShowingSettings, context: context, categories: .constant(categories))
-        } else if !payments.isEmpty {
-            TableView(payments: $payments, years: years, categories: categories)
-        } else {
-            MainView(payments: $payments, isShowingSettings: $isShowingSettings, years: years, categories: categories, savedPayments: savedPayments)
+        switch tabSwitch {
+        case .main:
+            MainView(payments: $payments, tabSwitch: $tabSwitch, years: years, categories: categories, savedPayments: savedPayments)
+        case .table:
+            TableView(payments: $payments, tabSwitch: $tabSwitch, years: years, categories: categories)
+        case .settings:
+            SettingsView(tabSwitch: $tabSwitch, context: context, categories: .constant(categories))
         }
     }
 }

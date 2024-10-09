@@ -3,9 +3,9 @@ import SwiftUI
 struct TableBottomBar: View {
     @Binding var payments: [Payment]
     @Binding var incomeSum: Double
-    @Binding var monthName: MonthName
-    @Binding var yearNum: Int
+    @Binding var month: Month
     @Binding var expenseGroups: [TypeAndCurrencyGroup: Double]
+    @Binding var tabSwitch: TabSwitch
     
     var addMonth: () async throws -> Void
     
@@ -14,7 +14,7 @@ struct TableBottomBar: View {
     
     var body: some View {
         HStack {
-            //CurrencyText(text: "Income", value: $incomeSum, currency: currency)
+            Text("Income: " + String(month.income) + " PLN") //TODO currency support
             Divider()
             CurrencyText(type: .personal, expenseGroups: $expenseGroups)
             Divider()
@@ -26,13 +26,14 @@ struct TableBottomBar: View {
             }.confirmationDialog("Are you sure?", isPresented: $isPresentingConfirmCancel) {
                 Button("Discard month") {
                     payments = []
+                    tabSwitch = .main
                 }
             }.dialogIcon(Image(systemName: "x.circle.fill"))
             
             DropdownMenu(
                 selectedCategory: String(YearType.currentYear), elements: YearType.allYearsNames,
                 onChange: Binding(
-                    get: {{newValue in yearNum = Int(newValue)!}},
+                    get: {{newValue in month.yearNum = Int(newValue)!}},
                     set: {_ in}
                 )
             ).frame(maxWidth: 100)
@@ -40,7 +41,7 @@ struct TableBottomBar: View {
             DropdownMenu(
                 selectedCategory: MonthName.january.name, elements: MonthName.allCasesNames,
                 onChange: Binding(
-                    get: {{newValue in monthName = MonthName.nameToType(name: newValue)}},
+                    get: {{newValue in month.monthName = MonthName.nameToType(name: newValue)}},
                     set: {_ in}
                 )
             ).frame(maxWidth: 100)

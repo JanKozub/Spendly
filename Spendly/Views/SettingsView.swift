@@ -3,7 +3,7 @@ import SwiftUI
 import SwiftData
 
 struct SettingsView: View {
-    @Binding var isShowing: Bool
+    @Binding var tabSwitch: TabSwitch
     @State private var userInput: String = ""
     @State var context: ModelContext
     
@@ -12,9 +12,7 @@ struct SettingsView: View {
     var body: some View {
         HStack {
             VStack {
-                Button(action: {
-                    isShowing = false
-                }) 
+                Button(action: { tabSwitch = .main })
                 {Text("Go Back").font(Font.system(size: 20)).frame(maxWidth: .infinity, minHeight: 100)}
                 
                 Button(action: {

@@ -4,7 +4,7 @@ import SwiftUI
 
 struct MainView: View {
     @Binding var payments: [Payment]
-    @Binding var isShowingSettings: Bool
+    @Binding var tabSwitch: TabSwitch
     
     @State private var displayMonth: String = MonthName.currentMonth.name
     @State private var displayYear: String = "Year"
@@ -44,7 +44,7 @@ struct MainView: View {
                         Button(action: {})
                         {Text("Edit this month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
                         
-                        Button(action: {isShowingSettings = true})
+                        Button(action: {tabSwitch = .settings})
                         {Text("Settings").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
                     }
                     .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
@@ -162,6 +162,7 @@ struct MainView: View {
             if result == .OK {
                 do {
                     payments = try DataParseService.loadDataFromBank(files: panel.urls)
+                    tabSwitch = .table
                 } catch {
                     //TODO handling
                 }
@@ -182,8 +183,4 @@ struct MainView: View {
         }
         return returnColors
     }
-}
-
-#Preview {
-    MainView(payments: .constant([]), isShowingSettings: .constant(false), years: [], categories: [], savedPayments: [])
 }
