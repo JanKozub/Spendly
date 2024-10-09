@@ -20,7 +20,7 @@
 		E751B02C2C49617B007F473C /* DataExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E751B02B2C49617B007F473C /* DataExportService.swift */; };
 		E753CCD22C3D9FE90043D551 /* CurrencyName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E753CCD12C3D9FE90043D551 /* CurrencyName.swift */; };
 		E77AA1A32CB5F23000BA74E2 /* TypeAndCurrencyGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77AA1A22CB5F22800BA74E2 /* TypeAndCurrencyGroup.swift */; };
-		E787448B2C47FC59001ED1C7 /* YearName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E787448A2C47FC59001ED1C7 /* YearName.swift */; };
+		E787448B2C47FC59001ED1C7 /* YearType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E787448A2C47FC59001ED1C7 /* YearType.swift */; };
 		E7926D4B2C52D01E001865D3 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7926D4A2C52D01E001865D3 /* SettingsView.swift */; };
 		E7926D4F2C52E9D7001865D3 /* DataParseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7926D4E2C52E9D7001865D3 /* DataParseService.swift */; };
 		E7BF90342C1E1BF3002A61CC /* SpendlyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7BF90332C1E1BF3002A61CC /* SpendlyApp.swift */; };
@@ -50,7 +50,7 @@
 		E751B02B2C49617B007F473C /* DataExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExportService.swift; sourceTree = "<group>"; };
 		E753CCD12C3D9FE90043D551 /* CurrencyName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyName.swift; sourceTree = "<group>"; };
 		E77AA1A22CB5F22800BA74E2 /* TypeAndCurrencyGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeAndCurrencyGroup.swift; sourceTree = "<group>"; };
-		E787448A2C47FC59001ED1C7 /* YearName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearName.swift; sourceTree = "<group>"; };
+		E787448A2C47FC59001ED1C7 /* YearType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearType.swift; sourceTree = "<group>"; };
 		E7926D4A2C52D01E001865D3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E7926D4E2C52E9D7001865D3 /* DataParseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataParseService.swift; sourceTree = "<group>"; };
 		E7BF90302C1E1BF3002A61CC /* Spendly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spendly.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -169,7 +169,7 @@
 				E744BB372C36BB33000FF33B /* MonthName.swift */,
 				E744BB392C36BEEF000FF33B /* PaymentType.swift */,
 				E71399762C3C907E0017385E /* ChartEntry.swift */,
-				E787448A2C47FC59001ED1C7 /* YearName.swift */,
+				E787448A2C47FC59001ED1C7 /* YearType.swift */,
 				E753CCD12C3D9FE90043D551 /* CurrencyName.swift */,
 				E70C41A22CB560C1001978E8 /* PaymentGroup.swift */,
 			);
@@ -292,7 +292,7 @@
 				E7EA4A7C2C3889CF00F66E03 /* Year.swift in Sources */,
 				E70C41A52CB57F38001978E8 /* NewPaymentPopup.swift in Sources */,
 				E753CCD22C3D9FE90043D551 /* CurrencyName.swift in Sources */,
-				E787448B2C47FC59001ED1C7 /* YearName.swift in Sources */,
+				E787448B2C47FC59001ED1C7 /* YearType.swift in Sources */,
 				E744BB3C2C36C013000FF33B /* PaymentCategory.swift in Sources */,
 				E7270CB12CB303B000A6BFEB /* CurrencyExchangeService.swift in Sources */,
 				E744BB382C36BB33000FF33B /* MonthName.swift in Sources */,

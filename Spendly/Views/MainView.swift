@@ -88,7 +88,7 @@ struct MainView: View {
         top10Payments = Array(savedPayments.prefix(15))
         
         chartEntries = []
-        if let year = years.first(where: {$0.number == YearName.currentYear}) {
+        if let year = years.first(where: {$0.number == YearType.currentYear}) {
             if displayYear == "Year" {
                 for monthName in MonthName.allCases {
                     var chartEntry = ChartEntry(monthName: monthName, categories: categories)

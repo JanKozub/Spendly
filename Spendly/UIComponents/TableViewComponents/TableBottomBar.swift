@@ -2,13 +2,12 @@ import SwiftUI
 
 struct TableBottomBar: View {
     @Binding var payments: [Payment]
-    @State var currency: CurrencyName = .pln
     @Binding var incomeSum: Double
-    @Binding var yearName: String
     @Binding var monthName: MonthName
+    @Binding var yearNum: Int
     @Binding var expenseGroups: [TypeAndCurrencyGroup: Double]
     
-    var addMonth: (CurrencyName) async throws -> Void
+    var addMonth: () async throws -> Void
     
     @State private var isPresentingConfirmCancel: Bool = false
     @State private var isPresentingConfirmSubmit: Bool = false
@@ -31,9 +30,9 @@ struct TableBottomBar: View {
             }.dialogIcon(Image(systemName: "x.circle.fill"))
             
             DropdownMenu(
-                selectedCategory: String(YearName.currentYear), elements: YearName.allYearsNames,
+                selectedCategory: String(YearType.currentYear), elements: YearType.allYearsNames,
                 onChange: Binding(
-                    get: {{newValue in yearName = newValue}},
+                    get: {{newValue in yearNum = Int(newValue)!}},
                     set: {_ in}
                 )
             ).frame(maxWidth: 100)
@@ -52,7 +51,7 @@ struct TableBottomBar: View {
                 Button("Add/Edit Month") {
                     Task {
                         do {
-                            try await addMonth(currency)
+                            try await addMonth()
                         } catch {
                             //TODO Handle error
                         }
