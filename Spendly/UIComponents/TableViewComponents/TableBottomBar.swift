@@ -51,7 +51,7 @@ struct TableBottomBar: View {
             Button("Add month", role: .destructive) {
                 isPresentingConfirmSubmit = true
             }.confirmationDialog("Are you sure?", isPresented: $isPresentingConfirmSubmit) {
-                Button("Add/Edit Month") {
+                Button("Add month") {
                     Task {
                         do {
                             try await addMonth()

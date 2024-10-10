@@ -2,6 +2,8 @@ import Foundation
 
 class CurrencyExchangeService {
     static func getExchangeRates(base: CurrencyName, target: CurrencyName, startDate: Date, endDate: Date) async throws -> [Date: Double] {
+        let startDate = Calendar.current.date(byAdding: .day, value: -1, to: startDate)!
+        
         if endDate > Date() {
             throw NSError(domain: "CurrencyExchangeService", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot get exchange rates for the future."])
         }

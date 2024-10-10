@@ -5,7 +5,7 @@ struct TableView: View {
     @Environment(\.modelContext) private var context
     @Binding var payments: [Payment]
     @Binding var tabSwitch: TabSwitch
-  
+    
     @State var years: [Year]
     @State var categories: [PaymentCategory]
     @State var expenseGroups: [TypeAndCurrencyGroup: Double] = [:]
@@ -14,7 +14,6 @@ struct TableView: View {
     
     @State private var isEditPaymentNamesShown = false
     @State private var isAddPaymentShown = false
-    
     @State private var genericErrorShown: Bool = false
     @State private var genericErrorMessage: String = ""
     
@@ -93,7 +92,7 @@ struct TableView: View {
         payments.removeAll(where: { $0.id == payment.id })
     }
     
-    private func addMonth() async throws { //TODO finish cleaning this method
+    private func addMonth() async throws {
         if (hasAnyPaymentEmptyCategory()) {
             throw NSError(domain: "Every category field must be filled", code: 0)
         }
@@ -101,31 +100,25 @@ struct TableView: View {
         context.insert(month)
         addPaymentsToContext()
         
-        if let yearIdx = getIndexOfYear(yearNum: month.yearNum) {
-            if let monthIdx = getIndexOfMonth(yearIdx: yearIdx, monthName: month.monthName) {
-                years[yearIdx].months[monthIdx] = month //TODO Popup about overwriting month
-            } else {
-                years[yearIdx].months.append(month)
-            }
-        } else {
+        let yearIdx = getIndexOfYear(yearNum: month.yearNum)
+        if yearIdx == nil {
             addNewYear(newYear: Year(number: month.yearNum, months: [month]))
+            saveAndReturn()
+            return
         }
         
-        try? context.save()
-        payments = []
-        tabSwitch = .main
-    }
-    
-    private func hasAnyPaymentEmptyCategory() -> Bool {
-        return payments.contains(where: {$0.category == nil })
-    }
-    
-    private func getIndexOfYear(yearNum: Int) -> Int? {
-        return years.firstIndex(where: {$0.number == yearNum}) ?? nil
-    }
-    
-    private func getIndexOfMonth(yearIdx: Int, monthName: MonthName) -> Int? {
-        return years[yearIdx].months.firstIndex(where: { $0.monthName == month.monthName }) ?? nil
+        let monthIdx = getIndexOfMonth(yearIdx: yearIdx!, monthName: month.monthName)
+        if monthIdx == nil {
+            years[yearIdx!].months.append(month)
+            saveAndReturn()
+            return
+        }
+        
+        let alert = getOverwriteDialog()
+        if alert.runModal() == .alertFirstButtonReturn {
+            years[yearIdx!].months[monthIdx!] = month
+            saveAndReturn()
+        }
     }
     
     private func addPaymentsToContext() {
@@ -140,5 +133,34 @@ struct TableView: View {
     private func addNewYear(newYear: Year) {
         context.insert(newYear)
         years.append(newYear)
+    }
+    
+    private func saveAndReturn() {
+        try? context.save()
+        payments = []
+        tabSwitch = .main
+    }
+    
+    private func hasAnyPaymentEmptyCategory() -> Bool {
+        return payments.contains(where: { $0.category == nil })
+    }
+    
+    private func getIndexOfYear(yearNum: Int) -> Int? {
+        return years.firstIndex(where: { $0.number == yearNum}) ?? nil
+    }
+    
+    private func getIndexOfMonth(yearIdx: Int, monthName: MonthName) -> Int? {
+        return years[yearIdx].months.firstIndex(where: { $0.monthName == month.monthName }) ?? nil
+    }
+    
+    private func getOverwriteDialog() -> NSAlert {
+        let alert = NSAlert()
+        alert.messageText = "Overwrite Month?"
+        alert.informativeText = "This month already exists in the database. Do you want to overwrite it?"
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "Overwrite")
+        alert.addButton(withTitle: "Cancel")
+        alert.icon = NSImage(systemSymbolName: "x.circle.fill", accessibilityDescription: "")
+        return alert
     }
 }

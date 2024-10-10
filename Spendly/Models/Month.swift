@@ -40,23 +40,20 @@ class Month: Identifiable ,Hashable {
             }
         }
         
-        let (firstDay, lastDay) = getFirstAndLastDayOfMonth(year: yearNum, month: monthName.id)!
+        let (firstDay, lastDay) = getFirstAndLastDayOfMonth(year: yearNum, month: monthName)!
         for currency in currenciesInTheMonth {
             if currency != .eur {
-                self.exchangeRates[currency] = try await CurrencyExchangeService.getExchangeRates(base: .eur, target: currency, startDate: firstDay, endDate: lastDay)
+                exchangeRates[currency] = try await CurrencyExchangeService.getExchangeRates(base: .eur, target: currency, startDate: firstDay, endDate: lastDay)
             }
-        }
-        
-        for currency in currenciesInTheMonth {
-            averageExchangeRate[currency] = 0.0
+            
             var currentDate = firstDay
             var counter = 0
-            while firstDay <= lastDay {
-                averageExchangeRate[currency]! += exchangeRates[currency]![currentDate]!
+            while currentDate <= lastDay {
+                averageExchangeRate[currency, default: 0.0] += exchangeRates[currency]![currentDate]!
                 counter += 1
                 currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
             }
-            averageExchangeRate[currency]! /= Double(counter)
+            averageExchangeRate[currency, default: 0.0] /= Double(counter)
         }
     }
     
@@ -80,11 +77,11 @@ class Month: Identifiable ,Hashable {
         }
     }
     
-    private func getFirstAndLastDayOfMonth(year: Int, month: Int) -> (firstDay: Date, lastDay: Date)? {
+    private func getFirstAndLastDayOfMonth(year: Int, month: MonthName) -> (firstDay: Date, lastDay: Date)? {
         var calendar = Calendar.current
         calendar.timeZone = TimeZone.current
         
-        let startComponents = DateComponents(year: year, month: month, day: 1)
+        let startComponents = DateComponents(year: year, month: month.id, day: 1)
         guard let firstDay = calendar.date(from: startComponents) else {
             return nil
         }
@@ -93,9 +90,10 @@ class Month: Identifiable ,Hashable {
             return nil
         }
         
-        let lastDay = calendar.date(byAdding: .day, value: range.count - 1, to: firstDay)!
+        let firstDayFinal = calendar.date(byAdding: .day, value: 1, to: firstDay)!
+        let lastDay = calendar.date(byAdding: .day, value: range.count, to: firstDay)!
         
-        return (firstDay, lastDay)
+        return (firstDayFinal, lastDay)
     }
     
     
