@@ -9,6 +9,9 @@ struct SettingsView: View {
     
     @Binding var categories: [PaymentCategory]
     
+    @State private var genericErrorShown: Bool = false
+    @State private var genericErrorMessage: String = ""
+    
     var body: some View {
         HStack {
             VStack {
@@ -33,7 +36,8 @@ struct SettingsView: View {
                     do {
                         try DataExportService.exportToJSON(context: context)
                     } catch {
-                        //TODO add handling
+                        genericErrorMessage = error.localizedDescription
+                        genericErrorShown.toggle()
                     }
                 })
                 {Text("Save Data To Json").font(Font.system(size: 20)).frame(maxWidth: .infinity, minHeight: 100)}
@@ -76,6 +80,8 @@ struct SettingsView: View {
                         }
                 }.frame(alignment: .top)
             }
+        }.alert(isPresented: $genericErrorShown) {
+            Alert(title: Text(genericErrorMessage))
         }
     }
     

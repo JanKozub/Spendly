@@ -31,7 +31,7 @@ struct PaymentRow: View {
                 .frame(maxWidth: width * 0.07, alignment: .center)
             
             DropdownMenu(
-                selectedCategory: payment.category.name,
+                selectedCategory: payment.category != nil ? payment.category!.name : "",
                 elements: PaymentCategory.convertToStringArray(inputArray: categories),
                 onChange: Binding(
                     get: {{ newValue in

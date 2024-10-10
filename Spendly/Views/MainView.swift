@@ -11,6 +11,9 @@ struct MainView: View {
     @State private var currency: CurrencyName = .pln
     @State private var top10Payments: [Payment] = []
     
+    @State private var genericErrorShown: Bool = false
+    @State private var genericErrorMessage: String = ""
+    
     @State var years: [Year]
     @State var categories: [PaymentCategory]
     @State var savedPayments: [Payment]
@@ -77,10 +80,11 @@ struct MainView: View {
                     set: {_ in}
                 )).frame(width: 150)
             }
-        }.onAppear(perform: {
+        }.onAppear {
             refreshChart()
-        })
-        .padding(.all)
+        }.alert(isPresented: $genericErrorShown) {
+            Alert(title: Text(genericErrorMessage))
+        }.padding(.all)
     }
     
     private func refreshChart() {
@@ -100,7 +104,8 @@ struct MainView: View {
                             do {
                                 try addSumsToEntry(entry: &chartEntry, month: month, type: type)
                             } catch {
-                                // TODO handle error
+                                genericErrorMessage = error.localizedDescription
+                                genericErrorShown.toggle()
                             }
                         }
                     }
@@ -114,7 +119,8 @@ struct MainView: View {
                         do {
                             try addSumsToEntry(entry: &chartEntry, month: month, type: type)
                         } catch {
-                            //TODO handle error
+                            genericErrorMessage = error.localizedDescription
+                            genericErrorShown.toggle()
                         }
                         
                         chartEntries.append(chartEntry)
@@ -164,15 +170,16 @@ struct MainView: View {
                     payments = try DataParseService.loadDataFromBank(files: panel.urls)
                     tabSwitch = .table
                 } catch {
-                    //TODO handling
+                    genericErrorMessage = error.localizedDescription
+                    genericErrorShown.toggle()
                 }
             }
         }
     }
     
-    private func addSumsToEntry(entry: inout ChartEntry, month: Month, type: PaymentType) throws{
+    private func addSumsToEntry(entry: inout ChartEntry, month: Month, type: PaymentType) throws {
         for category in categories {
-            entry.sums[category]! += try month.getExpensesForGroup(paymentType: type, paymentCategory: category, currency: currency)
+            entry.sums[category, default: 0.0] += try month.getExpensesForGroup(paymentType: type, paymentCategory: category, currency: currency)
         }
     }
     

@@ -33,7 +33,6 @@ class DataParseService {
                             message: columns[2] + " " + columns[3],
                             amount: Double(columns[5])!,
                             currency: CurrencyName.nameToType(name: cur.uppercased(with: .autoupdatingCurrent)),
-                            category: PaymentCategory(name: "", graphColor: .red),
                             type: .personal
                         )
                         newPayments.append(payment);

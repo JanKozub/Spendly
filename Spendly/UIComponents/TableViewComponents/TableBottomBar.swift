@@ -11,6 +11,8 @@ struct TableBottomBar: View {
     
     @State private var isPresentingConfirmCancel: Bool = false
     @State private var isPresentingConfirmSubmit: Bool = false
+    @State private var genericErrorShown: Bool = false
+    @State private var genericErrorMessage: String = ""
     
     var body: some View {
         HStack {
@@ -54,13 +56,16 @@ struct TableBottomBar: View {
                         do {
                             try await addMonth()
                         } catch {
-                            //TODO Handle error
+                            genericErrorMessage = error.localizedDescription
+                            genericErrorShown.toggle()
                         }
                     }
                 }
             }.dialogIcon(Image(systemName: "pencil.circle.fill"))
             
             Spacer()
+        }.alert(isPresented: $genericErrorShown) {
+            Alert(title: Text(genericErrorMessage))
         }.frame(maxWidth: .infinity, maxHeight: 80, alignment: .center).padding(3)
     }
 }

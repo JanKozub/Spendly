@@ -12,9 +12,11 @@ struct TableView: View {
     @State private var incomeSum: Double = 0
     @State private var month: Month = Month(monthName: .january, yearNum: YearType.currentYear)
     
-    @State private var isMonthCompleteAlert = false
     @State private var isEditPaymentNamesShown = false
     @State private var isAddPaymentShown = false
+    
+    @State private var genericErrorShown: Bool = false
+    @State private var genericErrorMessage: String = ""
     
     var body: some View {
         GeometryReader { reader in
@@ -50,15 +52,16 @@ struct TableView: View {
                 do {
                     try await month.setPayments(newPayments: payments)
                 } catch {
-                    // TODO Handling
+                    genericErrorMessage = error.localizedDescription
+                    genericErrorShown.toggle()
                 }
             }
             
             calculateIncome()
         })
         .padding(.top, 1)
-        .alert("Every category has to be filled", isPresented: $isMonthCompleteAlert) {
-            Button("OK", role: .cancel) { }
+        .alert(isPresented: $genericErrorShown) {
+            Alert(title: Text(genericErrorMessage))
         }.dialogIcon(Image(systemName: "x.circle.fill"))
     }
     
@@ -75,7 +78,7 @@ struct TableView: View {
         if (oldPayment.type != newPayment.type) {
             expenseGroups[group, default: 0] -= abs(oldPayment.amount)
             expenseGroups[group, default: 0] += abs(newPayment.amount)
-        } else if oldPayment.category.name.isEmpty {
+        } else if oldPayment.category == nil {
             expenseGroups[group, default: 0] += abs(newPayment.amount)
         }
     }
@@ -92,15 +95,14 @@ struct TableView: View {
     
     private func addMonth() async throws { //TODO finish cleaning this method
         if (hasAnyPaymentEmptyCategory()) {
-            isMonthCompleteAlert = true
-            return
+            throw NSError(domain: "Every category field must be filled", code: 0)
         }
         
         context.insert(month)
         addPaymentsToContext()
         
-        if let yearIdx = years.firstIndex(where: {$0.number == month.yearNum}) {
-            if let monthIdx = years[yearIdx].months.firstIndex(where: { $0.monthName == month.monthName }) {
+        if let yearIdx = getIndexOfYear(yearNum: month.yearNum) {
+            if let monthIdx = getIndexOfMonth(yearIdx: yearIdx, monthName: month.monthName) {
                 years[yearIdx].months[monthIdx] = month //TODO Popup about overwriting month
             } else {
                 years[yearIdx].months.append(month)
@@ -115,7 +117,15 @@ struct TableView: View {
     }
     
     private func hasAnyPaymentEmptyCategory() -> Bool {
-        return payments.first(where: { $0.category.name.isEmpty }) == nil
+        return payments.contains(where: {$0.category == nil })
+    }
+    
+    private func getIndexOfYear(yearNum: Int) -> Int? {
+        return years.firstIndex(where: {$0.number == yearNum}) ?? nil
+    }
+    
+    private func getIndexOfMonth(yearIdx: Int, monthName: MonthName) -> Int? {
+        return years[yearIdx].months.firstIndex(where: { $0.monthName == month.monthName }) ?? nil
     }
     
     private func addPaymentsToContext() {

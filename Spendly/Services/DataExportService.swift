@@ -44,7 +44,7 @@ class DataExportService {
                                     message: payment.message,
                                     amount: payment.amount,
                                     currency: payment.currency.rawValue,
-                                    category: payment.category.name,
+                                    category: payment.category!.name,
                                     type: payment.type.rawValue
                                 )
                             }
@@ -64,7 +64,7 @@ class DataExportService {
                                 message: payment.message,
                                 amount: payment.amount,
                                 currency: payment.currency.rawValue,
-                                category: payment.category.name,
+                                category: payment.category!.name,
                                 type: payment.type.rawValue
                             )
                         }

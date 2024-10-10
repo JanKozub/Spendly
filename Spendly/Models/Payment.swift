@@ -8,7 +8,7 @@ class Payment: Identifiable, Hashable, ObservableObject, Encodable, Decodable {
     @Attribute var message: String
     @Attribute var amount: Double
     @Attribute var currency: CurrencyName
-    @Attribute var category: PaymentCategory
+    @Attribute var category: PaymentCategory?
     @Attribute var type: PaymentType
     
     init(date: Date, message: String, amount: Double, currency: CurrencyName, category: PaymentCategory, type: PaymentType) {
@@ -18,6 +18,15 @@ class Payment: Identifiable, Hashable, ObservableObject, Encodable, Decodable {
         self.amount = amount
         self.currency = currency
         self.category = category
+        self.type = type
+    }
+    
+    init(date: Date, message: String, amount: Double, currency: CurrencyName, type: PaymentType) {
+        self.id = UUID()
+        self.date = date
+        self.message = message
+        self.amount = amount
+        self.currency = currency
         self.type = type
     }
     
@@ -82,16 +91,25 @@ class Payment: Identifiable, Hashable, ObservableObject, Encodable, Decodable {
     }
     
     public func copy() -> Payment {
-        return Payment(date: self.date,
-                       message: self.message,
-                       amount: self.amount,
-                       currency: self.currency,
-                       category: self.category,
-                       type: self.type)
+        if category != nil {
+            return Payment(date: self.date,
+                           message: self.message,
+                           amount: self.amount,
+                           currency: self.currency,
+                           category: self.category!,
+                           type: self.type)
+        } else {
+            return Payment(date: self.date,
+                           message: self.message,
+                           amount: self.amount,
+                           currency: self.currency,
+                           type: self.type)
+        }
+        
     }
     
     public func getGroupOfPayment() -> PaymentGroup {
-        return PaymentGroup(type: self.type, category: self.category)
+        return PaymentGroup(type: self.type, category: self.category!)
     }
     
     public func getTypeAndCurrencyGroup() -> TypeAndCurrencyGroup {
