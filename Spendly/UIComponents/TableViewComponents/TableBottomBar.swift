@@ -6,13 +6,13 @@ struct TableBottomBar: View {
     @Binding var month: Month
     @Binding var expenseGroups: [TypeAndCurrencyGroup: Double]
     @Binding var tabSwitch: TabSwitch
+    @Binding var errorShown: Bool
+    @Binding var errorMessage: String
     
     var addMonth: () async throws -> Void
     
     @State private var isPresentingConfirmCancel: Bool = false
     @State private var isPresentingConfirmSubmit: Bool = false
-    @State private var genericErrorShown: Bool = false
-    @State private var genericErrorMessage: String = ""
     
     var body: some View {
         HStack {
@@ -32,21 +32,13 @@ struct TableBottomBar: View {
                 }
             }.dialogIcon(Image(systemName: "x.circle.fill"))
             
-            DropdownMenu(
-                selectedCategory: String(YearType.currentYear), elements: YearType.allYearsNames,
-                onChange: Binding(
-                    get: {{newValue in month.yearNum = Int(newValue)!}},
-                    set: {_ in}
-                )
-            ).frame(maxWidth: 100)
+            DropdownMenu(selected: String(YearType.currentYear), elements: YearType.allYearsNames,
+                onChange: { newValue in month.yearNum = Int(newValue)!
+            }).frame(maxWidth: 100)
             
-            DropdownMenu(
-                selectedCategory: MonthName.january.name, elements: MonthName.allCasesNames,
-                onChange: Binding(
-                    get: {{newValue in month.monthName = MonthName.nameToType(name: newValue)}},
-                    set: {_ in}
-                )
-            ).frame(maxWidth: 100)
+            DropdownMenu(selected: MonthName.january.name, elements: MonthName.allCasesNames,
+                onChange: { newValue in month.monthName = MonthName.nameToType(name: newValue)
+            }).frame(maxWidth: 100)
             
             Button("Add month", role: .destructive) {
                 isPresentingConfirmSubmit = true
@@ -56,16 +48,12 @@ struct TableBottomBar: View {
                         do {
                             try await addMonth()
                         } catch {
-                            genericErrorMessage = error.localizedDescription
-                            genericErrorShown.toggle()
+                            errorMessage = error.localizedDescription
+                            errorShown.toggle()
                         }
                     }
                 }
-            }.dialogIcon(Image(systemName: "pencil.circle.fill"))
-            
-            Spacer()
-        }.alert(isPresented: $genericErrorShown) {
-            Alert(title: Text(genericErrorMessage))
+            }.dialogIcon(Image(systemName: "pencil.circle.fill")).padding()
         }.frame(maxWidth: .infinity, maxHeight: 80, alignment: .center).padding(3)
     }
 }

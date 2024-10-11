@@ -6,7 +6,7 @@ struct MainView: View {
     @Binding var payments: [Payment]
     @Binding var tabSwitch: TabSwitch
     
-    @State private var displayMonth: String = MonthName.currentMonth.name
+    @State private var displayMonth: MonthName = MonthName.currentMonth
     @State private var displayYear: String = "Year"
     @State private var currency: CurrencyName = .pln
     @State private var top10Payments: [Payment] = []
@@ -56,29 +56,20 @@ struct MainView: View {
         }
         .toolbar {
             ToolbarItemGroup {
-                DropdownMenu(selectedCategory: displayMonth, elements: MonthName.allCasesNames, onChange: Binding(
-                    get: {{ newValue in
-                        displayMonth = newValue
-                        refreshChart()
-                    }},
-                    set: {_ in}
-                )).frame(width: 150)
+                DropdownMenu(selected: displayMonth.name, elements: MonthName.allCasesNames, onChange: { newValue in
+                    displayMonth = MonthName.nameToType(name: newValue)
+                    refreshChart()
+                }).frame(width: 150)
                 
-                DropdownMenu(selectedCategory: displayYear, elements: ["Year", "Month"], onChange: Binding(
-                    get: {{ newValue in
-                        displayYear = newValue
-                        refreshChart()
-                    }},
-                    set: {_ in}
-                )).frame(width: 150)
+                DropdownMenu(selected: displayYear, elements: ["Year", "Month"], onChange: { newValue in
+                    displayYear = newValue
+                    refreshChart()
+                }).frame(width: 150)
                 
-                DropdownMenu(selectedCategory: currency.name, elements: CurrencyName.allCasesNames, onChange: Binding(
-                    get: {{ newValue in
-                        currency = CurrencyName.nameToType(name: newValue)
-                        refreshChart()
-                    }},
-                    set: {_ in}
-                )).frame(width: 150)
+                DropdownMenu(selected: currency.name, elements: CurrencyName.allCasesNames, onChange: { newValue in
+                    currency = CurrencyName.nameToType(name: newValue)
+                    refreshChart()
+                }).frame(width: 150)
             }
         }.onAppear {
             refreshChart()
@@ -88,33 +79,21 @@ struct MainView: View {
     }
     
     private func refreshChart() {
-        savedPayments.sort(by: { $0.amount < $1.amount} ) // Getting lowest value because expenses have minus sign
-        top10Payments = Array(savedPayments.prefix(15))
+        top10Payments = getTopPayments()
         
         chartEntries = []
-        if let year = years.first(where: {$0.number == YearType.currentYear}) {
-            if displayYear == "Year" {
-                for monthName in MonthName.allCases {
-                    var chartEntry = ChartEntry(monthName: monthName, categories: categories)
-                    
-                    for month in year.months.filter({$0.monthName == monthName}) {
-                        for type in PaymentType.allCases {
-                            chartEntry.paymentType = type
-                            
-                            do {
-                                try addSumsToEntry(entry: &chartEntry, month: month, type: type)
-                            } catch {
-                                genericErrorMessage = error.localizedDescription
-                                genericErrorShown.toggle()
-                            }
-                        }
-                    }
-                    chartEntries.append(chartEntry)
-                }
-            } else if displayYear == "Month" {
-                if let month = year.months.first(where: {$0.monthName.name == displayMonth}) {
+        let year = years.first(where: {$0.number == YearType.currentYear})
+        if year == nil {
+            return
+        }
+        
+        if displayYear == "Year" {
+            for monthName in MonthName.allCases {
+                var chartEntry = ChartEntry(monthName: monthName, categories: categories)
+                
+                for month in year!.months.filter({$0.monthName == monthName}) {
                     for type in PaymentType.allCases {
-                        var chartEntry = ChartEntry(monthName: MonthName.nameToType(name: displayMonth), paymentType: type, categories: categories)
+                        chartEntry.paymentType = type
                         
                         do {
                             try addSumsToEntry(entry: &chartEntry, month: month, type: type)
@@ -122,12 +101,34 @@ struct MainView: View {
                             genericErrorMessage = error.localizedDescription
                             genericErrorShown.toggle()
                         }
-                        
-                        chartEntries.append(chartEntry)
                     }
                 }
+                chartEntries.append(chartEntry)
+            }
+        } else if displayYear == "Month" {
+            let month = year!.months.first(where: {$0.monthName == displayMonth})
+            if month == nil {
+                return
+            }
+            
+            for type in PaymentType.allCases {
+                var chartEntry = ChartEntry(monthName: displayMonth, paymentType: type, categories: categories)
+                
+                do {
+                    try addSumsToEntry(entry: &chartEntry, month: month!, type: type)
+                } catch {
+                    genericErrorMessage = error.localizedDescription
+                    genericErrorShown.toggle()
+                }
+                
+                chartEntries.append(chartEntry)
             }
         }
+    }
+    
+    private func getTopPayments() -> [Payment] {
+        savedPayments.sort(by: { $0.amount < $1.amount} ) //TODO filter only payments / not income and take top
+        return Array(savedPayments.prefix(15))
     }
     
     private func getYearChart() -> some View {
@@ -165,14 +166,16 @@ struct MainView: View {
         panel.canChooseDirectories = true
         panel.allowedContentTypes = [UTType.commaSeparatedText]
         panel.begin { result in
-            if result == .OK {
-                do {
-                    payments = try DataParseService.loadDataFromBank(files: panel.urls)
-                    tabSwitch = .table
-                } catch {
-                    genericErrorMessage = error.localizedDescription
-                    genericErrorShown.toggle()
-                }
+            if result != .OK {
+                return
+            }
+            
+            do {
+                payments = try DataParseService.loadDataFromBank(files: panel.urls)
+                tabSwitch = .table
+            } catch {
+                genericErrorMessage = error.localizedDescription
+                genericErrorShown.toggle()
             }
         }
     }

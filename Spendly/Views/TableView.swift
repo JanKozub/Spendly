@@ -35,7 +35,7 @@ struct TableView: View {
                 .listStyle(PlainListStyle())
                 .frame(maxWidth: .infinity, maxHeight: abs(reader.size.height - 60))
                 
-                TableBottomBar(payments: $payments, incomeSum: $incomeSum, month: $month, expenseGroups: $expenseGroups, tabSwitch: $tabSwitch, addMonth: addMonth)
+                TableBottomBar(payments: $payments, incomeSum: $incomeSum, month: $month, expenseGroups: $expenseGroups, tabSwitch: $tabSwitch, errorShown: $genericErrorShown, errorMessage: $genericErrorMessage, addMonth: addMonth)
             }.frame(maxWidth: .infinity, maxHeight: reader.size.height)
         }.toolbar {
             ToolbarItemGroup {

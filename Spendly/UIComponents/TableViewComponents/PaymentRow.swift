@@ -30,31 +30,16 @@ struct PaymentRow: View {
             Text(String(format: "%.2f", abs(payment.amount)) + " " + payment.currency.name)
                 .frame(maxWidth: width * 0.07, alignment: .center)
             
-            DropdownMenu(
-                selectedCategory: payment.category != nil ? payment.category!.name : "",
-                elements: PaymentCategory.convertToStringArray(inputArray: categories),
-                onChange: Binding(
-                    get: {{ newValue in
-                        let oldPayment = payment.copy()
-                        payment.category = categories.first(where: { $0.name == newValue }) ?? PaymentCategory.example()
-                        onPaymentChanged(oldPayment, payment)
-                    }},
-                    set: {_ in}
-                )
-            ).frame(maxWidth: width * 0.1, alignment: .center)
+            let category = payment.category != nil ? payment.category!.name : ""
+            DropdownMenu(selected: category, elements: PaymentCategory.convertToStringArray(inputArray: categories), onChange: { newValue in
+                payment.category = categories.first(where: { $0.name == newValue }) ?? PaymentCategory.example()
+                onPaymentChanged(payment.copy(), payment)
+            }).frame(maxWidth: width * 0.1, alignment: .center)
             
-            DropdownMenu(
-                selectedCategory: payment.type.name,
-                elements: PaymentType.allCasesNames,
-                onChange: Binding(
-                    get: {{ newValue in
-                        let oldPayment = payment.copy()
-                        payment.type = PaymentType.nameToType(name: newValue)
-                        onPaymentChanged(oldPayment, payment)
-                    }},
-                    set: {_ in}
-                )
-            ).frame(maxWidth: width * 0.08, alignment: .center)
+            DropdownMenu(selected: payment.type.name, elements: PaymentType.allCasesNames, onChange: { newValue in
+                payment.type = PaymentType.nameToType(name: newValue)
+                onPaymentChanged(payment.copy(), payment)
+            }).frame(maxWidth: width * 0.08, alignment: .center)
             
             HStack {
                 Button(action: { isEditing.toggle() }) {
@@ -74,14 +59,4 @@ struct PaymentRow: View {
         .listRowBackground(Color.clear)
         .background(payment.amount < 0 ? myRed : myGreen)
     }
-}
-
-#Preview {
-    PaymentRow(
-        payment: .constant(Payment.example()),
-        width: .constant(CGFloat.infinity),
-        categories: .constant([]),
-        onPaymentChanged: { old, new in },
-        onDelete: {}
-    )
 }
