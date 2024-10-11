@@ -13,8 +13,7 @@ struct PaymentRow: View {
     
     var body: some View {
         HStack {
-            Text(payment.dateToString())
-                .frame(maxWidth: width * 0.1, alignment: .center)
+            Text(payment.dateToString()).frame(maxWidth: width * 0.1, alignment: .center)
             
             if isEditing {
                 TextField("Edit Message", text: $payment.message, onCommit: {
@@ -31,7 +30,8 @@ struct PaymentRow: View {
                 .frame(maxWidth: width * 0.07, alignment: .center)
             
             let category = payment.category != nil ? payment.category!.name : ""
-            DropdownMenu(selected: category, elements: PaymentCategory.convertToStringArray(inputArray: categories), onChange: { newValue in
+            DropdownMenu(selected: category, elements: PaymentCategory.convertToStringArray(inputArray: categories),
+                         onChange: { newValue in
                 payment.category = categories.first(where: { $0.name == newValue }) ?? PaymentCategory.example()
                 onPaymentChanged(payment.copy(), payment)
             }).frame(maxWidth: width * 0.1, alignment: .center)
@@ -48,8 +48,7 @@ struct PaymentRow: View {
                 }
                 
                 Button(action: onDelete) {
-                    Image(systemName: "trash.circle")
-                        .foregroundColor(.red)
+                    Image(systemName: "trash.circle").foregroundColor(.red)
                 }
             }
             .frame(maxWidth: width * 0.1, alignment: .center)

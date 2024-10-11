@@ -20,6 +20,12 @@ class PaymentCategory: Identifiable, Equatable, Codable {
         self.name = name
         self.graphColor = GraphColor(from: graphColor)
     }
+    
+    init(name: String, r: Double, g: Double, b: Double) {
+        self.id = UUID()
+        self.name = name
+        self.graphColor = GraphColor(from: NSColor(red: r, green: g, blue: b, alpha: 1.0))
+    }
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)

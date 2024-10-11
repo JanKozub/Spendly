@@ -20,6 +20,9 @@ struct SettingsView: View {
                 
                 Button(action: {
                     try? context.delete(model: Year.self)
+                    try? context.delete(model: Month.self)
+                    try? context.delete(model: Payment.self)
+                    try? context.delete(model: PaymentCategory.self)
                 }) 
                 {Text("Delete Data").font(Font.system(size: 20)).frame(maxWidth: .infinity, minHeight: 100)}
                 
@@ -87,26 +90,16 @@ struct SettingsView: View {
     
     static func getDefaultCategories() -> [PaymentCategory] {
         return [
-            PaymentCategory(name: "Entertainment", graphColor:
-                                NSColor(red: 240.0/255, green: 68.0/255, blue: 0, alpha: 1.0)),
-            PaymentCategory(name: "Groceries", graphColor:
-                                NSColor(red: 240.0/255, green: 26.0/255, blue: 0, alpha: 1.0)),
-            PaymentCategory(name: "For Parents", graphColor:
-                                NSColor(red: 112.0/255, green: 91.0/255, blue: 56.0/255, alpha: 1.0)),
-            PaymentCategory(name: "Fuel", graphColor:
-                                NSColor(red: 112.0/255, green: 56.0/255, blue: 69.0/255, alpha: 1.0)),
-            PaymentCategory(name: "Gift", graphColor:
-                                NSColor(red: 112.0/255, green: 82.0/255, blue: 56.0/255, alpha: 1.0)),
-            PaymentCategory(name: "New Things", graphColor:
-                                NSColor(red: 112.0/255, green: 62.0/255, blue: 56.0/255, alpha: 1.0)),
-            PaymentCategory(name: "Going out", graphColor:
-                                NSColor(red: 240.0/255, green: 125.0/255, blue: 80.0/255, alpha: 1.0)),
-            PaymentCategory(name: "Subscriptions", graphColor:
-                                NSColor(red: 240.0/255, green: 110.0/255, blue: 0, alpha: 1.0)),
-            PaymentCategory(name: "Transport", graphColor:
-                                NSColor(red: 240.0/255, green: 0, blue: 55.0/255, alpha: 1.0)),
-            PaymentCategory(name: "Other", graphColor:
-                                NSColor(red: 245.0/255, green: 164.0/255, blue: 34.0/255, alpha: 1.0)),
+            PaymentCategory(name: "Entertainment", r: 240.0/255, g: 68.0/255, b: 0),
+            PaymentCategory(name: "Groceries", r: 240.0/255, g: 26.0/255, b: 0),
+            PaymentCategory(name: "For Parents", r: 112.0/255, g: 91.0/255, b: 56.0/255),
+            PaymentCategory(name: "Fuel", r: 112.0/255, g: 56.0/255, b: 69.0/255),
+            PaymentCategory(name: "Gift", r: 112.0/255, g: 82.0/255, b: 56.0/255),
+            PaymentCategory(name: "New Things", r: 112.0/255, g: 62.0/255, b: 56.0/255),
+            PaymentCategory(name: "Going out", r: 240.0/255, g: 125.0/255, b: 80.0/255),
+            PaymentCategory(name: "Subscriptions", r: 240.0/255, g: 110.0/255, b: 0.0/255),
+            PaymentCategory(name: "Transport", r: 240.0/255, g: 0.0/255, b: 55.0/255),
+            PaymentCategory(name: "Other", r: 240.0/255, g: 164.0/255, b: 34.0/255),
         ]
     }
 }
