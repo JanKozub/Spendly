@@ -2,7 +2,6 @@ import SwiftUI
 
 struct TableBottomBar: View {
     @Binding var payments: [Payment]
-    @Binding var incomeSum: Double
     @Binding var month: Month
     @Binding var expenseGroups: [TypeAndCurrencyGroup: Double]
     @Binding var tabSwitch: TabSwitch

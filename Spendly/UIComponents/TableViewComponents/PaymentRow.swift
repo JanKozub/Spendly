@@ -32,13 +32,15 @@ struct PaymentRow: View {
             let category = payment.category != nil ? payment.category!.name : ""
             DropdownMenu(selected: category, elements: PaymentCategory.convertToStringArray(inputArray: categories),
                          onChange: { newValue in
+                let old = payment.copy()
                 payment.category = categories.first(where: { $0.name == newValue }) ?? PaymentCategory.example()
-                onPaymentChanged(payment.copy(), payment)
+                onPaymentChanged(old, payment)
             }).frame(maxWidth: width * 0.1, alignment: .center)
             
             DropdownMenu(selected: payment.type.name, elements: PaymentType.allCasesNames, onChange: { newValue in
+                let old = payment.copy()
                 payment.type = PaymentType.nameToType(name: newValue)
-                onPaymentChanged(payment.copy(), payment)
+                onPaymentChanged(old, payment)
             }).frame(maxWidth: width * 0.08, alignment: .center)
             
             HStack {

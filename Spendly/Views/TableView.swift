@@ -9,7 +9,6 @@ struct TableView: View {
     @State var years: [Year]
     @State var categories: [PaymentCategory]
     @State var expenseGroups: [TypeAndCurrencyGroup: Double] = [:]
-    @State private var incomeSum: Double = 0
     @State private var month: Month = Month(monthName: .january, yearNum: YearType.currentYear)
     
     @State private var isEditPaymentNamesShown = false
@@ -35,7 +34,7 @@ struct TableView: View {
                 .listStyle(PlainListStyle())
                 .frame(maxWidth: .infinity, maxHeight: abs(reader.size.height - 60))
                 
-                TableBottomBar(payments: $payments, incomeSum: $incomeSum, month: $month, expenseGroups: $expenseGroups, tabSwitch: $tabSwitch, errorShown: $genericErrorShown, errorMessage: $genericErrorMessage, addMonth: addMonth)
+                TableBottomBar(payments: $payments, month: $month, expenseGroups: $expenseGroups, tabSwitch: $tabSwitch, errorShown: $genericErrorShown, errorMessage: $genericErrorMessage, addMonth: addMonth)
             }.frame(maxWidth: .infinity, maxHeight: reader.size.height)
         }.toolbar {
             ToolbarItemGroup {
@@ -55,8 +54,6 @@ struct TableView: View {
                     genericErrorShown.toggle()
                 }
             }
-            
-            calculateIncome()
         })
         .padding(.top, 1)
         .alert(isPresented: $genericErrorShown) {
@@ -64,18 +61,12 @@ struct TableView: View {
         }.dialogIcon(Image(systemName: "x.circle.fill"))
     }
     
-    private func calculateIncome() {
-        for payment in payments {
-            if payment.amount > 0 {
-                incomeSum += payment.amount
-            }
-        }
-    }
-    
     private func updateExpenses(oldPayment: Payment, newPayment: Payment) {
         let group = newPayment.getTypeAndCurrencyGroup()
+                
         if (oldPayment.type != newPayment.type) {
-            expenseGroups[group, default: 0] -= abs(oldPayment.amount)
+            let oldGroup = oldPayment.getTypeAndCurrencyGroup()
+            expenseGroups[oldGroup, default: 0] -= abs(oldPayment.amount)
             expenseGroups[group, default: 0] += abs(newPayment.amount)
         } else if oldPayment.category == nil {
             expenseGroups[group, default: 0] += abs(newPayment.amount)
@@ -84,9 +75,11 @@ struct TableView: View {
     
     private func deletePayment(payment: Payment) {
         if payment.amount > 0 {
-            incomeSum -= payment.amount
+            month.income -= payment.amount
         } else {
-            expenseGroups[payment.getTypeAndCurrencyGroup(), default: 0] -= abs(payment.amount)
+            if payment.category != nil {
+                expenseGroups[payment.getTypeAndCurrencyGroup(), default: 0] -= abs(payment.amount)
+            }
         }
         
         payments.removeAll(where: { $0.id == payment.id })
