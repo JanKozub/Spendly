@@ -10,7 +10,6 @@ struct TableView: View {
     @State var categories: [PaymentCategory]
     @State var expenseGroups: [TypeAndCurrencyGroup: Double] = [:]
     @State private var month: Month = Month(monthName: .january, yearNum: YearType.currentYear)
-    @State var currency: CurrencyName
     
     @State private var isEditPaymentNamesShown = false
     @State private var isAddPaymentShown = false
@@ -41,12 +40,6 @@ struct TableView: View {
             ToolbarItemGroup {
                 Button("Edit Messages") { isEditPaymentNamesShown = true }
                 Button("Add Payment") { isAddPaymentShown = true }
-                
-                DropdownMenu(selected: currency.name,
-                             elements: CurrencyName.typeToStringArray(input: month.currenciesInTheMonth),
-                             onChange: { newValue in
-                    currency = CurrencyName.nameToType(name: newValue)
-                }).frame(width: 150)
             }
         }.sheet(isPresented: $isEditPaymentNamesShown) {
             EditPaymentNames(isShown: $isEditPaymentNamesShown, payments: $payments)

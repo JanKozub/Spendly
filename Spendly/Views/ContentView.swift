@@ -23,8 +23,7 @@ struct ContentView: View {
             TableView(payments: $payments,
                       tabSwitch: $tabSwitch,
                       years: years,
-                      categories: categories,
-                      currency: payments.isEmpty ? .eur : payments[0].currency)
+                      categories: categories)
         case .settings:
             SettingsView(tabSwitch: $tabSwitch,
                          context: context,
