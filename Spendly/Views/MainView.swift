@@ -99,7 +99,7 @@ struct MainView: View {
                             try addSumsToEntry(entry: &chartEntry, month: month, type: type)
                         } catch {
                             genericErrorMessage = error.localizedDescription
-                            genericErrorShown.toggle()
+                            genericErrorShown = true
                         }
                     }
                 }
@@ -183,6 +183,7 @@ struct MainView: View {
     private func addSumsToEntry(entry: inout ChartEntry, month: Month, type: PaymentType) throws {
         for category in categories {
             entry.sums[category, default: 0.0] += try month.getExpensesForGroup(paymentType: type, paymentCategory: category, currency: currency)
+            
         }
     }
     

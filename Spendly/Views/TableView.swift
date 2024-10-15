@@ -56,9 +56,17 @@ struct TableView: View {
             }
         })
         .padding(.top, 1)
+        .onAppear(perform: initExpenses)
         .alert(isPresented: $genericErrorShown) {
             Alert(title: Text(genericErrorMessage))
         }.dialogIcon(Image(systemName: "x.circle.fill"))
+    }
+    
+    private func initExpenses() {
+        for payment in payments {
+            let group = payment.getTypeAndCurrencyGroup()
+            expenseGroups[group, default: 0] = 0
+        }
     }
     
     private func updateExpenses(oldPayment: Payment, newPayment: Payment) {
@@ -75,7 +83,7 @@ struct TableView: View {
     
     private func deletePayment(payment: Payment) {
         if payment.amount > 0 {
-            month.income -= payment.amount
+            //month.income -= payment.amount
         } else {
             if payment.category != nil {
                 expenseGroups[payment.getTypeAndCurrencyGroup(), default: 0] -= abs(payment.amount)
@@ -89,6 +97,8 @@ struct TableView: View {
         if (hasAnyPaymentEmptyCategory()) {
             throw NSError(domain: "Every category field must be filled", code: 0)
         }
+        
+        //try month.updatePaymentGroups()
         
         context.insert(month)
         addPaymentsToContext()

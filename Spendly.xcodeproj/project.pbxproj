@@ -17,6 +17,7 @@
 		E744BB382C36BB33000FF33B /* MonthName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E744BB372C36BB33000FF33B /* MonthName.swift */; };
 		E744BB3A2C36BEEF000FF33B /* PaymentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E744BB392C36BEEF000FF33B /* PaymentType.swift */; };
 		E744BB3C2C36C013000FF33B /* PaymentCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E744BB3B2C36C013000FF33B /* PaymentCategory.swift */; };
+		E748766E2CBEABF6001BD82F /* ExchangeRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E748766D2CBEABDB001BD82F /* ExchangeRate.swift */; };
 		E751B02C2C49617B007F473C /* DataExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E751B02B2C49617B007F473C /* DataExportService.swift */; };
 		E753CCD22C3D9FE90043D551 /* CurrencyName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E753CCD12C3D9FE90043D551 /* CurrencyName.swift */; };
 		E77AA1A32CB5F23000BA74E2 /* TypeAndCurrencyGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77AA1A22CB5F22800BA74E2 /* TypeAndCurrencyGroup.swift */; };
@@ -48,6 +49,7 @@
 		E744BB372C36BB33000FF33B /* MonthName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthName.swift; sourceTree = "<group>"; };
 		E744BB392C36BEEF000FF33B /* PaymentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentType.swift; sourceTree = "<group>"; };
 		E744BB3B2C36C013000FF33B /* PaymentCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentCategory.swift; sourceTree = "<group>"; };
+		E748766D2CBEABDB001BD82F /* ExchangeRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRate.swift; sourceTree = "<group>"; };
 		E751B02B2C49617B007F473C /* DataExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExportService.swift; sourceTree = "<group>"; };
 		E753CCD12C3D9FE90043D551 /* CurrencyName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyName.swift; sourceTree = "<group>"; };
 		E77AA1A22CB5F22800BA74E2 /* TypeAndCurrencyGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeAndCurrencyGroup.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 		E7EA4A7D2C38ABB000F66E03 /* types */ = {
 			isa = PBXGroup;
 			children = (
+				E748766D2CBEABDB001BD82F /* ExchangeRate.swift */,
 				E7ABB46E2CB6A6830015DEC9 /* TabSwitch.swift */,
 				E77AA1A22CB5F22800BA74E2 /* TypeAndCurrencyGroup.swift */,
 				E744BB372C36BB33000FF33B /* MonthName.swift */,
@@ -300,6 +303,7 @@
 				E744BB3C2C36C013000FF33B /* PaymentCategory.swift in Sources */,
 				E7270CB12CB303B000A6BFEB /* CurrencyExchangeService.swift in Sources */,
 				E744BB382C36BB33000FF33B /* MonthName.swift in Sources */,
+				E748766E2CBEABF6001BD82F /* ExchangeRate.swift in Sources */,
 				E744BB362C36B933000FF33B /* Month.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

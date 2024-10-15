@@ -15,7 +15,7 @@ struct TableBottomBar: View {
     
     var body: some View {
         HStack {
-            Text("Income: " + String(month.income) + " PLN") //TODO currency support
+            //Text("Income: " + String(month.income) + " PLN") //TODO currency support
             Divider()
             CurrencyText(type: .personal, expenseGroups: $expenseGroups)
             Divider()

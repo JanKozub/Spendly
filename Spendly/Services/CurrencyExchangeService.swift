@@ -1,41 +1,43 @@
 import Foundation
 
 class CurrencyExchangeService {
-    static func getExchangeRates(base: CurrencyName, target: CurrencyName, startDate: Date, endDate: Date) async throws -> [Date: Double] {
-        let startDate = Calendar.current.date(byAdding: .day, value: -1, to: startDate)!
-        
+    public static func getExchangeRates(from: CurrencyName, to: CurrencyName, startDate: Date, endDate: Date) async throws -> [ExchangeRate] {
         if endDate > Date() {
             throw NSError(domain: "CurrencyExchangeService", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot get exchange rates for the future."])
         }
         
-        let urlString = "https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.\(target.name).\(base.name).SP00.A"
+        let urlString = "https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.\(from.name).\(to.name).SP00.A"
         let df = DateFormatter()
-
-        let url = try getURLWithComponents(url: urlString, startDate: startDate, endDate: endDate, formatter: df)
+        
+        let calendar = Calendar.current
+        let requestStartDate = calendar.date(byAdding: .day, value: -1, to: startDate)!
+        let url = try getURLWithComponents(url: urlString, startDate: requestStartDate, endDate: endDate, formatter: df)
         let data = try await URLSession.shared.data(from: url).0
-
+        
         let (jsonRates, jsonDates) = try extractDetails(from: data)
-        var rates = convertToRatesArray(jsonRates: jsonRates, jsonDates: jsonDates, formatter: df)
-
+        var rates = convertToRatesArray(from: from, to: to, jsonRates: jsonRates, jsonDates: jsonDates, formatter: df)
+        
         if rates.isEmpty {
             throw NSError(domain: "CurrencyExchangeService", code: 1, userInfo: [NSLocalizedDescriptionKey: "No exchange rates found for the given period."])
         }
-
-        rates = fillMissingRates(rates: rates, startDate: startDate, endDate: endDate)
-
+        
+        rates = try fillMissingRates(rates: rates, startDate: startDate, endDate: endDate)
+        
         return rates
     }
     
-    private static func fillMissingRates(rates: [Date: Double], startDate: Date, endDate: Date) -> [Date: Double] {
+    private static func fillMissingRates(rates: [ExchangeRate], startDate: Date, endDate: Date) throws -> [ExchangeRate] {
         var filledRates = rates
         var currentDate = startDate
-        var lastKnownRate: Double?
-
+        var lastKnownRate: ExchangeRate?
+        
         while currentDate <= endDate {
-            if let rate = rates[currentDate] {
+            if let rate = rates.first(where: { $0.date == currentDate }) {
                 lastKnownRate = rate
             } else if let lastRate = lastKnownRate {
-                filledRates[currentDate] = lastRate
+                filledRates.append(ExchangeRate(from: lastRate.from, to: lastRate.to, date: currentDate, rate: lastRate.rate))
+            } else {
+                throw NSError(domain: "No exchange rates found", code: 0)
             }
             currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
         }
@@ -80,7 +82,7 @@ class CurrencyExchangeService {
         return (observations, timeValues)
     }
     
-    private static func convertToRatesArray(jsonRates: [String: Any], jsonDates: [[String: Any]], formatter: DateFormatter) -> [Date: Double] {
+    private static func convertToRatesArray(from: CurrencyName, to: CurrencyName, jsonRates: [String: Any], jsonDates: [[String: Any]], formatter: DateFormatter) -> [ExchangeRate] {
         var dateMap: [String: String] = [:]
         for (key, value) in jsonDates.enumerated() {
             if let date = value["id"] as? String {
@@ -88,12 +90,12 @@ class CurrencyExchangeService {
             }
         }
         
-        var rates: [Date: Double] = [:]
+        var rates: [ExchangeRate] = []
         for (key, value) in jsonRates {
             if let observationArray = value as? [Any],
                let rate = observationArray.first as? Double,
                let date = dateMap[key] {
-                rates[formatter.date(from: date)!] = rate
+                rates.append(ExchangeRate(from: from, to: to, date: formatter.date(from: date)!, rate: rate))
             }
         }
         
