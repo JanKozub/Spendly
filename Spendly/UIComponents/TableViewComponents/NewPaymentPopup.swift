@@ -6,7 +6,7 @@ struct NewPaymentPopup: View {
     @Binding var isShown: Bool
     @Binding var expenseGroups: [TypeAndCurrencyGroup: Double]
     
-    @State private var newPaymentDate: String = ""
+    @State private var newPaymentDate: Date = Date()
     @State private var newPaymentMessage: String = ""
     @State private var newPaymentAmount: String = ""
     @State private var newPaymentCategory: PaymentCategory = PaymentCategory(name: "", graphColor: .red)
@@ -17,8 +17,9 @@ struct NewPaymentPopup: View {
         VStack {
             Text("Add New Payment").font(.headline).padding(.bottom, 20)
             
-            TextField("Transaction Date (dd-MM-yyyy)", text: $newPaymentDate)
-                .textFieldStyle(RoundedBorderTextFieldStyle()).padding()
+            DatePicker("Transaction Date", selection: $newPaymentDate, displayedComponents: .date)
+                .datePickerStyle(CompactDatePickerStyle())
+                .padding()
             
             TextField("Message", text: $newPaymentMessage).textFieldStyle(RoundedBorderTextFieldStyle()).padding()
             
@@ -57,7 +58,7 @@ struct NewPaymentPopup: View {
         guard let amount = Double(newPaymentAmount) else { return }
         
         let newPayment = Payment(
-            date: Payment.dateFromString(newPaymentDate) ?? Date(),
+            date: newPaymentDate,
             message: newPaymentMessage,
             amount: amount,
             currency: newPaymentCurrency,
