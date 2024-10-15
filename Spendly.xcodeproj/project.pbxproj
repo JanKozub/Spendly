@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E70449CC2CBEF8B300FDC2C3 /* IncomeText.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70449CB2CBEF8AF00FDC2C3 /* IncomeText.swift */; };
 		E70C41A32CB560C1001978E8 /* PaymentGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70C41A22CB560C1001978E8 /* PaymentGroup.swift */; };
 		E70C41A52CB57F38001978E8 /* NewPaymentPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70C41A42CB57F31001978E8 /* NewPaymentPopup.swift */; };
 		E70C41A72CB5872A001978E8 /* EditPaymentNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70C41A62CB58711001978E8 /* EditPaymentNames.swift */; };
@@ -31,7 +32,7 @@
 		E7BF903C2C1E1BF4002A61CC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7BF903B2C1E1BF4002A61CC /* Preview Assets.xcassets */; };
 		E7C92F082C344C5F001456E2 /* DropdownMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C92F072C344C5F001456E2 /* DropdownMenu.swift */; };
 		E7C92F0A2C347D75001456E2 /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C92F092C347D75001456E2 /* TableView.swift */; };
-		E7C92F0E2C34B7AD001456E2 /* CurrencyText.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C92F0D2C34B7AD001456E2 /* CurrencyText.swift */; };
+		E7C92F0E2C34B7AD001456E2 /* ExpenseText.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C92F0D2C34B7AD001456E2 /* ExpenseText.swift */; };
 		E7DE76D32C33141D002DE392 /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DE76D22C33141D002DE392 /* Payment.swift */; };
 		E7DE76D52C337489002DE392 /* PaymentRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DE76D42C337489002DE392 /* PaymentRow.swift */; };
 		E7EA4A7C2C3889CF00F66E03 /* Year.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EA4A7B2C3889CF00F66E03 /* Year.swift */; };
@@ -39,6 +40,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E70449CB2CBEF8AF00FDC2C3 /* IncomeText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeText.swift; sourceTree = "<group>"; };
 		E70C41A22CB560C1001978E8 /* PaymentGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGroup.swift; sourceTree = "<group>"; };
 		E70C41A42CB57F31001978E8 /* NewPaymentPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPaymentPopup.swift; sourceTree = "<group>"; };
 		E70C41A62CB58711001978E8 /* EditPaymentNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPaymentNames.swift; sourceTree = "<group>"; };
@@ -65,7 +67,7 @@
 		E7BF903B2C1E1BF4002A61CC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E7C92F072C344C5F001456E2 /* DropdownMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropdownMenu.swift; sourceTree = "<group>"; };
 		E7C92F092C347D75001456E2 /* TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
-		E7C92F0D2C34B7AD001456E2 /* CurrencyText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyText.swift; sourceTree = "<group>"; };
+		E7C92F0D2C34B7AD001456E2 /* ExpenseText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseText.swift; sourceTree = "<group>"; };
 		E7DE76D22C33141D002DE392 /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
 		E7DE76D42C337489002DE392 /* PaymentRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentRow.swift; sourceTree = "<group>"; };
 		E7EA4A7B2C3889CF00F66E03 /* Year.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Year.swift; sourceTree = "<group>"; };
@@ -86,10 +88,11 @@
 		E70C41A82CB58880001978E8 /* TableViewComponents */ = {
 			isa = PBXGroup;
 			children = (
+				E70449CB2CBEF8AF00FDC2C3 /* IncomeText.swift */,
 				E70C41A62CB58711001978E8 /* EditPaymentNames.swift */,
 				E70C41A42CB57F31001978E8 /* NewPaymentPopup.swift */,
 				E7DE76D42C337489002DE392 /* PaymentRow.swift */,
-				E7C92F0D2C34B7AD001456E2 /* CurrencyText.swift */,
+				E7C92F0D2C34B7AD001456E2 /* ExpenseText.swift */,
 				E70C41A92CB58C57001978E8 /* TableBottomBar.swift */,
 			);
 			path = TableViewComponents;
@@ -283,7 +286,7 @@
 				E70C41A72CB5872A001978E8 /* EditPaymentNames.swift in Sources */,
 				E7F566772C596D800029EB82 /* MainView.swift in Sources */,
 				E7C92F0A2C347D75001456E2 /* TableView.swift in Sources */,
-				E7C92F0E2C34B7AD001456E2 /* CurrencyText.swift in Sources */,
+				E7C92F0E2C34B7AD001456E2 /* ExpenseText.swift in Sources */,
 				E7BF90362C1E1BF3002A61CC /* ContentView.swift in Sources */,
 				E7ABB46F2CB6A6860015DEC9 /* TabSwitch.swift in Sources */,
 				E751B02C2C49617B007F473C /* DataExportService.swift in Sources */,
@@ -293,6 +296,7 @@
 				E77AA1A32CB5F23000BA74E2 /* TypeAndCurrencyGroup.swift in Sources */,
 				E7926D4F2C52E9D7001865D3 /* DataParseService.swift in Sources */,
 				E7C92F082C344C5F001456E2 /* DropdownMenu.swift in Sources */,
+				E70449CC2CBEF8B300FDC2C3 /* IncomeText.swift in Sources */,
 				E71399772C3C907E0017385E /* ChartEntry.swift in Sources */,
 				E7DE76D52C337489002DE392 /* PaymentRow.swift in Sources */,
 				E7BF90342C1E1BF3002A61CC /* SpendlyApp.swift in Sources */,

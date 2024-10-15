@@ -14,11 +14,21 @@ struct ContentView: View {
     var body: some View {
         switch tabSwitch {
         case .main:
-            MainView(payments: $payments, tabSwitch: $tabSwitch, years: years, categories: categories, savedPayments: savedPayments)
+            MainView(payments: $payments,
+                     tabSwitch: $tabSwitch,
+                     years: years,
+                     categories: categories,
+                     savedPayments: savedPayments)
         case .table:
-            TableView(payments: $payments, tabSwitch: $tabSwitch, years: years, categories: categories)
+            TableView(payments: $payments,
+                      tabSwitch: $tabSwitch,
+                      years: years,
+                      categories: categories,
+                      currency: payments.isEmpty ? .eur : payments[0].currency)
         case .settings:
-            SettingsView(tabSwitch: $tabSwitch, context: context, categories: .constant(categories))
+            SettingsView(tabSwitch: $tabSwitch,
+                         context: context,
+                         categories: .constant(categories))
         }
     }
 }

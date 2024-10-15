@@ -10,6 +10,7 @@ struct TableView: View {
     @State var categories: [PaymentCategory]
     @State var expenseGroups: [TypeAndCurrencyGroup: Double] = [:]
     @State private var month: Month = Month(monthName: .january, yearNum: YearType.currentYear)
+    @State var currency: CurrencyName
     
     @State private var isEditPaymentNamesShown = false
     @State private var isAddPaymentShown = false
@@ -40,6 +41,12 @@ struct TableView: View {
             ToolbarItemGroup {
                 Button("Edit Messages") { isEditPaymentNamesShown = true }
                 Button("Add Payment") { isAddPaymentShown = true }
+                
+                DropdownMenu(selected: currency.name,
+                             elements: CurrencyName.typeToStringArray(input: month.currenciesInTheMonth),
+                             onChange: { newValue in
+                    currency = CurrencyName.nameToType(name: newValue)
+                }).frame(width: 150)
             }
         }.sheet(isPresented: $isEditPaymentNamesShown) {
             EditPaymentNames(isShown: $isEditPaymentNamesShown, payments: $payments)
@@ -56,22 +63,28 @@ struct TableView: View {
             }
         })
         .padding(.top, 1)
-        .onAppear(perform: initExpenses)
+        .onChange(of: month.currenciesInTheMonth, {
+            initExpenses()
+        })
         .alert(isPresented: $genericErrorShown) {
             Alert(title: Text(genericErrorMessage))
         }.dialogIcon(Image(systemName: "x.circle.fill"))
     }
     
     private func initExpenses() {
-        for payment in payments {
-            let group = payment.getTypeAndCurrencyGroup()
-            expenseGroups[group, default: 0] = 0
+        for type in PaymentType.allCases {
+            for currency in month.currenciesInTheMonth {
+                let group = TypeAndCurrencyGroup(type: type, currency: currency)
+                if !expenseGroups.keys.contains(group) {
+                    expenseGroups[group, default: 0.0] = 0.0
+                }
+            }
         }
     }
     
     private func updateExpenses(oldPayment: Payment, newPayment: Payment) {
         let group = newPayment.getTypeAndCurrencyGroup()
-                
+        
         if (oldPayment.type != newPayment.type) {
             let oldGroup = oldPayment.getTypeAndCurrencyGroup()
             expenseGroups[oldGroup, default: 0] -= abs(oldPayment.amount)
@@ -82,23 +95,19 @@ struct TableView: View {
     }
     
     private func deletePayment(payment: Payment) {
-        if payment.amount > 0 {
-            //month.income -= payment.amount
-        } else {
+        if payment.amount < 0 {
             if payment.category != nil {
                 expenseGroups[payment.getTypeAndCurrencyGroup(), default: 0] -= abs(payment.amount)
             }
         }
         
-        payments.removeAll(where: { $0.id == payment.id })
+        month.removePayment(payment: payment)
     }
     
     private func addMonth() async throws {
-        if (hasAnyPaymentEmptyCategory()) {
+        if (ExistsEmptyCategoryField()) {
             throw NSError(domain: "Every category field must be filled", code: 0)
         }
-        
-        //try month.updatePaymentGroups()
         
         context.insert(month)
         addPaymentsToContext()
@@ -106,22 +115,27 @@ struct TableView: View {
         let yearIdx = getIndexOfYear(yearNum: month.yearNum)
         if yearIdx == nil {
             addNewYear(newYear: Year(number: month.yearNum, months: [month]))
-            saveAndReturn()
+            saveAndReturnToMain()
             return
         }
         
         let monthIdx = getIndexOfMonth(yearIdx: yearIdx!, monthName: month.monthName)
         if monthIdx == nil {
             years[yearIdx!].months.append(month)
-            saveAndReturn()
+            saveAndReturnToMain()
             return
         }
         
         let alert = getOverwriteDialog()
         if alert.runModal() == .alertFirstButtonReturn {
             years[yearIdx!].months[monthIdx!] = month
-            saveAndReturn()
+            saveAndReturnToMain()
         }
+    }
+    
+    private func addNewYear(newYear: Year) {
+        context.insert(newYear)
+        years.append(newYear)
     }
     
     private func addPaymentsToContext() {
@@ -133,18 +147,13 @@ struct TableView: View {
         }
     }
     
-    private func addNewYear(newYear: Year) {
-        context.insert(newYear)
-        years.append(newYear)
-    }
-    
-    private func saveAndReturn() {
+    private func saveAndReturnToMain() {
         try? context.save()
         payments = []
         tabSwitch = .main
     }
     
-    private func hasAnyPaymentEmptyCategory() -> Bool {
+    private func ExistsEmptyCategoryField() -> Bool {
         return payments.contains(where: { $0.category == nil })
     }
     

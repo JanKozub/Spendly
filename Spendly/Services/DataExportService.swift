@@ -36,8 +36,8 @@ class DataExportService {
                         monthName: month.monthName,
                         yearNum: month.yearNum,
                         payments: month.payments,
-                        incomePayments: month.incomePayments,
-                        expensePayments: month.expensePayments,
+                        incomePayments: month.getIncomePayments(),
+                        expensePayments: month.getExpensePayments(),
                         exchangeRates: month.exchangeRates,
                         currenciesInTheMonth: month.currenciesInTheMonth
                     )

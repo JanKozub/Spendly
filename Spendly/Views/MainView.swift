@@ -7,7 +7,7 @@ struct MainView: View {
     @Binding var tabSwitch: TabSwitch
     
     @State private var displayMonth: MonthName = MonthName.currentMonth
-    @State private var displayYear: String = "Year"
+    @State private var chartType: String = "Year"
     @State private var currency: CurrencyName = .pln
     @State private var top10Payments: [Payment] = []
     
@@ -23,7 +23,7 @@ struct MainView: View {
         GeometryReader { reader in
             VStack {
                 HStack {
-                    switch displayYear {
+                    switch chartType {
                     case "Year":
                         getYearChart()
                     case "Month":
@@ -61,8 +61,8 @@ struct MainView: View {
                     refreshChart()
                 }).frame(width: 150)
                 
-                DropdownMenu(selected: displayYear, elements: ["Year", "Month"], onChange: { newValue in
-                    displayYear = newValue
+                DropdownMenu(selected: chartType, elements: ["Year", "Month"], onChange: { newValue in
+                    chartType = newValue
                     refreshChart()
                 }).frame(width: 150)
                 
@@ -87,7 +87,7 @@ struct MainView: View {
             return
         }
         
-        if displayYear == "Year" {
+        if chartType == "Year" {
             for monthName in MonthName.allCases {
                 var chartEntry = ChartEntry(monthName: monthName, categories: categories)
                 
@@ -105,7 +105,7 @@ struct MainView: View {
                 }
                 chartEntries.append(chartEntry)
             }
-        } else if displayYear == "Month" {
+        } else if chartType == "Month" {
             let month = year!.months.first(where: {$0.monthName == displayMonth})
             if month == nil {
                 return
@@ -118,7 +118,7 @@ struct MainView: View {
                     try addSumsToEntry(entry: &chartEntry, month: month!, type: type)
                 } catch {
                     genericErrorMessage = error.localizedDescription
-                    genericErrorShown.toggle()
+                    genericErrorShown = true
                 }
                 
                 chartEntries.append(chartEntry)
@@ -175,15 +175,14 @@ struct MainView: View {
                 tabSwitch = .table
             } catch {
                 genericErrorMessage = error.localizedDescription
-                genericErrorShown.toggle()
+                genericErrorShown = true
             }
         }
     }
     
     private func addSumsToEntry(entry: inout ChartEntry, month: Month, type: PaymentType) throws {
         for category in categories {
-            entry.sums[category, default: 0.0] += try month.getExpensesForGroup(paymentType: type, paymentCategory: category, currency: currency)
-            
+            entry.sums[category, default: 0.0] += try month.getExpensesForGroup(type: type, category: category, currency: currency)
         }
     }
     

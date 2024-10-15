@@ -7,11 +7,10 @@ class Month: Identifiable ,Hashable {
     @Attribute var monthName: MonthName
     @Attribute var yearNum: Int
     @Relationship(deleteRule: .cascade) var payments: [Payment]
-    @Attribute var incomePayments: [Payment]
-    @Attribute var expensePayments: [Payment]
+    @Attribute private var incomePayments: [Payment]
+    @Attribute private var expensePayments: [Payment]
     @Attribute var exchangeRates: [ExchangeRate] = []
     @Attribute var currenciesInTheMonth: [CurrencyName] = []
-
     
     init(monthName: MonthName, yearNum: Int) {
         self.id = UUID()
@@ -64,21 +63,18 @@ class Month: Identifiable ,Hashable {
         }
     }
     
-    public func getExpensesForGroup(paymentType: PaymentType, paymentCategory: PaymentCategory, currency: CurrencyName) throws -> Double {
+    public func getExpensesForGroup(type: PaymentType, category: PaymentCategory, currency: CurrencyName) throws -> Double {
         if !currenciesInTheMonth.contains(currency) {
             throw NSError(domain: "There are no payments with this currency", code: 0)
         }
         
         var sum = 0.0
         
-        for payment in expensePayments {
-            if payment.type == paymentType && payment.category == paymentCategory {
-                
-                if payment.currency == currency {
-                    sum += payment.amount
-                } else {
-                    sum += payment.amount * (try getRateOnDay(from: payment.currency, to: currency, date: payment.date))
-                }
+        for payment in expensePayments where payment.type == type && payment.category == category{
+            if payment.currency == currency {
+                sum += payment.amount
+            } else {
+                sum += payment.amount * (try getRateOnDay(from: payment.currency, to: currency, date: payment.date))
             }
         }
         
@@ -103,6 +99,19 @@ class Month: Identifiable ,Hashable {
         return (calendar.date(byAdding: .day, value: 1, to: firstDay)!, calendar.date(byAdding: .day, value: 1, to: lastDay)!)
     }
     
+    public func removePayment(payment: Payment) {
+        payments.removeAll(where: { $0.id == payment.id })
+        incomePayments.removeAll(where: { $0.id == payment.id })
+        expensePayments.removeAll(where: { $0.id == payment.id })
+    }
+    
+    public func getExpensePayments() -> [Payment] {
+        return expensePayments
+    }
+    
+    public func getIncomePayments() -> [Payment] {
+        return incomePayments
+    }
     
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)

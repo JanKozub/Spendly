@@ -26,6 +26,15 @@ enum CurrencyName: String, Identifiable, CaseIterable, Hashable, Codable {
         }
     }
     
+    static func typeToStringArray(input: [CurrencyName]) -> [String] {
+        var output: [String] = []
+        for val in input {
+            output.append(val.name)
+        }
+        
+        return output
+    }
+    
     static var allCases: [CurrencyName] {
         [.pln, .eur]
     }

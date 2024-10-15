@@ -12,14 +12,15 @@ struct TableBottomBar: View {
     
     @State private var isPresentingConfirmCancel: Bool = false
     @State private var isPresentingConfirmSubmit: Bool = false
+    @State private var income: Double = 0.0
     
     var body: some View {
         HStack {
-            //Text("Income: " + String(month.income) + " PLN") //TODO currency support
+            IncomeText(month: $month)
             Divider()
-            CurrencyText(type: .personal, expenseGroups: $expenseGroups)
+            ExpenseText(type: .personal, expenseGroups: $expenseGroups)
             Divider()
-            CurrencyText(type: .refunded, expenseGroups: $expenseGroups)
+            ExpenseText(type: .refunded, expenseGroups: $expenseGroups)
             Divider()
             
             Button("Cancel", role: .destructive) {
@@ -32,11 +33,11 @@ struct TableBottomBar: View {
             }.dialogIcon(Image(systemName: "x.circle.fill"))
             
             DropdownMenu(selected: String(YearType.currentYear), elements: YearType.allYearsNames,
-                onChange: { newValue in month.yearNum = Int(newValue)!
+                         onChange: { newValue in month.yearNum = Int(newValue)!
             }).frame(maxWidth: 100)
             
             DropdownMenu(selected: MonthName.january.name, elements: MonthName.allCasesNames,
-                onChange: { newValue in month.monthName = MonthName.nameToType(name: newValue)
+                         onChange: { newValue in month.monthName = MonthName.nameToType(name: newValue)
             }).frame(maxWidth: 100)
             
             Button("Add month", role: .destructive) {
@@ -48,11 +49,11 @@ struct TableBottomBar: View {
                             try await addMonth()
                         } catch {
                             errorMessage = error.localizedDescription
-                            errorShown.toggle()
+                            errorShown = true
                         }
                     }
                 }
             }.dialogIcon(Image(systemName: "pencil.circle.fill")).padding()
-        }.frame(maxWidth: .infinity, maxHeight: 80, alignment: .center).padding(3)
+        }.frame(maxWidth: .infinity, maxHeight: 50, alignment: .center).padding(3)
     }
 }
