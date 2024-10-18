@@ -149,6 +149,7 @@
 		E7DE76D02C3313A6002DE392 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E7E969BD2CC26759006782E3 /* enums */,
 				E7EA4A7D2C38ABB000F66E03 /* types */,
 				E7DE76D22C33141D002DE392 /* Payment.swift */,
 				E744BB352C36B933000FF33B /* Month.swift */,
@@ -169,14 +170,21 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		E7E969BD2CC26759006782E3 /* enums */ = {
+			isa = PBXGroup;
+			children = (
+				E744BB392C36BEEF000FF33B /* PaymentType.swift */,
+				E7ABB46E2CB6A6830015DEC9 /* TabSwitch.swift */,
+				E744BB372C36BB33000FF33B /* MonthName.swift */,
+			);
+			path = enums;
+			sourceTree = "<group>";
+		};
 		E7EA4A7D2C38ABB000F66E03 /* types */ = {
 			isa = PBXGroup;
 			children = (
 				E748766D2CBEABDB001BD82F /* ExchangeRate.swift */,
-				E7ABB46E2CB6A6830015DEC9 /* TabSwitch.swift */,
 				E77AA1A22CB5F22800BA74E2 /* TypeAndCurrencyGroup.swift */,
-				E744BB372C36BB33000FF33B /* MonthName.swift */,
-				E744BB392C36BEEF000FF33B /* PaymentType.swift */,
 				E71399762C3C907E0017385E /* ChartEntry.swift */,
 				E787448A2C47FC59001ED1C7 /* YearType.swift */,
 				E753CCD12C3D9FE90043D551 /* CurrencyName.swift */,
@@ -437,7 +445,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Spendly/Spendly.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
@@ -463,6 +471,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.jk.Spendly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -477,7 +486,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Spendly/Spendly.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
@@ -503,6 +512,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.jk.Spendly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;

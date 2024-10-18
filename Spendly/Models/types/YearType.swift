@@ -2,14 +2,14 @@ import Foundation
 
 struct YearType {
     static var allYears: [Int] {
-        [2024, 2023, 2022, 2021, 2020, 2019, 2018]
+        return (0..<10).map { currentYear - $0 }
     }
     
     static var allYearsNames: [String] {
-        ["2024","2023","2022","2021","2020","2019","2018"]
+        allYears.map { String($0) }
     }
     
     static var currentYear: Int {
-        2024
+        return Calendar.current.component(.year, from: Date())
     }
 }
