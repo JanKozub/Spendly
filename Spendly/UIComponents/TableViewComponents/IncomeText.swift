@@ -9,11 +9,13 @@ struct IncomeText: View {
             Text("Income:").frame(maxWidth: .infinity, alignment: .center).padding(1)
             
             HStack {
-                ForEach(Array(values), id: \.key) { key, value in
+                ForEach(Array(values.sorted(by: { $0.key.name < $1.key.name} )), id: \.key) { key, value in
                     Text(String(format: "%.2f", value) + " " + key.name)
                 }
             }
         }.onChange(of: month.currenciesInTheMonth, {
+            updateValues()
+        }).onChange(of: month.getIncomePayments(), {
             updateValues()
         })
     }

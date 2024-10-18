@@ -5,6 +5,7 @@ struct NewPaymentPopup: View {
     @Binding var categories: [PaymentCategory]
     @Binding var isShown: Bool
     @Binding var expenseGroups: [TypeAndCurrencyGroup: Double]
+    @Binding var month: Month
     
     @State private var newPaymentDate: Date = Date()
     @State private var newPaymentMessage: String = ""
@@ -38,7 +39,7 @@ struct NewPaymentPopup: View {
             }.padding()
             
             Picker("Currency", selection: $newPaymentCurrency) {
-                ForEach(CurrencyName.allCases, id: \.self) { currency in
+                ForEach(month.currenciesInTheMonth, id: \.self) { currency in
                     Text(currency.name)
                 }
             }.padding()
@@ -67,6 +68,8 @@ struct NewPaymentPopup: View {
         )
         
         payments.append(newPayment)
+        payments = Payment.sortPaymentsByTransactionDate(payments: payments)
+        
         expenseGroups[newPayment.getTypeAndCurrencyGroup(), default: 0] += abs(newPayment.amount)
     }
 }

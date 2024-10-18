@@ -44,7 +44,7 @@ struct TableView: View {
         }.sheet(isPresented: $isEditPaymentNamesShown) {
             EditPaymentNames(isShown: $isEditPaymentNamesShown, payments: $payments)
         }.sheet(isPresented: $isAddPaymentShown) {
-            NewPaymentPopup(payments: $payments, categories: $categories, isShown: $isAddPaymentShown, expenseGroups: $expenseGroups)
+            NewPaymentPopup(payments: $payments, categories: $categories, isShown: $isAddPaymentShown, expenseGroups: $expenseGroups, month: $month)
         }.onAppear(perform: {
             Task {
                 do {
@@ -76,8 +76,11 @@ struct TableView: View {
     }
     
     private func updateExpenses(oldPayment: Payment, newPayment: Payment) {
-        let group = newPayment.getTypeAndCurrencyGroup()
+        if (newPayment.amount > 0) {
+            return
+        }
         
+        let group = newPayment.getTypeAndCurrencyGroup()
         if (oldPayment.type != newPayment.type) {
             let oldGroup = oldPayment.getTypeAndCurrencyGroup()
             expenseGroups[oldGroup, default: 0] -= abs(oldPayment.amount)
@@ -95,6 +98,7 @@ struct TableView: View {
         }
         
         month.removePayment(payment: payment)
+        payments.remove(at: payments.firstIndex(of: payment)!)
     }
     
     private func addMonth() async throws {

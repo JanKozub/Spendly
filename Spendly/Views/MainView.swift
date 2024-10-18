@@ -127,8 +127,7 @@ struct MainView: View {
     }
     
     private func getTopPayments() -> [Payment] {
-        savedPayments.sort(by: { $0.amount < $1.amount} ) //TODO filter only payments / not income and take top
-        return Array(savedPayments.prefix(15))
+        return Array(savedPayments.filter({$0.amount < 0}).sorted(by: { $0.amount < $1.amount}).prefix(15))
     }
     
     private func getYearChart() -> some View {

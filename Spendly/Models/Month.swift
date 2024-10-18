@@ -100,6 +100,10 @@ class Month: Identifiable ,Hashable {
     }
     
     public func removePayment(payment: Payment) {
+        if (payment.amount > 0) {
+            incomePayments.remove(at: incomePayments.firstIndex(of: payment)!)
+        }
+        
         payments.removeAll(where: { $0.id == payment.id })
         incomePayments.removeAll(where: { $0.id == payment.id })
         expensePayments.removeAll(where: { $0.id == payment.id })

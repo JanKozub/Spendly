@@ -30,8 +30,7 @@ struct PaymentRow: View {
                 .frame(maxWidth: width * 0.07, alignment: .center)
             
             let category = payment.category != nil ? payment.category!.name : ""
-            DropdownMenu(selected: category, elements: PaymentCategory.convertToStringArray(inputArray: categories),
-                         onChange: { newValue in
+            DropdownMenu(selected: category, elements: PaymentCategory.convertToStringArray(inputArray: categories), onChange: { newValue in
                 let old = payment.copy()
                 payment.category = categories.first(where: { $0.name == newValue }) ?? PaymentCategory.example()
                 onPaymentChanged(old, payment)
