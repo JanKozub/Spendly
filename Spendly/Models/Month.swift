@@ -72,9 +72,9 @@ class Month: Identifiable ,Hashable {
         
         for payment in expensePayments where payment.type == type && payment.category == category{
             if payment.currency == currency {
-                sum += payment.amount
+                sum += abs(payment.amount)
             } else {
-                sum += payment.amount * (try getRateOnDay(from: payment.currency, to: currency, date: payment.date))
+                sum += abs(payment.amount * (try getRateOnDay(from: payment.currency, to: currency, date: payment.date)))
             }
         }
         

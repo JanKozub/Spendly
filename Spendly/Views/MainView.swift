@@ -25,9 +25,9 @@ struct MainView: View {
                 HStack {
                     switch chartType {
                     case "Year":
-                        getYearChart()
+                        createYearChart()
                     case "Month":
-                        getMonthChart()
+                        createMonthChart()
                     default: HStack {}
                     }
                 }.frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
@@ -88,41 +88,49 @@ struct MainView: View {
         }
         
         if chartType == "Year" {
-            for monthName in MonthName.allCases {
-                var chartEntry = ChartEntry(monthName: monthName, categories: categories)
-                
-                for month in year!.months.filter({$0.monthName == monthName}) {
-                    for type in PaymentType.allCases {
-                        chartEntry.paymentType = type
-                        
-                        do {
-                            try addSumsToEntry(entry: &chartEntry, month: month, type: type)
-                        } catch {
-                            genericErrorMessage = error.localizedDescription
-                            genericErrorShown = true
-                        }
-                    }
-                }
-                chartEntries.append(chartEntry)
-            }
+            getYearChartEntries(year: year!)
         } else if chartType == "Month" {
             let month = year!.months.first(where: {$0.monthName == displayMonth})
             if month == nil {
                 return
             }
             
-            for type in PaymentType.allCases {
-                var chartEntry = ChartEntry(monthName: displayMonth, paymentType: type, categories: categories)
-                
-                do {
-                    try addSumsToEntry(entry: &chartEntry, month: month!, type: type)
-                } catch {
-                    genericErrorMessage = error.localizedDescription
-                    genericErrorShown = true
+            getMonthChartEntries(month: month!)
+        }
+    }
+    
+    private func getYearChartEntries(year: Year) {
+        for monthName in MonthName.allCases {
+            var chartEntry = ChartEntry(monthName: monthName, categories: categories)
+            
+            for month in year.months.filter({$0.monthName == monthName}) {
+                for type in PaymentType.allCases {
+                    chartEntry.paymentType = type
+                    
+                    do {
+                        try addSumsToEntry(entry: &chartEntry, month: month, type: type)
+                    } catch {
+                        genericErrorMessage = error.localizedDescription
+                        genericErrorShown = true
+                    }
                 }
-                
-                chartEntries.append(chartEntry)
             }
+            chartEntries.append(chartEntry)
+        }
+    }
+    
+    private func getMonthChartEntries(month: Month) {
+        for type in PaymentType.allCases {
+            var chartEntry = ChartEntry(monthName: displayMonth, paymentType: type, categories: categories)
+            
+            do {
+                try addSumsToEntry(entry: &chartEntry, month: month, type: type)
+            } catch {
+                genericErrorMessage = error.localizedDescription
+                genericErrorShown = true
+            }
+            
+            chartEntries.append(chartEntry)
         }
     }
     
@@ -130,7 +138,7 @@ struct MainView: View {
         return Array(savedPayments.filter({$0.amount < 0}).sorted(by: { $0.amount < $1.amount}).prefix(15))
     }
     
-    private func getYearChart() -> some View {
+    private func createYearChart() -> some View {
         return Chart(chartEntries) { entry in
             ForEach(categories) { category in
                 BarMark(
@@ -141,7 +149,7 @@ struct MainView: View {
         }.chartForegroundStyleScale(range: graphColors(for: categories))
     }
     
-    private func getMonthChart() -> some View {
+    private func createMonthChart() -> some View {
         HStack {
             ForEach(PaymentType.allCases) { type in
                 Chart(chartEntries) { entry in
