@@ -30,7 +30,7 @@ struct MainView: View {
                         createMonthChart()
                     default: HStack {}
                     }
-                }.frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
+                }.frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.7, alignment: .top)
                 
                 HStack {
                     List {
@@ -38,19 +38,16 @@ struct MainView: View {
                             Text(el.message + "  " + String(format: "%.2f", abs(el.amount)))
                         }
                     }
-                    .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
+                    .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.3, alignment: .top)
                     
                     VStack {
                         Button(action: openFilesExplorer)
-                        {Text("Import new month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
+                        {Text("Import new month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.14)}
                         
                         Button(action: {})
-                        {Text("Edit this month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
-                        
-                        Button(action: {tabSwitch = .settings})
-                        {Text("Settings").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.15)}
+                        {Text("Edit this month").frame(maxWidth: .infinity, minHeight: reader.size.height * 0.14)}
                     }
-                    .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.5, alignment: .top)
+                    .frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.3, alignment: .top)
                 }
             }
         }
@@ -59,17 +56,19 @@ struct MainView: View {
                 DropdownMenu(selected: displayMonth.name, elements: MonthName.allCasesNames, onChange: { newValue in
                     displayMonth = MonthName.nameToType(name: newValue)
                     refreshChart()
-                }).frame(width: 150)
+                }).frame(width: 100)
                 
                 DropdownMenu(selected: chartType, elements: ["Year", "Month"], onChange: { newValue in
                     chartType = newValue
                     refreshChart()
-                }).frame(width: 150)
+                }).frame(width: 100)
                 
                 DropdownMenu(selected: currency.name, elements: CurrencyName.allCasesNames, onChange: { newValue in
                     currency = CurrencyName.nameToType(name: newValue)
                     refreshChart()
-                }).frame(width: 150)
+                }).frame(width: 100)
+                
+                Button(action: { tabSwitch = .settings }) { Image(systemName: "gearshape.fill") }
             }
         }.onAppear {
             refreshChart()
