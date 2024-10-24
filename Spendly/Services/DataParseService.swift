@@ -29,7 +29,7 @@ class DataParseService {
                         }
                         
                         let payment = Payment(
-                            date: Payment.dateFromString(columns[1])!,
+                            date: PaymentDate.dateFromString(strDate: columns[1]),
                             message: columns[2] + " " + columns[3],
                             amount: Double(columns[5])!,
                             currency: CurrencyName.nameToType(name: cur.uppercased(with: .autoupdatingCurrent)),

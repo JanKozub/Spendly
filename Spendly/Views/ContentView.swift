@@ -4,7 +4,6 @@ import SwiftData
 struct ContentView: View {
     @Query private var years: [Year]
     @Query private var categories: [PaymentCategory]
-    @Query private var savedPayments: [Payment]
     
     @State private var payments: [Payment] = []
     @State private var tabSwitch: TabSwitch = .main
@@ -17,8 +16,7 @@ struct ContentView: View {
             MainView(payments: $payments,
                      tabSwitch: $tabSwitch,
                      years: years,
-                     categories: categories,
-                     savedPayments: savedPayments)
+                     categories: categories)
         case .table:
             TableView(payments: $payments,
                       tabSwitch: $tabSwitch,

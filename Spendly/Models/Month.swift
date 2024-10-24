@@ -25,14 +25,6 @@ class Month: Identifiable ,Hashable {
         self.payments = newPayments
         
         processPayments()
-        
-        let (firstDay, lastDay) = try getFirstAndLastDate(year: yearNum, month: monthName)
-        
-        for currency in currenciesInTheMonth {
-            if currency != .eur {
-                exchangeRates = try await CurrencyExchangeService.getExchangeRates(from: currency, to: .eur, startDate: firstDay, endDate: lastDay)
-            }
-        }
     }
     
     private func processPayments() {
@@ -49,54 +41,61 @@ class Month: Identifiable ,Hashable {
         }
     }
     
-    public func getRateOnDay(from: CurrencyName, to: CurrencyName, date: Date) throws -> Double {
+    public func getRateOnDay(from: CurrencyName, to: CurrencyName, date: PaymentDate) async throws -> Double {
         if from == to {
             return 1.0
-        } else {
-            let exchangeRate = exchangeRates.first(where: { $0.from == from && $0.to == to && $0.date == date})
-            
-            if exchangeRate == nil {
-                throw NSError(domain: "There are no exchange rates for required currency", code: 0)
-            }
-            
-            return exchangeRate!.rate
         }
+        
+        var exchangeRate = exchangeRates.first(where: { $0.from == from && $0.to == to && $0.date == date})
+        
+        if exchangeRate == nil {
+            exchangeRate = try await CurrencyExchangeService.getExchangeRate(from: from, to: to, startDate: date, endDate: date)[0]
+        }
+        
+        return exchangeRate!.rate
     }
     
-    public func getExpensesForGroup(type: PaymentType, category: PaymentCategory, currency: CurrencyName) throws -> Double {
-        if !currenciesInTheMonth.contains(currency) {
-            throw NSError(domain: "There are no payments with this currency", code: 0)
+    public func getExpenseByPaymentAndCategory(type: PaymentType, category: PaymentCategory, currency: CurrencyName) async throws -> Double {
+        if expensePayments.isEmpty {
+            return 0.0
         }
         
         var sum = 0.0
-        
-        for payment in expensePayments where payment.type == type && payment.category == category{
+        for payment in expensePayments where payment.type == type && payment.category == category {
             if payment.currency == currency {
                 sum += abs(payment.amount)
+                continue
+            }
+            
+            if (!exchangeRates.contains(where: { $0.from == payment.currency && $0.to == currency})) {
+                let (firstDay, lastDay) = try getFirstAndLastDate(year: yearNum, month: payment.date.month)
+                exchangeRates.append(contentsOf: try await CurrencyExchangeService.getExchangeRate(from: payment.currency, to: currency, startDate: firstDay, endDate: lastDay))
+            }
+            
+            if let rate = exchangeRates.first(where: { $0.date == payment.date }) {
+                sum += abs(payment.amount) * rate.rate
             } else {
-                sum += abs(payment.amount * (try getRateOnDay(from: payment.currency, to: currency, date: payment.date)))
+                throw NSError(domain: "No rate for date: \(payment.date)", code: 0)
             }
         }
         
         return sum
     }
     
-    private func getFirstAndLastDate(year: Int, month: MonthName) throws -> (firstDay: Date, lastDay: Date) {
-        var firstDay = payments[0].date
-        var lastDay = payments[0].date
-        
-        for payment in payments {
-            if payment.date < firstDay {
-                firstDay = payment.date
-            }
-            
-            if payment.date > lastDay {
-                lastDay = payment.date
-            }
+    private func getFirstAndLastDate(year: Int, month: Int) throws -> (firstDay: PaymentDate, lastDay: PaymentDate) {
+        let calendar = Calendar.current
+
+        var dateComponents = DateComponents(year: year, month: month, day: 1)
+        guard let rangeOfDays = calendar.range(of: .day, in: .month, for: calendar.date(from: dateComponents)!) else {
+            fatalError("Could not determine range of days in month")
+        }
+
+        dateComponents.day = rangeOfDays.count
+        guard let endOfMonth = calendar.date(from: dateComponents) else {
+            fatalError("Could not create end of the month date")
         }
         
-        let calendar = Calendar.current
-        return (calendar.date(byAdding: .day, value: 1, to: firstDay)!, calendar.date(byAdding: .day, value: 1, to: lastDay)!)
+        return (PaymentDate(day: 1, month: month, year: year), PaymentDate.dateToPaymentDate(date: endOfMonth))
     }
     
     public func removePayment(payment: Payment) {

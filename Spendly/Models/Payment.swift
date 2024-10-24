@@ -4,14 +4,14 @@ import SwiftData
 @Model
 class Payment: Identifiable, Hashable, ObservableObject, Encodable, Decodable {
     @Attribute(.unique) var id: UUID
-    @Attribute var date: Date
+    @Attribute var date: PaymentDate
     @Attribute var message: String
     @Attribute var amount: Double
     @Attribute var currency: CurrencyName
     @Attribute var category: PaymentCategory?
     @Attribute var type: PaymentType
     
-    init(date: Date, message: String, amount: Double, currency: CurrencyName, category: PaymentCategory, type: PaymentType) {
+    init(date: PaymentDate, message: String, amount: Double, currency: CurrencyName, category: PaymentCategory, type: PaymentType) {
         self.id = UUID()
         self.date = date
         self.message = message
@@ -21,7 +21,7 @@ class Payment: Identifiable, Hashable, ObservableObject, Encodable, Decodable {
         self.type = type
     }
     
-    init(date: Date, message: String, amount: Double, currency: CurrencyName, type: PaymentType) {
+    init(date: PaymentDate, message: String, amount: Double, currency: CurrencyName, type: PaymentType) {
         self.id = UUID()
         self.date = date
         self.message = message
@@ -30,20 +30,8 @@ class Payment: Identifiable, Hashable, ObservableObject, Encodable, Decodable {
         self.type = type
     }
     
-    func dateToString() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd-MM-yyyy"
-        return dateFormatter.string(from: date)
-    }
-    
-    static func dateFromString(_ date: String) -> Date? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd-MM-yyyy"
-        return dateFormatter.date(from: date)
-    }
-    
     static func example() -> Payment {
-        Payment(date: Date(), message: "", amount: 0, currency: .pln, category: PaymentCategory.example(), type: .personal)
+        Payment(date: PaymentDate.today(), message: "", amount: 0, currency: .pln, category: PaymentCategory.example(), type: .personal)
     }
     
     public func hash(into hasher: inout Hasher) {
@@ -71,7 +59,7 @@ class Payment: Identifiable, Hashable, ObservableObject, Encodable, Decodable {
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
-        date = try container.decode(Date.self, forKey: .date)
+        date = try container.decode(PaymentDate.self, forKey: .date)
         message = try container.decode(String.self, forKey: .message)
         amount = try container.decode(Double.self, forKey: .amount)
         currency = try container.decode(CurrencyName.self, forKey: .currency)

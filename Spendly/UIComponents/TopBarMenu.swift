@@ -5,7 +5,7 @@ struct TopBarMenu: View {
     @Binding var chartType: String
     @Binding var currency: CurrencyName
     
-    var refreshChart: () -> Void
+    var refreshChart: () async -> Void
     
     var body: some View {
         Menu {
@@ -14,14 +14,14 @@ struct TopBarMenu: View {
                     Text(monthName).tag(MonthName.nameToType(name: monthName))
                 }
             }.onChange(of: displayMonth) {
-                refreshChart()
+                Task { await refreshChart() }
             }
             
             Picker("Select Chart Type", selection: $chartType) {
                 Text("Year").tag("Year")
                 Text("Month").tag("Month")
             }.onChange(of: chartType) {
-                refreshChart()
+                Task { await refreshChart() }
             }
             
             Picker("Select Currency", selection: $currency) {
@@ -29,7 +29,7 @@ struct TopBarMenu: View {
                     Text(currencyName).tag(CurrencyName.nameToType(name: currencyName))
                 }
             }.onChange(of: currency) {
-                refreshChart()
+                Task { await refreshChart() }
             }
         } label: {
             Label("Options", systemImage: "slider.horizontal.3")

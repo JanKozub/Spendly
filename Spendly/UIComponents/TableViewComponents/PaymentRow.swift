@@ -13,7 +13,7 @@ struct PaymentRow: View {
     
     var body: some View {
         HStack {
-            Text(payment.dateToString()).frame(maxWidth: width * 0.1, alignment: .center)
+            Text(PaymentDate.dateToStringDot(date: payment.date)).frame(maxWidth: width * 0.1, alignment: .center)
             
             if isEditing {
                 TextField("Edit Message", text: $payment.message, onCommit: {

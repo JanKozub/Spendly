@@ -59,7 +59,7 @@ struct NewPaymentPopup: View {
         guard let amount = Double(newPaymentAmount) else { return }
         
         let newPayment = Payment(
-            date: newPaymentDate,
+            date: PaymentDate.dateToPaymentDate(date: newPaymentDate),
             message: newPaymentMessage,
             amount: amount,
             currency: newPaymentCurrency,
