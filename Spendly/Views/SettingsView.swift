@@ -23,7 +23,8 @@ struct SettingsView: View {
                     try? context.delete(model: Month.self)
                     try? context.delete(model: Payment.self)
                     try? context.delete(model: PaymentCategory.self)
-                }) 
+                    try? context.save()
+                })
                 {Text("Delete Data").font(Font.system(size: 20)).frame(maxWidth: .infinity, minHeight: 100)}
                 
                 Button(action: {

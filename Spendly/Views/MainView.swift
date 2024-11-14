@@ -18,23 +18,21 @@ struct MainView: View {
     @State private var chartEntries: [ChartEntry] = []
     
     var body: some View {
-        GeometryReader { reader in
-            VStack {
-                HStack {
-                    switch chartType {
-                    case "Year":
-                        createYearChart()
-                    case "Month":
-                        createMonthChart()
-                    default: HStack {}
-                    }
-                }.frame(maxWidth: .infinity, maxHeight: reader.size.height * 0.7, alignment: .top)
+        VStack {
+            HStack {
+                switch chartType {
+                case "Year":
+                    createYearChart()
+                case "Month":
+                    createMonthChart()
+                default: HStack {}
+                }
             }
         }
         .toolbar {
             ToolbarItemGroup {
                 HStack {
-                    TopBarMenu(displayMonth: $displayMonth, chartType: $chartType, currency: $currency, refreshChart: refreshChart)
+                    TopBarMenu(displayMonth: $displayMonth, chartType: $chartType, currency: $currency)
                     Divider()
                     Button(action: openFilesExplorer) { Image(systemName: "tray.and.arrow.down.fill") }
                     Divider()
@@ -45,7 +43,11 @@ struct MainView: View {
             Task { await refreshChart() }
         }.alert(isPresented: $genericErrorShown) {
             Alert(title: Text(genericErrorMessage))
-        }.padding(.all)
+        }
+        .onChange(of: displayMonth, { Task { await refreshChart() } })
+        .onChange(of: chartType, { Task { await refreshChart() } })
+        .onChange(of: currency, { Task { await refreshChart() } })
+        .padding(.all)
     }
     
     private func refreshChart() async {
